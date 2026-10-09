@@ -27,7 +27,7 @@ main{max-width:640px;margin:0 auto;padding:56px 24px 40px}
 h1{font:italic 400 76px/1.05 var(--serif);margin:18px 0 14px;letter-spacing:-.01em}
 .lead{color:var(--muted);font-size:14px}
 .lead a,.more a,.entry li a,.note a{border-bottom:1px solid #44444a}
-.products{margin:36px 0 8px;display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.products{margin:36px 0 8px;display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
 .prod{border:1px solid var(--line);border-radius:14px;padding:14px 14px 12px;background:rgba(255,255,255,.02);transition:.15s}
 .prod:hover,.prod.on{border-color:#44444a;background:rgba(255,255,255,.05)}
 .prod b{font-weight:600;font-size:14px;display:flex;align-items:center;gap:8px}

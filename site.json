@@ -1,17 +1,25 @@
 {
   "brand": "mackhan apps",
-  "site_version": "0.1.0",
-  "lead": "独立开发的几款桌面小工具。每一次发布都记录在这里。",
+  "site_version": "0.2.0",
+  "lead": "独立开发的几款小工具，覆盖 Mac、Windows 和乐奇 AI 眼镜。每一次发布都记录在这里。",
   "repo_url": "https://github.com/mackhan/mackhan.github.io",
   "products": [
-    {"id": "kvmini", "name": "KVMini", "desc": "一套键盘鼠标，控制 Mac 和 Windows 两台电脑。", "color": "#5ac8fa",
+    {"id": "kvmini", "name": "KVMini", "color": "#5ac8fa",
+     "desc": "一套键盘鼠标控制 Mac 和 Windows 两台电脑，剪贴板和文件跟着鼠标走。",
      "platforms": ["macOS", "Windows"],
      "downloads": [{"label": "macOS", "url": ""}, {"label": "Windows", "url": ""}]},
-    {"id": "snipscribe", "name": "SnipScribe", "desc": "菜单栏截图识字，结果直接进剪贴板。", "color": "#ffd60a",
+    {"id": "snipscribe", "name": "SnipScribe", "color": "#ffd60a",
+     "desc": "菜单栏截屏识字：框选屏幕，文字直接进剪贴板，全程离线。",
      "platforms": ["macOS"],
-     "downloads": [{"label": "App Store", "url": ""}]},
-    {"id": "moviebox", "name": "MovieBox", "desc": "本地影片管理，支持加密保险箱。", "color": "#ff6b81",
+     "downloads": [{"label": "App Store · 中国区（名为 OneNoteCopy）", "url": "https://apps.apple.com/cn/app/onenotecopy/id6762002999?mt=12"},
+                   {"label": "App Store · 其他地区", "url": "https://apps.apple.com/us/app/snipscribe/id6762002999?mt=12"}]},
+    {"id": "moviebox", "name": "MovieBox", "color": "#ff6b81",
+     "desc": "本地优先的视频管理器：多目录扫描、隐私遮罩、加密保险箱、重复检测、人物归类。",
      "platforms": ["macOS"],
-     "downloads": [{"label": "macOS", "url": ""}]}
+     "downloads": [{"label": "macOS（Apple 芯片）", "url": ""}]},
+    {"id": "tupu", "name": "图谱", "color": "#7ee787",
+     "desc": "乐奇 Rokid AI 眼镜上的乐谱浏览器与提词器：镜腿翻页、自动滚动、节拍器、倒计时。",
+     "platforms": ["Rokid 眼镜"],
+     "downloads": [{"label": "APK", "url": ""}]}
   ]
 }

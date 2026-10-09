@@ -4,6 +4,7 @@
 
 - 更新日志：`content/changelog/<产品>.md`，格式见文件顶部注释
 - 产品信息与下载地址：`site.json`
+- 从应用内更新日志生成草稿：`python3 tools/import_changelog.py <产品> <Rust 源文件>`，输出到 `drafts/`（不入库），改写后再并入 `content/changelog/`
 - 本地预览：`python3 build.py --serve`
 - 测试：`python3 -m unittest discover -s tests`
 - 推送到 `main` 后，GitHub Actions 会先跑测试、再构建并发布到 https://mackhan.github.io/
