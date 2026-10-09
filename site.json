@@ -1,0 +1,17 @@
+{
+  "brand": "mackhan apps",
+  "site_version": "0.1.0",
+  "lead": "独立开发的几款桌面小工具。每一次发布都记录在这里。",
+  "repo_url": "https://github.com/mackhan/mackhan.github.io",
+  "products": [
+    {"id": "kvmini", "name": "KVMini", "desc": "一套键盘鼠标，控制 Mac 和 Windows 两台电脑。", "color": "#5ac8fa",
+     "platforms": ["macOS", "Windows"],
+     "downloads": [{"label": "macOS", "url": ""}, {"label": "Windows", "url": ""}]},
+    {"id": "snipscribe", "name": "SnipScribe", "desc": "菜单栏截图识字，结果直接进剪贴板。", "color": "#ffd60a",
+     "platforms": ["macOS"],
+     "downloads": [{"label": "App Store", "url": ""}]},
+    {"id": "moviebox", "name": "MovieBox", "desc": "本地影片管理，支持加密保险箱。", "color": "#ff6b81",
+     "platforms": ["macOS"],
+     "downloads": [{"label": "macOS", "url": ""}]}
+  ]
+}
