@@ -113,6 +113,18 @@ class TestBuild(unittest.TestCase):
         self.assertEqual(data["releases"][0]["groups"][0]["items"][0], "**静音时段**：夜里不响")
         self.assertEqual(json.load(open(os.path.join(out, "updates", "b", "changelog.json")))["latest"], None)
 
+    def test_mobile_viewer_published_as_is(self):
+        root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+        shutil.copytree(os.path.join(root, "pa"), os.path.join(self.tmp, "pa"))
+        out = build.build(self.tmp)
+        for f in ("index.html", "app.js", "sw.js", "style.css", "manifest.webmanifest", "icons/icon-192.png"):
+            self.assertTrue(os.path.isfile(os.path.join(out, "pa", f)), f)
+        html_ = open(os.path.join(out, "pa", "index.html"), encoding="utf-8").read()
+        self.assertIn("connect-src https://api.github.com", html_)   # 只允许连 GitHub API
+        self.assertIn('name="referrer" content="no-referrer"', html_)
+        app = open(os.path.join(out, "pa", "app.js"), encoding="utf-8").read()
+        self.assertNotIn("innerHTML = r", app)                         # 提示词不经 innerHTML
+
     def test_unknown_changelog_file_is_error(self):
         open(os.path.join(self.tmp, "content", "changelog", "zzz.md"), "w").write("")
         with self.assertRaises(build.ChangelogError):

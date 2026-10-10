@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta http-equiv="Content-Security-Policy"
+      content="default-src 'self'; connect-src https://api.github.com; img-src 'self' data:; style-src 'self'; script-src 'self'; base-uri 'none'; form-action 'none'">
+<meta name="referrer" content="no-referrer">
+<meta name="theme-color" content="#fbfbfc" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#1c1c1e" media="(prefers-color-scheme: dark)">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="提示词档案">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<link rel="icon" href="icons/icon-192.png">
+<link rel="stylesheet" href="style.css?v=0.1.0">
+<title>Prompt Archive · 手机端</title>
+</head>
+<body>
+<div class="app">
+  <header>
+    <div class="brand"><i></i>Prompt Archive</div>
+    <button id="refresh" class="ghost" hidden>刷新</button>
+  </header>
+
+  <div id="banner" class="banner" hidden></div>
+
+  <!-- 未配对 -->
+  <section id="pair" class="pair" hidden>
+    <h1>还没有配对</h1>
+    <p>在电脑上打开托盘 App → 设置 → 手机同步 → 「手机配对」，用手机相机扫二维码即可。</p>
+    <p class="dim">数据在电脑上加密后才上传，解密密钥只在电脑和这台手机里，GitHub 上只有密文。</p>
+  </section>
+
+  <nav class="tabs" id="tabs" hidden>
+    <button data-tab="today" class="on">今日</button>
+    <button data-tab="week">本周</button>
+    <button data-tab="projects">项目</button>
+    <button data-tab="docs">文档</button>
+  </nav>
+
+  <main id="main" hidden>
+    <section id="tab-today" class="tab">
+      <div class="kpis">
+        <div class="kpi"><b id="t-turns">–</b><small>轮提示词</small></div>
+        <div class="kpi"><b id="t-tokens">–</b><small>总处理量</small></div>
+        <div class="kpi"><b id="t-fresh">–</b><small>新输入</small></div>
+        <div class="kpi"><b id="t-out">–</b><small>输出</small></div>
+      </div>
+      <h3>最近 7 天 · Token</h3>
+      <div class="bars" id="bars"></div>
+      <h3>按客户端</h3>
+      <ul class="list" id="t-clients"></ul>
+      <h3>重复问题提醒</h3>
+      <ul class="list" id="repeats"></ul>
+    </section>
+
+    <section id="tab-week" class="tab" hidden>
+      <p class="range" id="w-range"></p>
+      <div class="kpis">
+        <div class="kpi"><b id="w-turns">–</b><small>轮提示词</small></div>
+        <div class="kpi"><b id="w-tokens">–</b><small>总处理量</small></div>
+        <div class="kpi"><b id="w-fresh">–</b><small>新输入</small></div>
+        <div class="kpi"><b id="w-out">–</b><small>输出</small></div>
+      </div>
+      <h3>按客户端</h3>
+      <ul class="list" id="w-clients"></ul>
+      <h3>按项目</h3>
+      <ul class="projects" id="w-projects"></ul>
+    </section>
+
+    <section id="tab-projects" class="tab" hidden>
+      <ul class="projects" id="projects"></ul>
+    </section>
+
+    <section id="tab-docs" class="tab" hidden>
+      <h3>周报</h3>
+      <ul class="list links" id="reports"></ul>
+      <h3>项目手册</h3>
+      <ul class="list links" id="manuals"></ul>
+    </section>
+  </main>
+
+  <!-- 文档阅读 -->
+  <section id="reader" class="reader" hidden>
+    <div class="reader-bar"><button id="reader-back" class="ghost">‹ 返回</button><span id="reader-title"></span></div>
+    <article id="reader-body" class="md"></article>
+  </section>
+
+  <footer>
+    <span id="updated">–</span>
+    <span><a id="unpair" hidden>解除配对</a> <span id="version">v0.1.0</span></span>
+  </footer>
+</div>
+<script src="app.js?v=0.1.0"></script>
+</body>
+</html>

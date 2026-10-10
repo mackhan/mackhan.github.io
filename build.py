@@ -197,6 +197,8 @@ def build(root=ROOT, out=None):
         shutil.rmtree(out)
     os.makedirs(os.path.join(out, "changelog"))
     shutil.copytree(os.path.join(root, "assets"), os.path.join(out, "assets"))
+    if os.path.isdir(os.path.join(root, "pa")):   # Prompt Archive 手机端（纯静态，原样发布到 /pa/）
+        shutil.copytree(os.path.join(root, "pa"), os.path.join(out, "pa"))
     open(os.path.join(out, ".nojekyll"), "w").close()
 
     e = html.escape
