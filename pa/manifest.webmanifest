@@ -1,6 +1,6 @@
 {
-  "name": "Prompt Archive 提示词档案",
-  "short_name": "提示词档案",
+  "name": "PromptLedger 提示词账本",
+  "short_name": "提示词账本",
   "description": "查看 WorkBuddy / CodeBuddy / Cursor 的提示词、Token、项目进展、周报和手册（端到端加密同步）",
   "start_url": "./",
   "scope": "./",

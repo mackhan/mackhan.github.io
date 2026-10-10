@@ -1,4 +1,4 @@
-// Prompt Archive 手机端：从 GitHub 私有仓库拉取电脑上传的加密数据包，在本机用 WebCrypto 解密后显示。
+// PromptLedger 手机端：从 GitHub 私有仓库拉取电脑上传的加密数据包，在本机用 WebCrypto 解密后显示。
 //
 // - 配对：扫电脑上的二维码 → 打开 …/pa/#p=<base64url({r: 仓库, t: 只读令牌, k: 密钥})>
 //   「#」后面的内容浏览器不会发给任何服务器；读到后存进本机 localStorage，并立刻从地址栏抹掉。
@@ -7,7 +7,7 @@
 (function () {
   "use strict";
   var VERSION = "0.1.0";
-  var AAD = new TextEncoder().encode("prompt-archive/v1");
+  var AAD = new TextEncoder().encode("prompt-archive/v1");   // 协议标识沿用旧名，与电脑端 sync.rs 一致
   var CFG_KEY = "pa.cfg", CACHE_KEY = "pa.cache";
   var $ = function (id) { return document.getElementById(id); };
 
