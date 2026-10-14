@@ -9,6 +9,7 @@
     dist/changelog/index.html          全部产品的更新日志，可按产品筛选，每个版本都有锚点
     dist/updates/<产品>/changelog.json 应用内「有新版本」弹窗读这个（与网页同源）
     dist/updates/all.json
+    dist/<路径>                        content/static/<路径> 原样复制（如 KVMini/privacy-policy/）
 
 只用标准库，兼容 Python 3.9。
 """
@@ -149,10 +150,14 @@ def product_cards(site, latest, up):
                 dls.append('<a href="%s">%s</a>' % (html.escape(d["url"], quote=True), html.escape(d["label"])))
             else:
                 dls.append('<span class="soon" title="即将提供">%s · 即将提供</span>' % html.escape(d["label"]))
+        links = "".join('<a href="%s">%s</a>' % (html.escape(l["url"], quote=True), html.escape(l["label"]))
+                        for l in p.get("links", []) if l.get("url") and SAFE_URL.match(l["url"]))
+        note = '<p class="pnote">%s</p>' % inline(p["note"]) if p.get("note") else ""
         out.append("""<div class="prod" style="--c:%s" data-k="%s">
-  <b>%s</b><small>%s</small><p>%s</p><div class="dl">%s</div></div>""" % (
+  <b>%s</b><small>%s</small><p>%s</p>%s<div class="dl">%s</div>%s</div>""" % (
             html.escape(p["color"]), p["id"], html.escape(p["name"]), ver,
-            html.escape(p["desc"]), "".join(dls)))
+            html.escape(p["desc"]), note, "".join(dls),
+            '<div class="links">%s</div>' % links if links else ""))
     return '<section class="products" id="products">%s</section>' % "".join(out)
 
 
@@ -200,6 +205,14 @@ def build(root=ROOT, out=None):
     if os.path.isdir(os.path.join(root, "pa")):   # Prompt Archive 手机端（纯静态，原样发布到 /pa/）
         shutil.copytree(os.path.join(root, "pa"), os.path.join(out, "pa"))
     open(os.path.join(out, ".nojekyll"), "w").close()
+    static = os.path.join(root, "content", "static")
+    if os.path.isdir(static):   # 原样发布的静态页（隐私政策等），不得覆盖生成的页面
+        reserved = {"index.html", "404.html", "changelog", "updates", "assets", "pa"}
+        for name in os.listdir(static):
+            if name in reserved:
+                raise ChangelogError("content/static/%s 与生成的页面重名" % name)
+            src, dst = os.path.join(static, name), os.path.join(out, name)
+            (shutil.copytree if os.path.isdir(src) else shutil.copy2)(src, dst)
 
     e = html.escape
     home = """<main>

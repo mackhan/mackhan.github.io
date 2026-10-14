@@ -130,6 +130,60 @@ class TestBuild(unittest.TestCase):
         with self.assertRaises(build.ChangelogError):
             build.build(self.tmp)
 
+    def test_static_pages_published_at_their_path(self):
+        """content/static/ 原样发布：应用内“隐私政策”指向 /KVMini/privacy-policy，此前 404"""
+        d = os.path.join(self.tmp, "content", "static", "KVMini", "privacy-policy")
+        os.makedirs(d)
+        open(os.path.join(d, "index.html"), "w", encoding="utf-8").write("<html>privacy</html>")
+        out = build.build(self.tmp)
+        self.assertEqual(open(os.path.join(out, "KVMini", "privacy-policy", "index.html"), encoding="utf-8").read(),
+                         "<html>privacy</html>")
+
+    def test_static_pages_cannot_overwrite_generated_ones(self):
+        d = os.path.join(self.tmp, "content", "static", "changelog")
+        os.makedirs(d)
+        open(os.path.join(d, "index.html"), "w").write("x")
+        with self.assertRaises(build.ChangelogError):
+            build.build(self.tmp)
+
+    def test_product_links_rendered(self):
+        """产品卡片可以带额外链接（隐私政策 / 源码等）"""
+        site = json.load(open(os.path.join(self.tmp, "site.json"), encoding="utf-8"))
+        site["products"][0]["links"] = [{"label": "隐私政策", "url": "/KVMini/privacy-policy/"}]
+        json.dump(site, open(os.path.join(self.tmp, "site.json"), "w", encoding="utf-8"), ensure_ascii=False)
+        out = build.build(self.tmp)
+        home = open(os.path.join(out, "index.html"), encoding="utf-8").read()
+        self.assertIn('href="/KVMini/privacy-policy/"', home)
+        self.assertIn("隐私政策", home)
+
+
+class RealContentTest(unittest.TestCase):
+    """仓库里的真实内容：KVMini 必须有可用下载、有效的隐私政策页、更新日志不落后"""
+
+    def setUp(self):
+        self.root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+        self.out = tempfile.mkdtemp()
+        build.build(self.root, os.path.join(self.out, "dist"))
+        self.dist = os.path.join(self.out, "dist")
+
+    def tearDown(self):
+        shutil.rmtree(self.out)
+
+    def test_kvmini_has_real_downloads_and_privacy_page(self):
+        site = json.load(open(os.path.join(self.root, "site.json"), encoding="utf-8"))
+        kv = next(p for p in site["products"] if p["id"] == "kvmini")
+        urls = [d["url"] for d in kv["downloads"]]
+        self.assertTrue(all(urls), "KVMini 下载地址不能为空（会显示“即将提供”）")
+        self.assertTrue(all(u.startswith("https://github.com/mackhan/KVMini/releases/") for u in urls))
+        page = os.path.join(self.dist, "KVMini", "privacy-policy", "index.html")
+        self.assertTrue(os.path.isfile(page), "应用内隐私政策链接指向这里")
+        self.assertIn("KVMini", open(page, encoding="utf-8").read())
+
+    def test_kvmini_latest_release_no_longer_claims_plaintext(self):
+        data = json.load(open(os.path.join(self.dist, "updates", "kvmini", "changelog.json"), encoding="utf-8"))
+        self.assertNotIn("明文", data["releases"][0]["note"])
+        self.assertGreaterEqual(build.vkey(data["latest"]), (0, 3, 4))
+
 
 if __name__ == "__main__":
     unittest.main()

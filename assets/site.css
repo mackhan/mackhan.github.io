@@ -38,6 +38,10 @@ h1{font:italic 400 76px/1.05 var(--serif);margin:18px 0 14px;letter-spacing:-.01
 .prod .dl a,.prod .dl .soon{font-size:11.5px;border:1px solid #33333a;border-radius:7px;padding:2px 8px;color:#cfcfd4}
 .prod .dl a:hover{border-color:#66666e}
 .prod .dl .soon{color:var(--dim);border-style:dashed}
+.prod .pnote{color:var(--dim);font-size:11.5px;margin-top:6px}
+.prod .links{margin-top:8px;display:flex;gap:10px;flex-wrap:wrap;font-size:11.5px}
+.prod .links a{color:var(--muted)}
+.prod .links a:hover{color:#cfcfd4}
 .more{margin-top:22px;font-size:13px;color:var(--muted)}
 .filter{display:flex;gap:6px;margin:28px 0 0;padding-bottom:22px;border-bottom:1px solid var(--line);flex-wrap:wrap}
 .filter button{font:13px var(--sans);color:var(--muted);background:none;border:1px solid transparent;border-radius:999px;padding:4px 12px;cursor:pointer}
