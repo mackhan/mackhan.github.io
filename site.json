@@ -1,6 +1,6 @@
 {
   "brand": "mackhan apps",
-  "site_version": "0.2.1",
+  "site_version": "0.3.0",
   "lead": "独立开发的几款小工具，覆盖 Mac、Windows 和乐奇 AI 眼镜。每一次发布都记录在这里。",
   "repo_url": "https://github.com/mackhan/mackhan.github.io",
   "products": [
@@ -16,20 +16,25 @@
       "downloads": [
         {
           "label": "macOS · Apple 芯片 / Intel",
-          "url": "https://github.com/mackhan/KVMini/releases/latest"
+          "url": "https://github.com/mackhan/KVMini/releases/latest",
+          "label_en": "macOS · Apple silicon / Intel"
         }
       ],
       "note": "Windows 版即将提供；两台电脑请安装同一版本。",
       "links": [
         {
           "label": "隐私政策",
-          "url": "/KVMini/privacy-policy/"
+          "url": "/KVMini/privacy-policy/",
+          "label_en": "Privacy Policy"
         },
         {
           "label": "全部版本",
-          "url": "https://github.com/mackhan/KVMini/releases"
+          "url": "https://github.com/mackhan/KVMini/releases",
+          "label_en": "All releases"
         }
-      ]
+      ],
+      "desc_en": "One keyboard and mouse for your Mac and Windows computers. Connect and go — copied text, images, rich text and files paste straight onto the other computer. TLS encrypted end to end.",
+      "note_en": "Windows version coming soon; please install the same version on both computers."
     },
     {
       "id": "snipscribe",
@@ -42,13 +47,16 @@
       "downloads": [
         {
           "label": "App Store · 中国区（名为 OneNoteCopy）",
-          "url": "https://apps.apple.com/cn/app/onenotecopy/id6762002999?mt=12"
+          "url": "https://apps.apple.com/cn/app/onenotecopy/id6762002999?mt=12",
+          "label_en": "App Store · China (as OneNoteCopy)"
         },
         {
           "label": "App Store · 其他地区",
-          "url": "https://apps.apple.com/us/app/snipscribe/id6762002999?mt=12"
+          "url": "https://apps.apple.com/us/app/snipscribe/id6762002999?mt=12",
+          "label_en": "App Store · Other regions"
         }
-      ]
+      ],
+      "desc_en": "Screenshot-to-text in the menu bar: select part of the screen and the text goes straight to your clipboard, fully offline."
     },
     {
       "id": "moviebox",
@@ -61,9 +69,11 @@
       "downloads": [
         {
           "label": "macOS（Apple 芯片）",
-          "url": ""
+          "url": "",
+          "label_en": "macOS (Apple silicon)"
         }
-      ]
+      ],
+      "desc_en": "A local-first video manager: multi-folder scanning, privacy masking, an encrypted vault, duplicate detection and grouping by person."
     },
     {
       "id": "tupu",
@@ -76,9 +86,17 @@
       "downloads": [
         {
           "label": "APK",
-          "url": ""
+          "url": "",
+          "label_en": "APK"
         }
+      ],
+      "desc_en": "A sheet music viewer and teleprompter for Rokid AI glasses: swipe the temple to turn pages, auto-scroll, metronome, countdown.",
+      "name_en": "Tupu",
+      "platforms_en": [
+        "Rokid glasses"
       ]
     }
-  ]
+  ],
+  "base_url": "https://mackhan.github.io/",
+  "lead_en": "A few small tools built by an independent developer, for Mac, Windows and Rokid AI glasses. Every release is recorded here."
 }

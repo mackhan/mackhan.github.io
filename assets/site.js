@@ -1,3 +1,9 @@
+// 语言切换：记住用户的选择，之后中文页不再按浏览器语言自动跳到英文
+document.addEventListener("click", function (ev) {
+  var a = ev.target.closest && ev.target.closest("a[data-lang]");
+  if (a) { try { localStorage.setItem("siteLang", a.dataset.lang); } catch (e) {} }
+});
+
 // 更新日志页：按产品筛选（URL 里带 ?p=kvmini 可直接分享筛选结果）
 (function () {
   var f = document.getElementById("filter");

@@ -4,12 +4,21 @@
     python3 build.py            # 构建到 dist/
     python3 build.py --serve    # 构建后在 http://127.0.0.1:8000 预览
 
-产出：
+产出（中文在根目录，英文在 /en/）：
     dist/index.html                    产品列表（最新版本 + 下载）
     dist/changelog/index.html          全部产品的更新日志，可按产品筛选，每个版本都有锚点
+    dist/en/index.html                 英文产品列表
+    dist/en/changelog/index.html       英文更新日志（content/changelog/en/<产品>.md）
     dist/updates/<产品>/changelog.json 应用内「有新版本」弹窗读这个（与网页同源）
     dist/updates/all.json
     dist/<路径>                        content/static/<路径> 原样复制（如 KVMini/privacy-policy/）
+
+多语言：
+    - site.json 中文字段为默认，英文用 `<字段>_en`（lead_en、name_en、desc_en、note_en、
+      platforms_en、downloads[].label_en、links[].label_en），缺省时回落中文
+    - 英文更新日志 content/changelog/en/<产品>.md 必须覆盖中文版的每个版本（版本号与日期一致），
+      否则构建失败；没有英文文件的产品，英文页显示中文条目并标注
+    - 中文页在浏览器语言不是中文、且用户没手动选过语言时跳到英文页
 
 只用标准库，兼容 Python 3.9。
 """
@@ -25,6 +34,31 @@ ROOT = os.path.dirname(os.path.abspath(__file__))
 HEAD_RX = re.compile(r"^##\s+v?(\d+(?:\.\d+){1,3}(?:[-+][\w.]+)?)\s*[·|]\s*(\S+)(?:\s*[·|]\s*(.+?))?\s*$")
 DATE_RX = re.compile(r"^\d{4}-\d{2}-\d{2}$")
 SAFE_URL = re.compile(r"^(https?://|mailto:|/|#)")
+MONTHS = ("Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec")
+
+# 界面文案。新增语言：在这里加一组，并在 site.json 中提供 `<字段>_<语言>`
+LANGS = {
+    "zh": {
+        "html_lang": "zh-CN", "hreflang": "zh-CN", "root": "", "switch_to": "en", "switch_label": "English",
+        "nav_home": "产品", "nav_changelog": "更新日志", "nav_download": "下载",
+        "home_title": "产品", "home_eyebrow": "Apps", "home_h1": "小而稳的工具", "more": "查看全部更新日志 →",
+        "cl_title": "更新日志", "cl_eyebrow": "Updates", "cl_h1": "更新日志",
+        "cl_lead": "所有产品的每一次发布，最新优先。本页与应用内的更新提示用的是同一份数据。",
+        "all": "全部", "empty": "还没有发布记录。", "unreleased": "尚未发布", "soon": "即将提供",
+        "note": "注：", "footer": "站点 v%s · 构建于 %s", "zh_only": "",
+    },
+    "en": {
+        "html_lang": "en", "hreflang": "en", "root": "en/", "switch_to": "zh", "switch_label": "中文",
+        "nav_home": "Products", "nav_changelog": "Changelog", "nav_download": "Download",
+        "home_title": "Products", "home_eyebrow": "Apps", "home_h1": "Small, steady tools",
+        "more": "See all release notes →",
+        "cl_title": "Changelog", "cl_eyebrow": "Updates", "cl_h1": "Changelog",
+        "cl_lead": "Every release of every product, newest first.",
+        "all": "All", "empty": "No releases yet.", "unreleased": "Not released yet", "soon": "Coming soon",
+        "note": "Note: ", "footer": "Site v%s · built %s",
+        "zh_only": "Release notes for %s are only available in Chinese.",
+    },
+}
 
 
 class ChangelogError(ValueError):
@@ -83,7 +117,7 @@ def parse_changelog(text, pid):
         elif line.startswith(">"):
             if cur is None:
                 raise ChangelogError("%s 备注前缺少版本标题" % where)
-            note = re.sub(r"^>\s*(注[:：]\s*)?", "", line)
+            note = re.sub(r"^>\s*(注[:：]|Note:)?\s*", "", line)
             cur["note"] = (cur["note"] + " " + note).strip()
         else:
             raise ChangelogError("%s 无法识别的行：%s" % (where, line))
@@ -98,81 +132,150 @@ def cn_date(iso):
     return "%d年%d月%d日" % (d.year, d.month, d.day)
 
 
+def en_date(iso):
+    d = datetime.date.fromisoformat(iso)
+    return "%s %d, %d" % (MONTHS[d.month - 1], d.day, d.year)
+
+
+def fmt_date(iso, lang):
+    return cn_date(iso) if lang == "zh" else en_date(iso)
+
+
 def vkey(v):
     return tuple(int(x) for x in re.findall(r"\d+", v.split("-")[0].split("+")[0]))
 
 
+def tr(obj, key, lang):
+    """取 `<key>_<lang>`，没有则回落中文字段"""
+    if lang != "zh" and obj.get("%s_%s" % (key, lang)):
+        return obj["%s_%s" % (key, lang)]
+    return obj.get(key, "")
+
+
+def check_translation(pid, zh, en):
+    """英文更新日志必须与中文版的版本、日期一一对应"""
+    zmap = {r["version"]: r["date"] for r in zh}
+    emap = {r["version"]: r["date"] for r in en}
+    missing = sorted(set(zmap) - set(emap), key=vkey, reverse=True)
+    extra = sorted(set(emap) - set(zmap), key=vkey, reverse=True)
+    wrong = [v for v in zmap if v in emap and zmap[v] != emap[v]]
+    if missing or extra or wrong:
+        raise ChangelogError("en/%s.md 与 %s.md 不一致：缺少 %s；多出 %s；日期不同 %s" % (
+            pid, pid, ", ".join(missing) or "无", ", ".join(extra) or "无", ", ".join(wrong) or "无"))
+
+
 # ---------- 渲染 ----------
 
-def page(site, title, body, active, depth):
-    up = "../" * depth
+def page(site, lang, title, body, active, path, depth, up=None, redirect=True):
+    """path：本页相对站点根的路径（不含语言前缀），如 "" 或 "changelog/" """
+    L = LANGS[lang]
+    other = LANGS[L["switch_to"]]
+    up = ("../" * depth) if up is None else up
+    home = up + L["root"]
     e = html.escape
-    nav = "".join('<a class="%s" href="%s%s">%s</a>' % ("on" if k == active else "", up, href, name)
-                  for k, href, name in (("home", "", "产品"), ("changelog", "changelog/", "更新日志")))
+    nav = "".join('<a class="%s" href="%s%s">%s</a>' % ("on" if k == active else "", home, href, name)
+                  for k, href, name in (("home", "", L["nav_home"]), ("changelog", "changelog/", L["nav_changelog"])))
+    switch = '<a class="lang" data-lang="%s" hreflang="%s" href="%s%s%s">%s</a>' % (
+        L["switch_to"], other["hreflang"], up, other["root"], path, L["switch_label"])
+    base = site.get("base_url", "").rstrip("/") + "/"
+    alternates = "".join('<link rel="alternate" hreflang="%s" href="%s%s%s">\n' % (
+        LANGS[k]["hreflang"], base, LANGS[k]["root"], path) for k in LANGS)
+    alternates += '<link rel="alternate" hreflang="x-default" href="%s%s">\n' % (base, path)
+    # 中文页：浏览器语言不是中文、且没手动选过语言时跳到英文页（选择记在 localStorage.siteLang）
+    auto = ""
+    if lang == "zh" and redirect:
+        auto = ('<script>(function(){try{if(localStorage.getItem("siteLang"))return;'
+                'var l=(navigator.languages&&navigator.languages[0])||navigator.language||"";'
+                'if(l&&!/^zh/i.test(l))location.replace("%s%s%s"+location.search+location.hash);}catch(e){}})();</script>\n'
+                % (up, LANGS["en"]["root"], path))
     return """<!doctype html>
-<html lang="zh-CN">
+<html lang="%(html_lang)s">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>%(title)s · %(brand)s</title>
 <meta name="description" content="%(lead)s">
-<link rel="stylesheet" href="%(up)sassets/site.css?v=%(ver)s">
+%(alternates)s%(auto)s<link rel="stylesheet" href="%(up)sassets/site.css?v=%(ver)s">
 <link rel="preload" href="%(up)sassets/fonts/instrument-serif-italic-latin.woff2" as="font" type="font/woff2" crossorigin>
 </head>
 <body>
 <div class="wrap">
 <header>
-  <a class="logo" href="%(up)s"><i></i>%(brand)s</a>
-  <nav>%(nav)s<a class="btn" href="%(up)s#products">下载</a></nav>
+  <a class="logo" href="%(home)s"><i></i>%(brand)s</a>
+  <nav>%(nav)s%(switch)s<a class="btn" href="%(home)s#products">%(download)s</a></nav>
 </header>
 %(body)s
 <footer>
-  <span>站点 v%(ver)s · 构建于 %(built)s</span>
+  <span>%(footer)s</span>
   <span><a href="%(repo)s" target="_blank" rel="noopener">GitHub</a></span>
 </footer>
 </div>
 <script src="%(up)sassets/site.js?v=%(ver)s"></script>
 </body>
 </html>
-""" % {"title": e(title), "brand": e(site["brand"]), "lead": e(site["lead"]), "up": up, "nav": nav,
-       "body": body, "ver": e(site["site_version"]), "built": site["_built"], "repo": e(site["repo_url"])}
+""" % {"html_lang": L["html_lang"], "title": e(title), "brand": e(tr(site, "brand", lang)),
+       "lead": e(tr(site, "lead", lang)), "alternates": alternates, "auto": auto, "up": up, "home": home,
+       "nav": nav, "switch": switch, "download": L["nav_download"], "body": body,
+       "ver": e(site["site_version"]), "footer": e(L["footer"] % (site["site_version"], site["_built"])),
+       "repo": e(site["repo_url"])}
 
 
-def product_cards(site, latest, up):
+def product_cards(site, latest, base, lang):
+    """base：本语言的站点根（相对当前页），用于拼更新日志链接"""
+    L = LANGS[lang]
     out = []
     for p in site["products"]:
         r = latest.get(p["id"])
-        ver = ('<a href="%schangelog/#%s-v%s">v%s</a> · %s' % (up, p["id"], r["version"], r["version"], cn_date(r["date"]))
-               if r else "尚未发布")
+        ver = ('<a href="%schangelog/#%s-v%s">v%s</a> · %s' % (base, p["id"], r["version"], r["version"],
+                                                              fmt_date(r["date"], lang))
+               if r else L["unreleased"])
         dls = []
         for d in p.get("downloads", []):
+            label = html.escape(tr(d, "label", lang))
             if d.get("url"):
-                dls.append('<a href="%s">%s</a>' % (html.escape(d["url"], quote=True), html.escape(d["label"])))
+                dls.append('<a href="%s">%s</a>' % (html.escape(d["url"], quote=True), label))
             else:
-                dls.append('<span class="soon" title="即将提供">%s · 即将提供</span>' % html.escape(d["label"]))
-        links = "".join('<a href="%s">%s</a>' % (html.escape(l["url"], quote=True), html.escape(l["label"]))
+                dls.append('<span class="soon" title="%s">%s · %s</span>' % (L["soon"], label, L["soon"]))
+        links = "".join('<a href="%s">%s</a>' % (html.escape(l["url"], quote=True), html.escape(tr(l, "label", lang)))
                         for l in p.get("links", []) if l.get("url") and SAFE_URL.match(l["url"]))
-        note = '<p class="pnote">%s</p>' % inline(p["note"]) if p.get("note") else ""
+        note = tr(p, "note", lang)
+        note = '<p class="pnote">%s</p>' % inline(note) if note else ""
         out.append("""<div class="prod" style="--c:%s" data-k="%s">
   <b>%s</b><small>%s</small><p>%s</p>%s<div class="dl">%s</div>%s</div>""" % (
-            html.escape(p["color"]), p["id"], html.escape(p["name"]), ver,
-            html.escape(p["desc"]), note, "".join(dls),
+            html.escape(p["color"]), p["id"], html.escape(tr(p, "name", lang)), ver,
+            html.escape(tr(p, "desc", lang)), note, "".join(dls),
             '<div class="links">%s</div>' % links if links else ""))
     return '<section class="products" id="products">%s</section>' % "".join(out)
 
 
-def entry(r, p):
+def entry(r, p, lang):
     rid = "%s-v%s" % (r["product"], r["version"])
-    plats = "".join('<span class="plat">%s</span>' % html.escape(x) for x in p.get("platforms", []))
+    plats = "".join('<span class="plat">%s</span>' % html.escape(x)
+                    for x in (tr(p, "platforms", lang) or []))
     flag = '<span class="flag">%s</span>' % html.escape(r["flag"]) if r["flag"] else ""
     groups = "".join("<h3>%s</h3><ul>%s</ul>" % (html.escape(g["title"]), "".join("<li>%s</li>" % i for i in g["items_html"]))
                      for g in r["groups"] if g["items"])
-    note = '<p class="note">注：%s</p>' % inline(r["note"]) if r["note"] else ""
+    note = '<p class="note">%s%s</p>' % (LANGS[lang]["note"], inline(r["note"])) if r["note"] else ""
     return """<article class="entry" id="%s" data-p="%s">
   <div class="meta"><a class="ver" href="#%s">v%s</a><span class="tag" style="--c:%s">%s</span>
   <span class="date">%s</span>%s%s</div>%s%s</article>""" % (
-        rid, r["product"], rid, html.escape(r["version"]), html.escape(p["color"]), html.escape(p["name"]),
-        cn_date(r["date"]), plats, flag, groups, note)
+        rid, r["product"], rid, html.escape(r["version"]), html.escape(p["color"]), html.escape(tr(p, "name", lang)),
+        fmt_date(r["date"], lang), plats, flag, groups, note)
+
+
+def load_changelogs(cdir, prods):
+    by_p = {pid: [] for pid in prods}
+    for fn in sorted(os.listdir(cdir)):
+        if not fn.endswith(".md"):
+            continue
+        pid = fn[:-3]
+        if pid not in prods:
+            raise ChangelogError("%s 没有在 site.json 的 products 里登记" % fn)
+        with open(os.path.join(cdir, fn), encoding="utf-8") as f:
+            by_p[pid] = parse_changelog(f.read(), pid)
+    for rs in by_p.values():
+        rs.sort(key=lambda r: vkey(r["version"]), reverse=True)
+    return by_p
 
 
 def build(root=ROOT, out=None):
@@ -183,20 +286,24 @@ def build(root=ROOT, out=None):
     prods = {p["id"]: p for p in site["products"]}
 
     cdir = os.path.join(root, "content", "changelog")
-    by_p = {pid: [] for pid in prods}
-    for fn in sorted(os.listdir(cdir)):
-        if not fn.endswith(".md"):
+    by_lang = {"zh": load_changelogs(cdir, prods)}
+    zh_only = []
+    for lang in LANGS:
+        if lang == "zh":
             continue
-        pid = fn[:-3]
-        if pid not in prods:
-            raise ChangelogError("%s 没有在 site.json 的 products 里登记" % fn)
-        with open(os.path.join(cdir, fn), encoding="utf-8") as f:
-            by_p[pid] = parse_changelog(f.read(), pid)
-
-    for pid, rs in by_p.items():
-        rs.sort(key=lambda r: vkey(r["version"]), reverse=True)
-    latest = {pid: rs[0] for pid, rs in by_p.items() if rs}
-    allrs = sorted((r for rs in by_p.values() for r in rs), key=lambda r: (r["date"], vkey(r["version"])), reverse=True)
+        ldir = os.path.join(cdir, lang)
+        translated = load_changelogs(ldir, prods) if os.path.isdir(ldir) else {pid: [] for pid in prods}
+        merged = {}
+        for pid, zrs in by_lang["zh"].items():
+            has_file = os.path.isfile(os.path.join(ldir, pid + ".md"))
+            if has_file:
+                check_translation(pid, zrs, translated[pid])
+                merged[pid] = translated[pid]
+            else:
+                merged[pid] = zrs
+                if zrs and lang == "en":
+                    zh_only.append(pid)
+        by_lang[lang] = merged
 
     if os.path.isdir(out):
         shutil.rmtree(out)
@@ -207,7 +314,8 @@ def build(root=ROOT, out=None):
     open(os.path.join(out, ".nojekyll"), "w").close()
     static = os.path.join(root, "content", "static")
     if os.path.isdir(static):   # 原样发布的静态页（隐私政策等），不得覆盖生成的页面
-        reserved = {"index.html", "404.html", "changelog", "updates", "assets", "pa"}
+        reserved = {"index.html", "404.html", "changelog", "updates", "assets", "pa"} | \
+            {LANGS[k]["root"].strip("/") for k in LANGS if LANGS[k]["root"]}
         for name in os.listdir(static):
             if name in reserved:
                 raise ChangelogError("content/static/%s 与生成的页面重名" % name)
@@ -215,44 +323,56 @@ def build(root=ROOT, out=None):
             (shutil.copytree if os.path.isdir(src) else shutil.copy2)(src, dst)
 
     e = html.escape
-    home = """<main>
-  <div class="eyebrow">Apps</div>
-  <h1>小而稳的工具</h1>
+    for lang, L in LANGS.items():
+        by_p = by_lang[lang]
+        latest = {pid: rs[0] for pid, rs in by_p.items() if rs}
+        allrs = sorted((r for rs in by_p.values() for r in rs), key=lambda r: (r["date"], vkey(r["version"])),
+                       reverse=True)
+        ldir = os.path.join(out, L["root"]) if L["root"] else out
+        os.makedirs(os.path.join(ldir, "changelog"), exist_ok=True)
+        hd = 1 if L["root"] else 0          # 本语言首页的目录深度
+
+        home = """<main>
+  <div class="eyebrow">%s</div>
+  <h1>%s</h1>
   <p class="lead">%s</p>
   %s
-  <p class="more"><a href="changelog/">查看全部更新日志 →</a></p>
-</main>""" % (e(site["lead"]), product_cards(site, latest, ""))
-    write(os.path.join(out, "index.html"), page(site, "产品", home, "home", 0))
+  <p class="more"><a href="changelog/">%s</a></p>
+</main>""" % (L["home_eyebrow"], L["home_h1"], e(tr(site, "lead", lang)), product_cards(site, latest, "", lang), L["more"])
+        write(os.path.join(ldir, "index.html"), page(site, lang, L["home_title"], home, "home", "", hd))
 
-    filt = '<button class="on" data-k="all">全部</button>' + "".join(
-        '<button data-k="%s">%s</button>' % (p["id"], e(p["name"])) for p in site["products"])
-    entries = "".join(entry(r, prods[r["product"]]) for r in allrs) or \
-        '<p class="empty">还没有发布记录。</p>'
-    cl = """<main>
-  <div class="eyebrow">Updates</div>
-  <h1>更新日志</h1>
-  <p class="lead">所有产品的每一次发布，最新优先。本页与应用内的更新提示用的是同一份数据。</p>
+        filt = '<button class="on" data-k="all">%s</button>' % L["all"] + "".join(
+            '<button data-k="%s">%s</button>' % (p["id"], e(tr(p, "name", lang))) for p in site["products"])
+        entries = "".join(entry(r, prods[r["product"]], lang) for r in allrs) or \
+            '<p class="empty">%s</p>' % L["empty"]
+        notice = "".join('<p class="note">%s</p>' % e(L["zh_only"] % tr(prods[pid], "name", lang))
+                         for pid in (zh_only if lang == "en" else []))
+        cl = """<main>
+  <div class="eyebrow">%s</div>
+  <h1>%s</h1>
+  <p class="lead">%s</p>
   %s
   <div class="filter" id="filter">%s</div>
-  <section id="list">%s</section>
-</main>""" % (product_cards(site, latest, "../"), filt, entries)
-    write(os.path.join(out, "changelog", "index.html"), page(site, "更新日志", cl, "changelog", 1))
+  %s<section id="list">%s</section>
+</main>""" % (L["cl_eyebrow"], L["cl_h1"], L["cl_lead"], product_cards(site, latest, "../", lang), filt, notice, entries)
+        write(os.path.join(ldir, "changelog", "index.html"),
+              page(site, lang, L["cl_title"], cl, "changelog", "changelog/", hd + 1))
 
-    nf = '<main><div class="eyebrow">404</div><h1>页面不存在</h1><p class="lead"><a href="/">回到首页 →</a></p></main>'
-    write(os.path.join(out, "404.html"), page(site, "404", nf, "", 0).replace('href="assets/', 'href="/assets/')
-          .replace('src="assets/', 'src="/assets/'))
+    nf = ('<main><div class="eyebrow">404</div><h1>页面不存在 · Page not found</h1>'
+          '<p class="lead"><a href="/">回到首页 →</a> · <a href="/en/">Back to home →</a></p></main>')
+    write(os.path.join(out, "404.html"), page(site, "zh", "404", nf, "", "", 0, up="/", redirect=False))
 
     def strip(r):
         return {"version": r["version"], "date": r["date"], "flag": r["flag"], "note": r["note"],
                 "groups": [{"title": g["title"], "items": g["items"]} for g in r["groups"] if g["items"]]}
-    for pid, rs in by_p.items():
+    for pid, rs in by_lang["zh"].items():
         os.makedirs(os.path.join(out, "updates", pid))
         write(os.path.join(out, "updates", pid, "changelog.json"),
               json.dumps({"product": pid, "latest": rs[0]["version"] if rs else None,
                           "releases": [strip(r) for r in rs]}, ensure_ascii=False, indent=1))
     write(os.path.join(out, "updates", "all.json"),
           json.dumps({"site_version": site["site_version"],
-                      "products": {pid: (rs[0]["version"] if rs else None) for pid, rs in by_p.items()}},
+                      "products": {pid: (rs[0]["version"] if rs else None) for pid, rs in by_lang["zh"].items()}},
                      ensure_ascii=False, indent=1))
     return out
 
