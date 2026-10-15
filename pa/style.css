@@ -88,16 +88,14 @@ footer a { color: var(--dim); text-decoration: underline; cursor: pointer; margi
 .quota:empty { display: none; }
 .quota { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 12px 14px; margin-bottom: 12px; }
 .quota .qh { font-size: 12px; color: var(--muted); margin-bottom: 9px; letter-spacing: .04em; }
-.qrow { margin-bottom: 11px; }
-.qrow:last-child { margin-bottom: 0; }
-.qtop { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; font-size: 13.5px; margin-bottom: 5px; }
-.qtop .qname { font-weight: 600; }
-.qtop .qleft { font: 600 13px var(--mono); }
-.qtop .qleft.low { color: var(--err); }
+.qbig { display: flex; align-items: baseline; gap: 8px; margin-bottom: 8px; }
+.qbig .qnum { font: 600 26px var(--mono); letter-spacing: -.01em; }
+.qbig .qnum.low { color: var(--err); }
+.qbig small { font-size: 12px; color: var(--muted); }
 .qbar { height: 7px; border-radius: 4px; background: var(--line); overflow: hidden; }
 .qbar span { display: block; height: 100%; border-radius: 4px; background: var(--accent); }
 .qbar span.low { background: var(--err); }
-.qmeta { font-size: 12px; color: var(--dim); margin-top: 4px; }
+.qmeta { font-size: 12px; color: var(--dim); margin-top: 5px; }
 .share:empty { display: none; }
 .share { margin-bottom: 14px; }
 .share-h { font-size: 12px; color: var(--muted); margin-bottom: 6px; }

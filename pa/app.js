@@ -6,7 +6,7 @@
 // - 只在打开和下拉刷新时拉取；带 ETag 条件请求，没变化时 GitHub 返回 304，不下载也不算额度。
 (function () {
   "use strict";
-  var VERSION = "0.2.0";
+  var VERSION = "0.2.1";
   var AAD = new TextEncoder().encode("prompt-archive/v1");   // 协议标识沿用旧名，与电脑端 sync.rs 一致
   var CFG_KEY = "pa.cfg", CACHE_KEY = "pa.cache";
   var $ = function (id) { return document.getElementById(id); };
@@ -134,10 +134,8 @@
         s.d30.total_tokens += o.d30.total_tokens || 0;
         s.d30.unassigned_tokens += o.d30.unassigned_tokens || 0;
       }
-      Object.keys(o.quota || {}).forEach(function (k) {  // 额度是每台电脑各填各的，加起来
-        s.quota = s.quota || {};
-        s.quota[k] = (s.quota[k] || 0) + o.quota[k];
-      });
+      // 额度是账号级的：多台电脑读到的是同一份，取最新的那次
+      if (o.quota && (!s.quota || (o.quota.fetchedAt || 0) > (s.quota.fetchedAt || 0))) s.quota = o.quota;
       ["today", "week"].forEach(function (k) {
         (o.clients && o.clients[k] || []).forEach(function (c) {
           var t = s.clients[k].filter(function (x) { return x.client === c.client; })[0];
@@ -234,29 +232,43 @@
     if (c.token_tracked && c.total_tokens) li.appendChild(el("span", "pct", (c.share || 0) + "%"));
     return li;
   }
-  // 本周额度：电脑端填好的额度会随数据包一起发过来，这里只算剩余百分比
+  // 本月额度：电脑端读到后随数据包一起发过来，这里只显示（金额和百分比都在电脑端算好）
+  function money(n) {
+    var parts = (Number(n) || 0).toFixed(2).split(".");
+    parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    return parts.join(".");
+  }
+  function pct1(n) {
+    var v = Number(n) || 0;
+    return (v % 1 === 0 ? String(v) : v.toFixed(1)) + "%";
+  }
+  function ago(ts) {
+    var s = Math.max(0, Math.floor(Date.now() / 1000 - (Number(ts) || 0)));
+    if (s < 60) return "刚刚";
+    if (s < 3600) return Math.floor(s / 60) + " 分钟前";
+    if (s < 86400) return Math.floor(s / 3600) + " 小时前";
+    return Math.floor(s / 86400) + " 天前";
+  }
   function renderQuota(s) {
     var box = $("quota");
     box.replaceChildren();
-    var q = s.quota || {}, used = {};
-    ((s.clients || {}).week || []).forEach(function (c) { used[c.client] = c.total_tokens; });
-    var ids = Object.keys(q).filter(function (k) { return q[k] > 0; });
-    if (!ids.length) return;
-    box.appendChild(el("div", "qh", "本周额度 · 周一重置"));
-    ids.forEach(function (id) {
-      var name = ((s.clients || {}).week || []).filter(function (c) { return c.client === id; })[0];
-      var u = used[id] || 0, lim = q[id], left = Math.max(0, lim - u), leftPct = Math.round(left * 100 / lim);
-      var row = el("div", "qrow"), top = el("div", "qtop");
-      top.appendChild(el("span", "qname", name ? name.name : id));
-      top.appendChild(el("span", "qleft" + (leftPct <= 15 ? " low" : ""), "剩 " + leftPct + "%"));
-      row.appendChild(top);
-      var bar = el("div", "qbar"), seg = el("span", leftPct <= 15 ? "low" : "");
-      seg.style.width = Math.min(100, u * 100 / lim) + "%";
-      bar.appendChild(seg);
-      row.appendChild(bar);
-      row.appendChild(el("div", "qmeta", "已用 " + fmt(u) + " / " + fmt(lim)));
-      box.appendChild(row);
-    });
+    var q = s.quota || {};
+    if (!q.ok) return;                         // 电脑上没读到就不占地方
+    var used = Number(q.usagePercent) || 0, left = Number(q.remainingPercent) || 0;
+    var low = left <= 15;
+    box.appendChild(el("div", "qh", "本月额度 · 来自额度面板"));
+    var top = el("div", "qbig");
+    top.appendChild(el("b", "qnum" + (low ? " low" : ""), pct1(used)));
+    top.appendChild(el("small", "", low ? "已用 · 快用完了" : "已用"));
+    box.appendChild(top);
+    var bar = el("div", "qbar"), seg = el("span", low ? "low" : "");
+    seg.style.width = Math.min(100, used) + "%";
+    bar.appendChild(seg);
+    box.appendChild(bar);
+    box.appendChild(el("div", "qmeta", "¥" + money(q.usedCny) + " / ¥" + money(q.quotaCny)
+      + " · 剩余 ¥" + money(q.remainingCny) + "（" + pct1(left) + "）"));
+    box.appendChild(el("div", "qmeta", [q.user, q.dailyUsedCny ? "今日 ¥" + money(q.dailyUsedCny) : "",
+      (q.stale ? "上次取到 " : "") + ago(q.fetchedAt)].filter(Boolean).join(" · ")));
   }
   // 30 天各项目 Token 占比条（前 5 个 + 其他 + 未归类）
   var SHARE_COLORS = ["#ff9f43", "#5b8def", "#34c759", "#af52de", "#ff6b81"];
