@@ -81,3 +81,27 @@ h3 { font-size: 12.5px; font-weight: 600; color: var(--muted); letter-spacing: .
 footer { display: flex; justify-content: space-between; padding: 12px 16px calc(12px + env(safe-area-inset-bottom));
          border-top: 1px solid var(--line); color: var(--dim); font: 12px var(--mono); }
 footer a { color: var(--dim); text-decoration: underline; cursor: pointer; margin-right: 8px; }
+
+/* 本周额度、Token 占比（和电脑端同一套样式） */
+.hint { font-weight: 400; color: var(--dim); letter-spacing: 0; }
+.pct { font: 600 12.5px var(--mono); color: var(--fg); min-width: 44px; text-align: right; }
+.quota:empty { display: none; }
+.quota { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 12px 14px; margin-bottom: 12px; }
+.quota .qh { font-size: 12px; color: var(--muted); margin-bottom: 9px; letter-spacing: .04em; }
+.qrow { margin-bottom: 11px; }
+.qrow:last-child { margin-bottom: 0; }
+.qtop { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; font-size: 13.5px; margin-bottom: 5px; }
+.qtop .qname { font-weight: 600; }
+.qtop .qleft { font: 600 13px var(--mono); }
+.qtop .qleft.low { color: var(--err); }
+.qbar { height: 7px; border-radius: 4px; background: var(--line); overflow: hidden; }
+.qbar span { display: block; height: 100%; border-radius: 4px; background: var(--accent); }
+.qbar span.low { background: var(--err); }
+.qmeta { font-size: 12px; color: var(--dim); margin-top: 4px; }
+.share:empty { display: none; }
+.share { margin-bottom: 14px; }
+.share-h { font-size: 12px; color: var(--muted); margin-bottom: 6px; }
+.share-bar { display: flex; height: 9px; border-radius: 5px; overflow: hidden; background: var(--line); }
+.share-bar span { display: block; height: 100%; }
+.share-legend { display: flex; flex-wrap: wrap; gap: 4px 12px; margin-top: 7px; font-size: 12px; color: var(--muted); }
+.share-legend i { display: inline-block; width: 9px; height: 9px; border-radius: 2px; margin-right: 5px; vertical-align: -0.5px; }

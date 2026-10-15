@@ -6,7 +6,7 @@
 // - 只在打开和下拉刷新时拉取；带 ETag 条件请求，没变化时 GitHub 返回 304，不下载也不算额度。
 (function () {
   "use strict";
-  var VERSION = "0.1.0";
+  var VERSION = "0.2.0";
   var AAD = new TextEncoder().encode("prompt-archive/v1");   // 协议标识沿用旧名，与电脑端 sync.rs 一致
   var CFG_KEY = "pa.cfg", CACHE_KEY = "pa.cache";
   var $ = function (id) { return document.getElementById(id); };
@@ -129,6 +129,15 @@
     bundles.slice(1).forEach(function (b) {
       var o = b.snapshot;
       ["today", "week", "all_time"].forEach(function (k) { if (o[k]) addNums(s[k], o[k]); });
+      if (o.d30) {                                    // 多台电脑：30 天合计一起算
+        s.d30 = s.d30 || { total_tokens: 0, start: o.d30.start, unassigned_tokens: 0 };
+        s.d30.total_tokens += o.d30.total_tokens || 0;
+        s.d30.unassigned_tokens += o.d30.unassigned_tokens || 0;
+      }
+      Object.keys(o.quota || {}).forEach(function (k) {  // 额度是每台电脑各填各的，加起来
+        s.quota = s.quota || {};
+        s.quota[k] = (s.quota[k] || 0) + o.quota[k];
+      });
       ["today", "week"].forEach(function (k) {
         (o.clients && o.clients[k] || []).forEach(function (c) {
           var t = s.clients[k].filter(function (x) { return x.client === c.client; })[0];
@@ -213,11 +222,73 @@
     $(prefix + "-fresh").textContent = fmt(s.fresh_input);
     $(prefix + "-out").textContent = fmt(s.output_tokens);
   }
+  function pct(n, total) {
+    if (!total) return "";
+    var v = n * 100 / total;
+    return (v >= 10 || v === 0 ? Math.round(v) : v.toFixed(1)) + "%";
+  }
   function clientRow(c) {
     var li = el("li");
     li.appendChild(el("span", "grow", c.name));
     li.appendChild(el("span", "tag", c.turns + " 轮 · " + (c.token_tracked ? fmt(c.total_tokens) + " Token" : "本地无 Token 记录")));
+    if (c.token_tracked && c.total_tokens) li.appendChild(el("span", "pct", (c.share || 0) + "%"));
     return li;
+  }
+  // 本周额度：电脑端填好的额度会随数据包一起发过来，这里只算剩余百分比
+  function renderQuota(s) {
+    var box = $("quota");
+    box.replaceChildren();
+    var q = s.quota || {}, used = {};
+    ((s.clients || {}).week || []).forEach(function (c) { used[c.client] = c.total_tokens; });
+    var ids = Object.keys(q).filter(function (k) { return q[k] > 0; });
+    if (!ids.length) return;
+    box.appendChild(el("div", "qh", "本周额度 · 周一重置"));
+    ids.forEach(function (id) {
+      var name = ((s.clients || {}).week || []).filter(function (c) { return c.client === id; })[0];
+      var u = used[id] || 0, lim = q[id], left = Math.max(0, lim - u), leftPct = Math.round(left * 100 / lim);
+      var row = el("div", "qrow"), top = el("div", "qtop");
+      top.appendChild(el("span", "qname", name ? name.name : id));
+      top.appendChild(el("span", "qleft" + (leftPct <= 15 ? " low" : ""), "剩 " + leftPct + "%"));
+      row.appendChild(top);
+      var bar = el("div", "qbar"), seg = el("span", leftPct <= 15 ? "low" : "");
+      seg.style.width = Math.min(100, u * 100 / lim) + "%";
+      bar.appendChild(seg);
+      row.appendChild(bar);
+      row.appendChild(el("div", "qmeta", "已用 " + fmt(u) + " / " + fmt(lim)));
+      box.appendChild(row);
+    });
+  }
+  // 30 天各项目 Token 占比条（前 5 个 + 其他 + 未归类）
+  var SHARE_COLORS = ["#ff9f43", "#5b8def", "#34c759", "#af52de", "#ff6b81"];
+  function renderShare(s) {
+    var box = $("share");
+    box.replaceChildren();
+    var d = s.d30 || {}, total = d.total_tokens || 0;
+    if (!total) return;
+    var ps = (s.projects || []).filter(function (p) { return p.d30_tokens; })
+      .sort(function (a, b) { return b.d30_tokens - a.d30_tokens; });
+    var segs = ps.slice(0, 5).map(function (p, i) { return { name: p.name, n: p.d30_tokens, color: SHARE_COLORS[i] }; });
+    var rest = ps.slice(5).reduce(function (a, p) { return a + p.d30_tokens; }, 0);
+    if (rest) segs.push({ name: "其他", n: rest, color: "var(--dim)" });
+    if (d.unassigned_tokens) segs.push({ name: "未归类", n: d.unassigned_tokens, color: "var(--line)" });
+    box.appendChild(el("div", "share-h", "最近 30 天 Token · 共 " + fmt(total)));
+    var bar = el("div", "share-bar");
+    segs.forEach(function (x) {
+      var seg = el("span");
+      seg.style.width = (x.n * 100 / total) + "%";
+      seg.style.background = x.color;
+      bar.appendChild(seg);
+    });
+    box.appendChild(bar);
+    var lg = el("div", "share-legend");
+    segs.forEach(function (x) {
+      var it = el("span"), dot = el("i");
+      dot.style.background = x.color;
+      it.appendChild(dot);
+      it.appendChild(document.createTextNode(x.name + " " + pct(x.n, total)));
+      lg.appendChild(it);
+    });
+    box.appendChild(lg);
   }
   function projectRow(p, weekOnly) {
     var li = el("li"), head = el("div", "head");
@@ -261,8 +332,10 @@
       bars.appendChild(bar);
     });
 
-    fill("t-clients", (s.clients || {}).today, clientRow, "—");
-    fill("w-clients", (s.clients || {}).week, clientRow, "—");
+    renderQuota(s);
+    renderShare(s);
+    fill("t-clients", (s.clients || {}).today.filter(function (c) { return c.turns || c.total_tokens; }), clientRow, "今天还没有记录");
+    fill("w-clients", (s.clients || {}).week.filter(function (c) { return c.turns || c.total_tokens; }), clientRow, "本周还没有记录");
     fill("repeats", s.repeats, function (r) {
       var li = el("li");
       li.appendChild(el("span", "count", "×" + r.count));

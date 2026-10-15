@@ -15,7 +15,7 @@
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
 <link rel="icon" href="icons/icon-192.png">
-<link rel="stylesheet" href="style.css?v=0.1.0">
+<link rel="stylesheet" href="style.css?v=0.2.0">
 <title>PromptLedger 提示词账本</title>
 </head>
 <body>
@@ -43,6 +43,7 @@
 
   <main id="main" hidden>
     <section id="tab-today" class="tab">
+      <div class="quota" id="quota"></div>
       <div class="kpis">
         <div class="kpi"><b id="t-turns">–</b><small>轮提示词</small></div>
         <div class="kpi"><b id="t-tokens">–</b><small>总处理量</small></div>
@@ -51,7 +52,7 @@
       </div>
       <h3>最近 7 天 · Token</h3>
       <div class="bars" id="bars"></div>
-      <h3>按客户端</h3>
+      <h3>按客户端 <span class="hint">· 占今日 Token</span></h3>
       <ul class="list" id="t-clients"></ul>
       <h3>重复问题提醒</h3>
       <ul class="list" id="repeats"></ul>
@@ -65,13 +66,14 @@
         <div class="kpi"><b id="w-fresh">–</b><small>新输入</small></div>
         <div class="kpi"><b id="w-out">–</b><small>输出</small></div>
       </div>
-      <h3>按客户端</h3>
+      <h3>按客户端 <span class="hint">· 占本周 Token</span></h3>
       <ul class="list" id="w-clients"></ul>
       <h3>按项目</h3>
       <ul class="projects" id="w-projects"></ul>
     </section>
 
     <section id="tab-projects" class="tab" hidden>
+      <div class="share" id="share"></div>
       <ul class="projects" id="projects"></ul>
     </section>
 
@@ -94,6 +96,6 @@
     <span><a id="unpair" hidden>解除配对</a> <span id="version">v0.1.0</span></span>
   </footer>
 </div>
-<script src="app.js?v=0.1.0"></script>
+<script src="app.js?v=0.2.0"></script>
 </body>
 </html>
