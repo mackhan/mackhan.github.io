@@ -95,6 +95,66 @@
       "platforms_en": [
         "Rokid glasses"
       ]
+    },
+    {
+      "id": "idphoto",
+      "name": "IDPhoto Studio",
+      "name_en": "IDPhoto Studio",
+      "color": "#bf5af2",
+      "desc": "macOS 证件照制作：内置 16 国规格，抠图、合规校验、打印排版全程本地处理，照片绝不上传。一次买断，不订阅。",
+      "platforms": [
+        "macOS"
+      ],
+      "platforms_en": [
+        "macOS"
+      ],
+      "downloads": [
+        {
+          "label": "macOS · Apple 芯片 / Intel",
+          "url": "",
+          "label_en": "macOS · Apple silicon / Intel"
+        }
+      ],
+      "note": "照片全程在本机处理，不联网、不上传；一次买断，不订阅。",
+      "links": [
+        {
+          "label": "隐私政策",
+          "url": "/IDPhotoStudio/privacy-policy/",
+          "label_en": "Privacy Policy"
+        }
+      ],
+      "desc_en": "Make ID photos on your Mac: specs for 16 countries, background removal, compliance checks and print layout — all processed locally, photos never uploaded. One-time purchase, no subscription.",
+      "note_en": "Everything is processed on your Mac — no network, no upload. One-time purchase, no subscription."
+    },
+    {
+      "id": "lifetree",
+      "name": "生命树",
+      "name_en": "LifeTree",
+      "color": "#30d158",
+      "desc": "四维健康树格（睡眠 / 饮食 / 运动 / 压力）测出你的树型，每天打卡让生命树生长，并给出寿命估算与改善建议。数据全部留在本机。",
+      "platforms": [
+        "iOS"
+      ],
+      "platforms_en": [
+        "iOS"
+      ],
+      "downloads": [
+        {
+          "label": "iOS · TestFlight",
+          "url": "",
+          "label_en": "iOS · TestFlight"
+        }
+      ],
+      "note": "需要 iOS 17 或更高版本。寿命预测是基于群体研究的统计估算，不是医疗诊断，也不能替代专业医疗建议。",
+      "links": [
+        {
+          "label": "隐私政策",
+          "url": "/LifeTree/privacy-policy/",
+          "label_en": "Privacy Policy"
+        }
+      ],
+      "desc_en": "A four-dimension health ArborType (sleep / diet / activity / stress) places you in one of 16 tree types; daily check-ins grow your life tree, with a life expectancy estimate and suggestions. All data stays on your device.",
+      "note_en": "Requires iOS 17 or later. The life expectancy estimate is a statistical estimate based on population studies, not a medical diagnosis, and does not replace professional medical advice."
     }
   ],
   "base_url": "https://mackhan.github.io/",
