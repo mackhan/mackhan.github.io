@@ -77,7 +77,7 @@
     },
     {
       "id": "tupu",
-      "name": "图谱",
+      "name": "图谱 RokidChart",
       "color": "#7ee787",
       "desc": "乐奇 Rokid AI 眼镜上的乐谱浏览器与提词器：镜腿翻页、自动滚动、节拍器、倒计时。",
       "platforms": [
@@ -91,9 +91,16 @@
         }
       ],
       "desc_en": "A sheet music viewer and teleprompter for Rokid AI glasses: swipe the temple to turn pages, auto-scroll, metronome, countdown.",
-      "name_en": "Tupu",
+      "name_en": "Tupu (RokidChart)",
       "platforms_en": [
         "Rokid glasses"
+      ],
+      "links": [
+        {
+          "label": "隐私政策",
+          "url": "/rokidchart/privacy-policy/",
+          "label_en": "Privacy Policy"
+        }
       ]
     },
     {
