@@ -1,7 +1,7 @@
 {
-  "brand": "mackhan apps",
+  "brand": "Mackhan Atelier",
   "site_version": "0.3.0",
-  "lead": "独立开发的几款小工具，覆盖 Mac、Windows 和乐奇 AI 眼镜。每一次发布都记录在这里。",
+  "lead": "一个人做的几件称手之物，覆盖 Mac、Windows 和乐奇 AI 眼镜。每一次发布，都记在这里。",
   "repo_url": "https://github.com/mackhan/mackhan.github.io",
   "products": [
     {
@@ -165,5 +165,5 @@
     }
   ],
   "base_url": "https://mackhan.github.io/",
-  "lead_en": "A few small tools built by an independent developer, for Mac, Windows and Rokid AI glasses. Every release is recorded here."
+  "lead_en": "A few well-made things by one person, for Mac, Windows and Rokid AI glasses. Every release is recorded here."
 }

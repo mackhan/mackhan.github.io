@@ -41,7 +41,7 @@ LANGS = {
     "zh": {
         "html_lang": "zh-CN", "hreflang": "zh-CN", "root": "", "switch_to": "en", "switch_label": "English",
         "nav_home": "产品", "nav_changelog": "更新日志", "nav_download": "下载",
-        "home_title": "产品", "home_eyebrow": "Apps", "home_h1": "小而稳的工具", "more": "查看全部更新日志 →",
+        "home_title": "产品", "home_eyebrow": "Apps", "home_h1": "让日常，多一点称手", "more": "查看全部更新日志 →",
         "cl_title": "更新日志", "cl_eyebrow": "Updates", "cl_h1": "更新日志",
         "cl_lead": "所有产品的每一次发布，最新优先。本页与应用内的更新提示用的是同一份数据。",
         "all": "全部", "empty": "还没有发布记录。", "unreleased": "尚未发布", "soon": "即将提供",
@@ -51,7 +51,7 @@ LANGS = {
     "en": {
         "html_lang": "en", "hreflang": "en", "root": "en/", "switch_to": "zh", "switch_label": "中文",
         "nav_home": "Products", "nav_changelog": "Changelog", "nav_download": "Download",
-        "home_title": "Products", "home_eyebrow": "Apps", "home_h1": "Small, steady tools",
+        "home_title": "Products", "home_eyebrow": "Apps", "home_h1": "Everyday things, made well",
         "more": "See all release notes →",
         "cl_title": "Changelog", "cl_eyebrow": "Updates", "cl_h1": "Changelog",
         "cl_lead": "Every release of every product, newest first.",
