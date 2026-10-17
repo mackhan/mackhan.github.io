@@ -46,6 +46,7 @@ LANGS = {
         "cl_lead": "所有产品的每一次发布，最新优先。本页与应用内的更新提示用的是同一份数据。",
         "all": "全部", "empty": "还没有发布记录。", "unreleased": "尚未发布", "soon": "即将提供",
         "note": "注：", "footer": "站点 v%s · 构建于 %s", "zh_only": "",
+        "stat_products": "款产品", "stat_platforms": "个平台", "stat_updated": "最近更新",
     },
     "en": {
         "html_lang": "en", "hreflang": "en", "root": "en/", "switch_to": "zh", "switch_label": "中文",
@@ -57,6 +58,7 @@ LANGS = {
         "all": "All", "empty": "No releases yet.", "unreleased": "Not released yet", "soon": "Coming soon",
         "note": "Note: ", "footer": "Site v%s · built %s",
         "zh_only": "Release notes for %s are only available in Chinese.",
+        "stat_products": "products", "stat_platforms": "platforms", "stat_updated": "Last update",
     },
 }
 
@@ -226,9 +228,13 @@ def product_cards(site, latest, base, lang):
     out = []
     for p in site["products"]:
         r = latest.get(p["id"])
-        ver = ('<a href="%schangelog/#%s-v%s">v%s</a> · %s' % (base, p["id"], r["version"], r["version"],
-                                                              fmt_date(r["date"], lang))
-               if r else L["unreleased"])
+        # 版本号做成徽章并链到对应产品的更新日志；没发布过就只给「尚未发布」
+        ver = ('<a class="ver" href="%schangelog/#%s-v%s">v%s</a>' % (
+            base, p["id"], r["version"], r["version"])) if r else ""
+        when = '<span class="date">%s</span>' % (fmt_date(r["date"], lang) if r else L["unreleased"])
+        # 平台此前一直没显示出来（site.json 里有 platforms），卡片信息量的一半在这
+        plats = tr(p, "platforms", lang) or []
+        plats_html = "".join('<span class="plat">%s</span>' % html.escape(str(x)) for x in plats)
         dls = []
         for d in p.get("downloads", []):
             label = html.escape(tr(d, "label", lang))
@@ -241,8 +247,11 @@ def product_cards(site, latest, base, lang):
         note = tr(p, "note", lang)
         note = '<p class="pnote">%s</p>' % inline(note) if note else ""
         out.append("""<div class="prod" style="--c:%s" data-k="%s">
-  <b>%s</b><small>%s</small><p>%s</p>%s<div class="dl">%s</div>%s</div>""" % (
+  <div class="ptop"><span class="dot"></span><h3>%s</h3>%s</div>
+  <div class="pmeta">%s%s</div>
+  <p class="desc">%s</p>%s<div class="dl">%s</div>%s</div>""" % (
             html.escape(p["color"]), p["id"], html.escape(tr(p, "name", lang)), ver,
+            '<div class="plats">%s</div>' % plats_html if plats_html else "", when,
             html.escape(tr(p, "desc", lang)), note, "".join(dls),
             '<div class="links">%s</div>' % links if links else ""))
     return '<section class="products" id="products">%s</section>' % "".join(out)
@@ -332,13 +341,27 @@ def build(root=ROOT, out=None):
         os.makedirs(os.path.join(ldir, "changelog"), exist_ok=True)
         hd = 1 if L["root"] else 0          # 本语言首页的目录深度
 
+        # 首屏统计带：产品数 / 覆盖平台数 / 最近一次发布
+        plats_all = []
+        for p in site["products"]:
+            for x in (tr(p, "platforms", lang) or []):
+                if x not in plats_all:
+                    plats_all.append(x)
+        newest = max((r["date"] for r in latest.values() if r), default="")
+        stats = ('<div class="stats"><span><b>%d</b> %s</span><span><b>%d</b> %s</span>'
+                 '<span>%s <b>%s</b></span></div>') % (
+            len(site["products"]), L["stat_products"], len(plats_all), L["stat_platforms"],
+            L["stat_updated"], fmt_date(newest, lang) if newest else "—")
+
         home = """<main>
   <div class="eyebrow">%s</div>
   <h1>%s</h1>
   <p class="lead">%s</p>
   %s
+  %s
   <p class="more"><a href="changelog/">%s</a></p>
-</main>""" % (L["home_eyebrow"], L["home_h1"], e(tr(site, "lead", lang)), product_cards(site, latest, "", lang), L["more"])
+</main>""" % (L["home_eyebrow"], L["home_h1"], e(tr(site, "lead", lang)), stats,
+              product_cards(site, latest, "", lang), L["more"])
         write(os.path.join(ldir, "index.html"), page(site, lang, L["home_title"], home, "home", "", hd))
 
         filt = '<button class="on" data-k="all">%s</button>' % L["all"] + "".join(
