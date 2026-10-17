@@ -1,5 +1,6 @@
-@font-face{font-family:"Instrument Serif";font-style:italic;font-weight:400;font-display:swap;
-  src:url("fonts/instrument-serif-italic-latin.woff2") format("woff2")}
+/* 大标题用常规体（此前是斜体，中文被合成倾斜很难看）；只含拉丁字形，中文回落到 Songti SC */
+@font-face{font-family:"Instrument Serif";font-style:normal;font-weight:400;font-display:swap;
+  src:url("fonts/instrument-serif-latin.woff2") format("woff2")}
 :root{--bg:#0b0b0c;--fg:#f0f0f0;--muted:#8a8a8f;--dim:#5c5c62;--line:#232327;--pill:#16161a;--accent:#ff9f43;
   --serif:"Instrument Serif",Georgia,"Songti SC",serif;
   --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
@@ -31,8 +32,14 @@ main{max-width:1180px;margin:0 auto;padding:64px 28px 40px}
 .eyebrow{font:500 11px/1 var(--mono);letter-spacing:.2em;color:var(--dim);text-transform:uppercase;
   display:flex;align-items:center;gap:9px}
 .eyebrow::before{content:"";width:14px;height:1px;background:var(--dim)}
-h1{font:italic 400 clamp(46px,7.4vw,88px)/1.02 var(--serif);margin:20px 0 18px;letter-spacing:-.015em}
-.lead{color:var(--muted);font-size:15px;max-width:58ch}
+h1{font:400 clamp(46px,7.4vw,88px)/1.06 var(--serif);margin:20px 0 18px;letter-spacing:-.015em}
+/* 唯一的彩色：只给大标题末尾那个词上主色渐变，其余全部留白 —— 有颜色但不吵 */
+h1 .hl{color:#ffb877}
+@supports ((-webkit-background-clip:text) or (background-clip:text)){
+  h1 .hl{background-image:linear-gradient(96deg,#ffd9a8,#ff9f43);
+    -webkit-background-clip:text;background-clip:text;color:transparent}
+}
+.lead{color:var(--muted);font-size:16px;line-height:1.85;max-width:min(100%,760px)}
 .lead a,.more a,.entry li a,.note a{border-bottom:1px solid #44444a}
 
 /* ---------- 首屏统计带 ---------- */

@@ -41,7 +41,9 @@ LANGS = {
     "zh": {
         "html_lang": "zh-CN", "hreflang": "zh-CN", "root": "", "switch_to": "en", "switch_label": "English",
         "nav_home": "产品", "nav_changelog": "更新日志", "nav_download": "下载",
-        "home_title": "产品", "home_eyebrow": "Apps", "home_h1": "让日常，多一点称手", "more": "查看全部更新日志 →",
+        # 首屏大标题拆成两段：末尾那个词（home_h1_tail）单独上主色渐变，其余保持白色
+        "home_title": "产品", "home_eyebrow": "Apps", "home_h1": "让日常，多一点", "home_h1_tail": "称手",
+        "more": "查看全部更新日志 →",
         "cl_title": "更新日志", "cl_eyebrow": "Updates", "cl_h1": "更新日志",
         "cl_lead": "所有产品的每一次发布，最新优先。本页与应用内的更新提示用的是同一份数据。",
         "all": "全部", "empty": "还没有发布记录。", "unreleased": "尚未发布", "soon": "即将提供",
@@ -51,7 +53,9 @@ LANGS = {
     "en": {
         "html_lang": "en", "hreflang": "en", "root": "en/", "switch_to": "zh", "switch_label": "中文",
         "nav_home": "Products", "nav_changelog": "Changelog", "nav_download": "Download",
-        "home_title": "Products", "home_eyebrow": "Apps", "home_h1": "Everyday things, made well",
+        # 英文的尾词前要留空格，用字符串末尾的空格实现（中文不需要）
+        "home_title": "Products", "home_eyebrow": "Apps", "home_h1": "Everyday things, made ",
+        "home_h1_tail": "well",
         "more": "See all release notes →",
         "cl_title": "Changelog", "cl_eyebrow": "Updates", "cl_h1": "Changelog",
         "cl_lead": "Every release of every product, newest first.",
@@ -198,7 +202,7 @@ def page(site, lang, title, body, active, path, depth, up=None, redirect=True):
 <title>%(title)s · %(brand)s</title>
 <meta name="description" content="%(lead)s">
 %(alternates)s%(auto)s<link rel="stylesheet" href="%(up)sassets/site.css?v=%(ver)s">
-<link rel="preload" href="%(up)sassets/fonts/instrument-serif-italic-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="%(up)sassets/fonts/instrument-serif-latin.woff2" as="font" type="font/woff2" crossorigin>
 </head>
 <body>
 <div class="wrap">
@@ -355,12 +359,13 @@ def build(root=ROOT, out=None):
 
         home = """<main>
   <div class="eyebrow">%s</div>
-  <h1>%s</h1>
+  <h1>%s<span class="hl">%s</span></h1>
   <p class="lead">%s</p>
   %s
   %s
   <p class="more"><a href="changelog/">%s</a></p>
-</main>""" % (L["home_eyebrow"], L["home_h1"], e(tr(site, "lead", lang)), stats,
+</main>""" % (L["home_eyebrow"], L["home_h1"], e(L["home_h1_tail"]),
+              e(tr(site, "lead", lang)), stats,
               product_cards(site, latest, "", lang), L["more"])
         write(os.path.join(ldir, "index.html"), page(site, lang, L["home_title"], home, "home", "", hd))
 
