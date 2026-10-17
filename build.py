@@ -42,7 +42,7 @@ LANGS = {
         "html_lang": "zh-CN", "hreflang": "zh-CN", "root": "", "switch_to": "en", "switch_label": "English",
         "nav_home": "产品", "nav_changelog": "更新日志", "nav_download": "下载",
         # 首屏大标题拆成两段：末尾那个词（home_h1_tail）单独上主色渐变，其余保持白色
-        "home_title": "产品", "home_eyebrow": "Apps", "home_h1": "让日常，多一点", "home_h1_tail": "称手",
+        "home_title": "产品", "home_eyebrow": "Apps", "home_h1": "让生活多一点", "home_h1_tail": "色彩",
         "more": "查看全部更新日志 →",
         "cl_title": "更新日志", "cl_eyebrow": "Updates", "cl_h1": "更新日志",
         "cl_lead": "所有产品的每一次发布，最新优先。本页与应用内的更新提示用的是同一份数据。",
@@ -54,8 +54,8 @@ LANGS = {
         "html_lang": "en", "hreflang": "en", "root": "en/", "switch_to": "zh", "switch_label": "中文",
         "nav_home": "Products", "nav_changelog": "Changelog", "nav_download": "Download",
         # 英文的尾词前要留空格，用字符串末尾的空格实现（中文不需要）
-        "home_title": "Products", "home_eyebrow": "Apps", "home_h1": "Everyday things, made ",
-        "home_h1_tail": "well",
+        "home_title": "Products", "home_eyebrow": "Apps", "home_h1": "Everyday life, with a little more ",
+        "home_h1_tail": "color",
         "more": "See all release notes →",
         "cl_title": "Changelog", "cl_eyebrow": "Updates", "cl_h1": "Changelog",
         "cl_lead": "Every release of every product, newest first.",
