@@ -23,6 +23,7 @@
 只用标准库，兼容 Python 3.9。
 """
 import datetime
+import hashlib
 import html
 import json
 import os
@@ -35,6 +36,22 @@ HEAD_RX = re.compile(r"^##\s+v?(\d+(?:\.\d+){1,3}(?:[-+][\w.]+)?)\s*[·|]\s*(\S+
 DATE_RX = re.compile(r"^\d{4}-\d{2}-\d{2}$")
 SAFE_URL = re.compile(r"^(https?://|mailto:|/|#)")
 MONTHS = ("Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec")
+
+
+def asset_ver(*names):
+    """静态资源的缓存键：取文件内容哈希，改了就一定换 URL
+
+    以前用的是 site.json 的 site_version，但它只在发版时手动改 —— 改了 CSS 却没动版本号，
+    浏览器会继续用本地缓存（?v=0.3.0 不变），页面看着就是「改了没生效」。
+    """
+    h = hashlib.sha1()
+    for n in names:
+        with open(os.path.join(ROOT, "assets", n), "rb") as f:
+            h.update(f.read())
+    return h.hexdigest()[:10]
+
+
+ASSET_VER = asset_ver("site.css", "site.js")
 
 # 界面文案。新增语言：在这里加一组，并在 site.json 中提供 `<字段>_<语言>`
 LANGS = {
@@ -222,7 +239,7 @@ def page(site, lang, title, body, active, path, depth, up=None, redirect=True):
 """ % {"html_lang": L["html_lang"], "title": e(title), "brand": e(tr(site, "brand", lang)),
        "lead": e(tr(site, "lead", lang)), "alternates": alternates, "auto": auto, "up": up, "home": home,
        "nav": nav, "switch": switch, "download": L["nav_download"], "body": body,
-       "ver": e(site["site_version"]), "footer": e(L["footer"] % (site["site_version"], site["_built"])),
+       "ver": e(ASSET_VER), "footer": e(L["footer"] % (site["site_version"], site["_built"])),
        "repo": e(site["repo_url"])}
 
 
