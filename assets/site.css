@@ -18,7 +18,8 @@ a{color:inherit;text-decoration:none}
 
 /* ---------- 顶栏 ---------- */
 header{max-width:1180px;margin:0 auto;padding:22px 28px;display:flex;align-items:center;justify-content:space-between}
-.logo{font:600 12px/1 var(--mono);letter-spacing:.22em;color:#cfcfd4;display:flex;gap:10px;align-items:center;text-transform:uppercase}
+/* 品牌名是 Atelier raIn 这样刻意的大小写，不能让 CSS 强行大写掉 */
+.logo{font:600 13px/1 var(--mono);letter-spacing:.1em;color:#cfcfd4;display:flex;gap:10px;align-items:center}
 .logo i{width:16px;height:16px;border-radius:4px;background:linear-gradient(135deg,#fff,#888);display:inline-block}
 nav{display:flex;gap:22px;align-items:center;font-size:13px;color:var(--muted)}
 nav a:hover,nav a.on{color:var(--fg)}
