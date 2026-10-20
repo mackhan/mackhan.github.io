@@ -16,7 +16,7 @@
 
 ## 文档
 
-- `docs/账户与管理后台.md`：注册登录、管理员统计 / 权限页的设计方案（待拍板）
+- `docs/账户与管理后台.md`：注册登录、管理员统计 / 权限页的设计方案（账户体系待拍板；管理员后台 P0 已上线：<https://mackhan.github.io/pa-admin/>）
 - 站点总体方案（服务器、收款、激活）：工作区 `release-site-design.md`（不在本仓库）
 - 使用统计聚合：`stats.py`（读私有埋点仓 `mackhan/pa-stats` 的 JSONL，只输出聚合数字），测试 `tests/test_stats.py`
 
