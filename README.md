@@ -14,4 +14,10 @@
 
 应用内的「有新版本」提示读取 `https://mackhan.github.io/updates/<产品>/changelog.json`，和网页用的是同一份数据。
 
+## 文档
+
+- `docs/账户与管理后台.md`：注册登录、管理员统计 / 权限页的设计方案（待拍板）
+- 站点总体方案（服务器、收款、激活）：工作区 `release-site-design.md`（不在本仓库）
+- 使用统计聚合：`stats.py`（读私有埋点仓 `mackhan/pa-stats` 的 JSONL，只输出聚合数字），测试 `tests/test_stats.py`
+
 字体 Instrument Serif 以 SIL Open Font License 1.1 授权，见 `assets/fonts/OFL.txt`。
