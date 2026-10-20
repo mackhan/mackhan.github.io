@@ -76,6 +76,7 @@ def aggregate(events, today=None, days=30):
         last_seen, latest = {}, {}            # install_id -> 最后活跃日 / (ts, 版本, 系统)
         per_day = {}
         kinds = {}
+        feats, seen_feat = {}, {}             # 功能使用：次数 / 用过的设备
         for e in es:
             iid, ts, d = e["install_id"], int(e["ts"]), _day(e["ts"])
             if iid not in last_seen or d > last_seen[iid]:
@@ -84,6 +85,10 @@ def aggregate(events, today=None, days=30):
                 latest[iid] = (ts, str(e["app_version"]), str(e["os"]))
             per_day.setdefault(d, set()).add(iid)
             kinds[e["kind"]] = kinds.get(e["kind"], 0) + 1
+            if e["kind"] == "feature_used" and isinstance(e.get("props"), dict) and e["props"].get("name"):
+                n = str(e["props"]["name"])
+                feats[n] = feats.get(n, 0) + 1
+                seen_feat.setdefault(n, set()).add(iid)
 
         def active(n):
             start = today - datetime.timedelta(days=n - 1)
@@ -109,6 +114,8 @@ def aggregate(events, today=None, days=30):
             "os": _ranked(oses),
             "kinds": _ranked(kinds),
             "daily": daily,
+            # [功能名, 次数, 设备数]
+            "features": [[k, v, len(seen_feat.get(k, ()))] for k, v in _ranked(feats)],
         })
     apps.sort(key=lambda a: (-a["devices"], a["name"]))
     return {"generated": today.isoformat(), "days": days, "apps": apps}
