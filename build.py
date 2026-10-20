@@ -9,8 +9,6 @@
     dist/changelog/index.html          全部产品的更新日志，可按产品筛选，每个版本都有锚点
     dist/en/index.html                 英文产品列表
     dist/en/changelog/index.html       英文更新日志（content/changelog/en/<产品>.md）
-    dist/stats/index.html              使用统计（聚合埋点数据仓，见 stats.py；数据目录 $STATS_DIR，
-                                       默认 _stats/data，CI 里由 Actions 拉私有数据仓到这里）
     dist/updates/<产品>/changelog.json 应用内「有新版本」弹窗读这个（与网页同源）
     dist/updates/all.json
     dist/<路径>                        content/static/<路径> 原样复制（如 KVMini/privacy-policy/）
@@ -32,8 +30,6 @@ import os
 import re
 import shutil
 import sys
-
-import stats as usage
 
 ROOT = os.path.dirname(os.path.abspath(__file__))
 HEAD_RX = re.compile(r"^##\s+v?(\d+(?:\.\d+){1,3}(?:[-+][\w.]+)?)\s*[·|]\s*(\S+)(?:\s*[·|]\s*(.+?))?\s*$")
@@ -70,13 +66,6 @@ LANGS = {
         "all": "全部", "empty": "还没有发布记录。", "unreleased": "尚未发布", "soon": "即将提供",
         "note": "注：", "footer": "站点 v%s · 构建于 %s", "zh_only": "",
         "stat_products": "款产品", "stat_platforms": "个平台", "stat_updated": "最近更新",
-        "nav_stats": "统计", "st_title": "使用统计", "st_eyebrow": "Stats", "st_h1": "使用统计",
-        "st_lead": "各应用有多少台设备在用、用的哪个版本。数据来自应用内匿名埋点，每天自动更新。",
-        "st_devices": "累计设备", "st_active7": "7 日活跃", "st_active30": "30 日活跃", "st_events": "事件",
-        "st_daily": "近 %d 天每日活跃设备", "st_versions": "版本分布", "st_os": "系统", "st_kinds": "事件类型",
-        "st_empty": "暂无数据——应用接入埋点并上报后，这里会自动出现。", "st_asof": "数据截至 %s",
-        "st_privacy": "埋点只含 6 个字段：应用名、匿名安装 id（本机随机生成）、事件名、版本、系统、时间。"
-                      "不采集任何内容，本页也只展示聚合数字。",
     },
     "en": {
         "html_lang": "en", "hreflang": "en", "root": "en/", "switch_to": "zh", "switch_label": "中文",
@@ -91,14 +80,6 @@ LANGS = {
         "note": "Note: ", "footer": "Site v%s · built %s",
         "zh_only": "Release notes for %s are only available in Chinese.",
         "stat_products": "products", "stat_platforms": "platforms", "stat_updated": "Last update",
-        "nav_stats": "Stats", "st_title": "Usage", "st_eyebrow": "Stats", "st_h1": "Usage",
-        "st_lead": "How many devices use each app, and on which version. Anonymous in-app analytics, updated daily.",
-        "st_devices": "Devices", "st_active7": "Active 7d", "st_active30": "Active 30d", "st_events": "Events",
-        "st_daily": "Daily active devices, last %d days", "st_versions": "Versions", "st_os": "OS",
-        "st_kinds": "Events by type",
-        "st_empty": "No data yet. Numbers will show up here once apps start reporting.", "st_asof": "As of %s",
-        "st_privacy": "Each event has just 6 fields: app, anonymous install id (random, generated locally), "
-                      "event name, version, OS and time. No content is collected; this page shows aggregates only.",
     },
 }
 
@@ -216,8 +197,7 @@ def page(site, lang, title, body, active, path, depth, up=None, redirect=True):
     home = up + L["root"]
     e = html.escape
     nav = "".join('<a class="%s" href="%s%s">%s</a>' % ("on" if k == active else "", home, href, name)
-                  for k, href, name in (("home", "", L["nav_home"]), ("changelog", "changelog/", L["nav_changelog"]),
-                                                    ("stats", "stats/", L["nav_stats"])))
+                  for k, href, name in (("home", "", L["nav_home"]), ("changelog", "changelog/", L["nav_changelog"])))
     switch = '<a class="lang" data-lang="%s" hreflang="%s" href="%s%s%s">%s</a>' % (
         L["switch_to"], other["hreflang"], up, other["root"], path, L["switch_label"])
     base = site.get("base_url", "").rstrip("/") + "/"
@@ -313,52 +293,6 @@ def entry(r, p, lang):
         fmt_date(r["date"], lang), plats, flag, groups, note)
 
 
-def _bars(rows, total):
-    """[[名字, 数], ...] → 一组横向占比条"""
-    e = html.escape
-    out = []
-    for name, n in rows:
-        pct = 100.0 * n / total if total else 0
-        out.append('<li><span class="k">%s</span><span class="bar"><i style="width:%.1f%%"></i></span>'
-                   '<span class="n">%d</span></li>' % (e(str(name)), pct, n))
-    return '<ul class="st-bars">%s</ul>' % "".join(out)
-
-
-def stats_body(site, agg, lang):
-    """统计页正文：每个应用一张卡（大数字 + 近 N 天每日活跃柱图 + 版本 / 系统分布）"""
-    L = LANGS[lang]
-    e = html.escape
-    colors = {}
-    for p in site["products"]:
-        colors[p["id"].lower()] = colors[p.get("name", "").lower()] = p["color"]
-    cards = []
-    for a in agg["apps"]:
-        c = colors.get(a["name"].lower(), "#ff9f43")
-        peak = max([n for _, n in a["daily"]] + [1])
-        cols = "".join('<i style="height:%.1f%%" title="%s · %d"></i>' % (max(4.0, 100.0 * n / peak) if n else 0, d, n)
-                       for d, n in a["daily"])
-        nums = "".join('<div><b>%d</b><span>%s</span></div>' % (a[k], L["st_" + k])
-                       for k in ("devices", "active7", "active30", "events"))
-        cards.append("""<section class="st-app" style="--c:%s">
-  <div class="ptop"><span class="dot"></span><h3>%s</h3></div>
-  <div class="st-nums">%s</div>
-  <h4>%s</h4><div class="st-chart">%s</div>
-  <div class="st-cols"><div><h4>%s</h4>%s</div><div><h4>%s</h4>%s</div><div><h4>%s</h4>%s</div></div>
-</section>""" % (e(c), e(a["name"]), nums, L["st_daily"] % agg["days"], cols,
-                 L["st_versions"], _bars(a["versions"], a["devices"]),
-                 L["st_os"], _bars(a["os"], a["devices"]),
-                 L["st_kinds"], _bars(a["kinds"], a["events"])))
-    body = "".join(cards) or '<p class="empty">%s</p>' % L["st_empty"]
-    asof = '<p class="note">%s</p>' % (L["st_asof"] % agg["generated"]) if agg["apps"] else ""
-    return """<main>
-  <div class="eyebrow">%s</div>
-  <h1>%s</h1>
-  <p class="lead">%s</p>
-  <div class="st-list">%s</div>
-  %s<p class="note">%s</p>
-</main>""" % (L["st_eyebrow"], L["st_h1"], L["st_lead"], body, asof, e(L["st_privacy"]))
-
-
 def load_changelogs(cdir, prods):
     by_p = {pid: [] for pid in prods}
     for fn in sorted(os.listdir(cdir)):
@@ -419,7 +353,6 @@ def build(root=ROOT, out=None):
             (shutil.copytree if os.path.isdir(src) else shutil.copy2)(src, dst)
 
     e = html.escape
-    agg = usage.aggregate(usage.load_events(os.environ.get("STATS_DIR") or os.path.join(root, "_stats", "data")))
     for lang, L in LANGS.items():
         by_p = by_lang[lang]
         latest = {pid: rs[0] for pid, rs in by_p.items() if rs}
@@ -469,10 +402,6 @@ def build(root=ROOT, out=None):
 </main>""" % (L["cl_eyebrow"], L["cl_h1"], L["cl_lead"], product_cards(site, latest, "../", lang), filt, notice, entries)
         write(os.path.join(ldir, "changelog", "index.html"),
               page(site, lang, L["cl_title"], cl, "changelog", "changelog/", hd + 1))
-
-        os.makedirs(os.path.join(ldir, "stats"), exist_ok=True)
-        write(os.path.join(ldir, "stats", "index.html"),
-              page(site, lang, L["st_title"], stats_body(site, agg, lang), "stats", "stats/", hd + 1))
 
     nf = ('<main><div class="eyebrow">404</div><h1>页面不存在 · Page not found</h1>'
           '<p class="lead"><a href="/">回到首页 →</a> · <a href="/en/">Back to home →</a></p></main>')

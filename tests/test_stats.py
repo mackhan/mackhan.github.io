@@ -7,7 +7,6 @@ import tempfile
 import unittest
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
-import build  # noqa: E402
 import stats  # noqa: E402
 
 DAY = 86400
@@ -85,42 +84,6 @@ class TestAggregate(unittest.TestCase):
         # 统计页是公开的：输出里只能有聚合数字，不能出现任何安装 id
         out = json.dumps(stats.aggregate([ev("secret-id-123")], TODAY))
         self.assertNotIn("secret-id-123", out)
-
-
-class TestPage(unittest.TestCase):
-    def test_build_renders_stats_pages_in_both_languages(self):
-        root = os.path.join(os.path.dirname(__file__), "..")
-        out = tempfile.mkdtemp()
-        try:
-            data = tempfile.mkdtemp()
-            os.makedirs(os.path.join(data, "PromptLedger"))
-            with open(os.path.join(data, "PromptLedger", "2026-10.jsonl"), "w") as f:
-                f.write(json.dumps(ev("a")) + "\n")
-            os.environ["STATS_DIR"] = data
-            build.build(root, out)
-            zh = open(os.path.join(out, "stats", "index.html"), encoding="utf-8").read()
-            en = open(os.path.join(out, "en", "stats", "index.html"), encoding="utf-8").read()
-            self.assertIn("PromptLedger", zh)
-            self.assertIn("使用统计", zh)
-            self.assertIn("Usage", en)
-            home = open(os.path.join(out, "index.html"), encoding="utf-8").read()
-            self.assertIn('href="stats/"', home)        # 顶栏有入口
-        finally:
-            os.environ.pop("STATS_DIR", None)
-            shutil.rmtree(out)
-            shutil.rmtree(data)
-
-    def test_build_without_data_still_renders_placeholder(self):
-        root = os.path.join(os.path.dirname(__file__), "..")
-        out = tempfile.mkdtemp()
-        try:
-            os.environ["STATS_DIR"] = os.path.join(out, "missing")
-            build.build(root, out)
-            zh = open(os.path.join(out, "stats", "index.html"), encoding="utf-8").read()
-            self.assertIn("暂无数据", zh)
-        finally:
-            os.environ.pop("STATS_DIR", None)
-            shutil.rmtree(out)
 
 
 if __name__ == "__main__":

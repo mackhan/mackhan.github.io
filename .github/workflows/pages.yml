@@ -2,9 +2,6 @@ name: 构建并发布站点
 on:
   push:
     branches: [main]
-  # 统计页要跟着数据仓更新：每天北京时间 08:00 重建一次（cron 是 UTC）
-  schedule:
-    - cron: "0 0 * * *"
   workflow_dispatch:
 permissions:
   contents: read
@@ -16,19 +13,8 @@ concurrency:
 jobs:
   build:
     runs-on: ubuntu-latest
-    env:
-      # 读私有埋点数据仓 mackhan/pa-stats 的 token（仓库 Settings → Secrets → PA_STATS_TOKEN）。
-      # 没配也能构建，统计页显示「暂无数据」
-      PA_STATS_TOKEN: ${{ secrets.PA_STATS_TOKEN }}
     steps:
       - uses: actions/checkout@v4
-      - name: 拉取埋点数据仓
-        if: env.PA_STATS_TOKEN != ''
-        uses: actions/checkout@v4
-        with:
-          repository: mackhan/pa-stats
-          token: ${{ secrets.PA_STATS_TOKEN }}
-          path: _stats
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"

@@ -124,29 +124,3 @@ footer a:hover{color:var(--fg)}
 /* 窄屏：导航加了语言切换后放不下，下载按钮隐藏（产品卡片就在首屏），其余换行 */
 @media (max-width:520px){header{flex-wrap:wrap;row-gap:12px}nav{gap:14px;flex-wrap:wrap}nav .btn{display:none}}
 
-/* ---------- 使用统计 ---------- */
-.st-list{display:grid;gap:16px;margin:34px 0 8px}
-.st-app{position:relative;border:1px solid var(--line);border-radius:18px;padding:20px 22px 22px;
-  background:linear-gradient(180deg,rgba(255,255,255,.05),rgba(255,255,255,.014))}
-.st-app::before{content:"";position:absolute;top:0;left:18%;right:18%;height:1px;
-  background:linear-gradient(90deg,transparent,var(--c),transparent);opacity:.55}
-.st-app .ptop{display:flex;align-items:center;gap:10px}
-.st-app .dot{width:8px;height:8px;border-radius:50%;background:var(--c);box-shadow:0 0 10px var(--c)}
-.st-app h3{font:600 17px/1.2 var(--sans)}
-.st-app h4{font:500 11px/1 var(--mono);letter-spacing:.14em;color:var(--dim);text-transform:uppercase;margin:24px 0 10px}
-.st-nums{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:18px}
-.st-nums div{border:1px solid var(--line);border-radius:12px;padding:12px 14px;background:rgba(255,255,255,.02)}
-.st-nums b{display:block;font:600 26px/1.1 var(--mono);letter-spacing:-.02em}
-.st-nums span{font-size:12px;color:var(--dim)}
-/* 每日活跃柱图：纯 CSS，柱高按当期峰值归一 */
-.st-chart{display:flex;align-items:flex-end;gap:3px;height:84px;padding-bottom:1px;border-bottom:1px solid var(--line)}
-.st-chart i{flex:1;min-width:2px;border-radius:3px 3px 0 0;background:var(--c);opacity:.75;transition:opacity .15s}
-.st-chart i:hover{opacity:1}
-.st-cols{display:grid;grid-template-columns:repeat(3,1fr);gap:22px}
-.st-bars{list-style:none;display:grid;gap:7px}
-.st-bars li{display:grid;grid-template-columns:96px 1fr 36px;align-items:center;gap:10px;font-size:13px}
-.st-bars .k{font-family:var(--mono);color:#cfcfd4;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.st-bars .bar{height:6px;border-radius:3px;background:var(--line);overflow:hidden}
-.st-bars .bar i{display:block;height:100%;border-radius:3px;background:var(--c)}
-.st-bars .n{font-family:var(--mono);color:var(--muted);text-align:right}
-@media (max-width:760px){.st-nums{grid-template-columns:repeat(2,1fr)}.st-cols{grid-template-columns:1fr;gap:0}}
