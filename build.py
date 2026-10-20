@@ -267,11 +267,17 @@ def product_cards(site, latest, base, lang):
                         for l in p.get("links", []) if l.get("url") and SAFE_URL.match(l["url"]))
         note = tr(p, "note", lang)
         note = '<p class="pnote">%s</p>' % inline(note) if note else ""
+        # 产品名优先链到产品自己的站点（site.json 里的 site 字段，通常由
+        # tools/sync_*.py 从产品 manifest 同步而来）；没有独立站点就不加链接
+        name = html.escape(tr(p, "name", lang))
+        psite = p.get("site")
+        if psite and SAFE_URL.match(psite):
+            name = '<a class="pname" href="%s">%s</a>' % (html.escape(psite, quote=True), name)
         out.append("""<div class="prod" style="--c:%s" data-k="%s">
   <div class="ptop"><span class="dot"></span><h3>%s</h3>%s</div>
   <div class="pmeta">%s%s</div>
   <p class="desc">%s</p>%s<div class="dl">%s</div>%s</div>""" % (
-            html.escape(p["color"]), p["id"], html.escape(tr(p, "name", lang)), ver,
+            html.escape(p["color"]), p["id"], name, ver,
             '<div class="plats">%s</div>' % plats_html if plats_html else "", when,
             html.escape(tr(p, "desc", lang)), note, "".join(dls),
             '<div class="links">%s</div>' % links if links else ""))

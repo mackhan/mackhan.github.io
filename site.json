@@ -68,12 +68,41 @@
       ],
       "downloads": [
         {
-          "label": "macOS（Apple 芯片）",
-          "url": "",
-          "label_en": "macOS (Apple silicon)"
+          "label": "macOS · Apple 芯片 / Intel",
+          "label_en": "macOS · Apple silicon / Intel",
+          "url": "https://github.com/mackhan/MovieBox/releases/latest"
         }
       ],
-      "desc_en": "A local-first video manager: multi-folder scanning, privacy masking, an encrypted vault, duplicate detection and grouping by person."
+      "desc_en": "A local-first video manager: multi-folder scanning, privacy masking, an encrypted vault, duplicate detection and grouping by person.",
+      "links": [
+        {
+          "label": "项目主页",
+          "url": "https://mackhan.github.io/MovieBox/",
+          "label_en": "Homepage"
+        },
+        {
+          "label": "更新日志",
+          "url": "https://mackhan.github.io/MovieBox/changelog.html",
+          "label_en": "Changelog"
+        },
+        {
+          "label": "隐私政策",
+          "url": "https://mackhan.github.io/MovieBox/privacy.html",
+          "label_en": "Privacy Policy"
+        },
+        {
+          "label": "安全说明",
+          "url": "https://mackhan.github.io/MovieBox/security.html",
+          "label_en": "Security"
+        },
+        {
+          "label": "全部版本",
+          "url": "https://github.com/mackhan/MovieBox/releases",
+          "label_en": "All releases"
+        }
+      ],
+      "manifest": "https://mackhan.github.io/MovieBox/manifest.json",
+      "site": "https://mackhan.github.io/MovieBox/"
     },
     {
       "id": "tupu",
