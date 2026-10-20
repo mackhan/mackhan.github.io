@@ -32,118 +32,160 @@
 <body>
     <div class="lang-switch">
         <a onclick="document.getElementById('zh').style.display='block';document.getElementById('en').style.display='none';">中文</a> |
-        <a onclick="document.getElementById('zh').style.display='none';document.getElementById('en').style.display='block';">English</a>
+        <a onclick="document.getElementById('en').style.display='block';document.getElementById('zh').style.display='none';">English</a>
     </div>
     <div id="zh" class="container">
         <h1>生命树 隐私政策</h1>
-        <p class="last-updated">最后更新日期：2026-10-16</p>
-        <p>生命树（LifeTree）是一款健康习惯 App：用四维健康树格（睡眠 / 饮食 / 运动 / 压力）测出你的树型，每天打卡让生命树生长，并给出寿命估算与改善建议。健康数据比照片更私密，所以我们的做法很直接：<strong>它只留在你的手机上，哪里也不去</strong>。</p>
+        <p class="last-updated">最后更新日期：2026-10-20（适用版本 1.2.0）</p>
+        <p>生命树（LifeTree）是一款健康习惯 App：用 50 道题测出你的四维健康树格（睡眠 / 饮食 / 运动 / 压力），每天打卡让生命树生长。健康数据比照片更私密，所以我们的做法很直接：<strong>健康数据只留在你的手机上，不上传，也不进入 iCloud 同步</strong>。</p>
 
-        <h2>1. 信息收集</h2>
-        <p>你填写的这些内容只会保存在本机：</p>
+        <h2>1. 我们收集哪些信息</h2>
+        <p>你填写或授权的内容<strong>默认只保存在你的设备上</strong>：</p>
         <ul>
-            <li>基本信息：年龄、性别、地区</li>
-            <li>烟酒情况与基因信息（APOE / FOXO3 / ALDH2，<strong>可跳过</strong>）</li>
-            <li>16 题树格问卷的答案</li>
-            <li>每天的打卡记录与营养包流水</li>
+            <li>50 题问卷的答案，以及由此算出的四维健康度与树型</li>
+            <li>每天的打卡记录、饮食照片、营养包流水、挑战进度</li>
+            <li>你自己写的文字记录</li>
+            <li>可选的健康档案：性别、地区、烟酒情况、基因信息（APOE / FOXO3 / ALDH2 等，<strong>可全部跳过</strong>）</li>
         </ul>
-        <p>我们承诺：不收集任何个人身份信息、使用数据、分析数据或设备标识符；不联网、不上传、不设账号、不需要注册。</p>
+        <p>我们<strong>不设账号、不需要注册</strong>，不收集姓名、手机号、邮箱、通讯录、定位或设备标识符，也没有第三方统计或广告 SDK。</p>
 
-        <h2>2. 数据存储</h2>
-        <p>所有数据都用 iOS 本地数据库存在你的设备上，不开启任何云端同步，也没有服务器保存副本。删除 App 即彻底移除全部数据；你也可以在「我的 → 清除所有数据」里随时清空。</p>
+        <h2>2. 「健康」App（HealthKit）数据</h2>
+        <p>只有你主动授权后，App 才会读取「健康」App 中的数据用于自动填写打卡，包括：睡眠时长、睡眠分段、步数、运动时间、爬楼、静息心率、心率变异性、正念时长、饮食能量与蛋白质。你也可以在打卡时把运动与正念记录写回「健康」App。</p>
+        <p>这些数据<strong>只在本机参与计算，不会被上传、不会写入 iCloud，也不会用于任何其他目的</strong>。你可以在 iOS 设置 → 隐私与安全性 → 健康 中随时撤销授权。</p>
 
-        <h2>3. 数据共享</h2>
-        <p>生命树不会与任何第三方共享你的数据，App 内没有任何第三方统计或广告 SDK。</p>
+        <h2>3. 数据存储与 iCloud 同步</h2>
+        <p>数据默认用 iOS 本地数据库存在你的设备上。你可以在「我的 → iCloud」中开启同步，此时<strong>只有以下四类会同步</strong>：</p>
+        <ul>
+            <li>昵称</li>
+            <li>营养包记录</li>
+            <li>挑战进度</li>
+            <li>你写的文字记录</li>
+        </ul>
+        <p>打卡记录、问卷答案、健康档案以及「健康」App 的数据<strong>一律不同步</strong>。同步走的是你自己的 iCloud 私有数据库，开发者无法查看。若你的 Apple ID 属于中国内地，相关数据由「云上贵州」（GCBD）运营并存储在境内。</p>
+        <p>关闭同步开关或退出 iCloud 登录后，新的同步立即停止。</p>
 
-        <h2>4. 权限说明</h2>
-        <p>App 不请求网络、定位、通讯录、相机、麦克风或健康数据（HealthKit）权限。你填写的内容全部由自己手动输入，App 不会去读取系统的健康记录。</p>
+        <h2>4. 小组件与控制中心</h2>
+        <p>主屏 / 锁屏小组件与控制中心的「快速打卡」按钮只显示「今天打了几张卡」这类<strong>计数</strong>，<strong>不含任何健康数值</strong>。它们通过 App 组（App Group）在你的设备上本地读取，不联网。</p>
 
-        <h2>5. 关于社区内容</h2>
-        <p>社区里的动态、点赞与举报都在本地生成与审核，不会上传，也不存在其他用户能看到的真实服务器内容。</p>
+        <h2>5. 提醒与通知</h2>
+        <p>打卡提醒由你的设备本地发出（iOS 26 及以上使用系统闹钟，更早版本使用本地通知），提醒的设置项、铃声与推送语都保存在本机，不会上传。</p>
 
-        <h2>6. 重要声明</h2>
+        <h2>6. 联网说明</h2>
+        <ul>
+            <li><strong>iCloud 同步</strong>：仅在你开启后，与苹果服务器同步上面第 3 节列出的四类数据。</li>
+            <li><strong>检查更新</strong>：只在你点击时，向 Apple 的公开接口发送一次本 App 的标识，用于查询是否有新版本。</li>
+            <li><strong>购买</strong>：若你购买高级版，交易完全由 Apple 处理，我们收不到你的支付信息。</li>
+        </ul>
+        <p>除此之外，App 不主动联网。</p>
+
+        <h2>7. 数据共享</h2>
+        <p>生命树不会向任何第三方出售、出租或共享你的数据。App 内没有第三方统计、广告或社交 SDK。</p>
+
+        <h2>8. 重要声明</h2>
         <div class="notice">
-            <p>寿命预测是基于群体研究的<strong>统计估算</strong>，不是医疗诊断，也不能替代专业医疗建议。请勿据此做出任何医疗决定；如有健康问题，请咨询专业医疗机构。App 内提供心理支持热线入口，供你需要时使用。</p>
+            <p>App 中的<strong>「树的寿命」是一棵虚拟树的游戏化数值</strong>，只由树种基准、四维健康度和营养包决定，<strong>不预测、也不涉及任何人的寿命</strong>。四维健康建议参考公开的群体研究，存在不确定性，<strong>不是医疗诊断或治疗建议</strong>，不能替代专业医疗意见。如有健康问题，请咨询医生。App 内提供心理支持信息，供你需要时使用。</p>
         </div>
 
-        <h2>7. 用户权利</h2>
+        <h2>9. 你的权利</h2>
         <ul>
-            <li><strong>访问权</strong>：随时在 App 内查看自己的档案与全部记录</li>
-            <li><strong>删除权</strong>：随时清除所有数据，或卸载 App 彻底移除</li>
-            <li><strong>控制权</strong>：基因等敏感项可以跳过，不填也能正常使用</li>
-            <li><strong>知情权</strong>：你有权了解我们如何处理你的数据</li>
+            <li><strong>查看</strong>：随时在 App 内查看自己的档案与全部记录</li>
+            <li><strong>删除</strong>：在「我的 → 清除所有数据」中清空本机数据；卸载 App 会连同所有本机数据一起移除</li>
+            <li><strong>删除已同步内容</strong>：关闭同步并清除数据后，已同步到 iCloud 私有库的内容也会在同步时移除</li>
+            <li><strong>选择权</strong>：基因等敏感项可以跳过；「健康」App 授权可以拒绝，App 仍可手动打卡</li>
         </ul>
 
-        <h2>8. 数据安全</h2>
-        <p>数据不出设备，因此不存在传输与服务端存储的风险。App 同时遵循 iOS 平台的数据保护要求。</p>
+        <h2>10. 数据安全</h2>
+        <p>健康数据不出设备；同步数据经你的 iCloud 账户加密传输与存储，并遵循 iOS 平台的数据保护要求。</p>
 
-        <h2>9. 儿童隐私</h2>
-        <p>我们的应用程序不面向 13 岁以下的儿童，也不有意收集儿童的个人信息。</p>
+        <h2>11. 儿童隐私</h2>
+        <p>本 App 不面向 13 岁以下儿童，也不有意收集儿童的个人信息。</p>
 
-        <h2>10. 政策变更</h2>
-        <p>我们可能会不时更新本隐私政策。如有重大变更，我们会在应用程序中或在本页面上通知你。</p>
+        <h2>12. 政策变更</h2>
+        <p>我们可能不时更新本隐私政策。如有重大变更，会在 App 内或本页面通知你。</p>
 
-        <h2>11. 联系方式</h2>
+        <h2>13. 联系方式</h2>
         <div class="contact-info">
             <h3>联系我们</h3>
             <p>如果你对本隐私政策有任何疑问或建议，请通过以下方式联系我们：</p>
+            <p>邮箱：<a href="mailto:yufei.han@hotmail.com">yufei.han@hotmail.com</a></p>
             <p>GitHub Issues：<a href="https://github.com/mackhan/mackhan.github.io/issues">github.com/mackhan/mackhan.github.io/issues</a></p>
         </div>
         <a href="/" class="back-link">&larr; 返回首页</a>
     </div>
     <div id="en" class="container">
         <h1>LifeTree Privacy Policy</h1>
-        <p class="last-updated">Last updated: 2026-10-16</p>
-        <p>LifeTree is a health habit app: a four-dimension Health ArborType (sleep / diet / activity / stress) places you in one of 16 tree types, daily check-ins grow your life tree, and you get a life expectancy estimate with suggestions. Health data is more private than photos, so our approach is simple: <strong>it stays on your phone and goes nowhere else</strong>.</p>
+        <p class="last-updated">Last updated: 2026-10-20 (applies to version 1.2.0)</p>
+        <p>LifeTree is a health habit app: a 50-question survey places you in a four-dimension Health ArborType (sleep / diet / activity / stress), and daily check-ins grow your life tree. Health data is more private than photos, so our approach is simple: <strong>it stays on your phone, is never uploaded, and never syncs through iCloud</strong>.</p>
 
-        <h2>1. Data Collection</h2>
-        <p>What you enter is stored only on your device:</p>
+        <h2>1. What we collect</h2>
+        <p>What you enter or authorize is <strong>stored on your device by default</strong>:</p>
         <ul>
-            <li>Basics: age, sex, region</li>
-            <li>Smoking, drinking and genetic information (APOE / FOXO3 / ALDH2 — <strong>optional, you can skip it</strong>)</li>
-            <li>Your answers to the 16-question ArborType survey</li>
-            <li>Daily check-ins and nutrient pack history</li>
+            <li>Your answers to the 50-question survey, plus the four-dimension health scores and tree type derived from them</li>
+            <li>Daily check-ins, meal photos, nutrition-pack history and challenge progress</li>
+            <li>Notes you write yourself</li>
+            <li>Optional profile items: sex, region, smoking and drinking habits, genetic information (APOE / FOXO3 / ALDH2 and similar — <strong>all skippable</strong>)</li>
         </ul>
-        <p>We do not collect any personal identification information, usage data, analytics data or device identifiers. There is no network access, no upload, no account and no sign-up.</p>
+        <p>There is <strong>no account and no sign-up</strong>. We do not collect names, phone numbers, email addresses, contacts, location or device identifiers, and there is no third-party analytics or advertising SDK.</p>
 
-        <h2>2. Data Storage</h2>
-        <p>All data lives in the on-device iOS database. No cloud sync is enabled and no server keeps a copy. Deleting the app removes everything; you can also erase all data at any time under Profile → Erase All Data.</p>
+        <h2>2. Apple Health (HealthKit) data</h2>
+        <p>Only after you grant permission does the app read Health data to pre-fill check-ins: sleep duration and stages, steps, exercise time, flights climbed, resting heart rate, heart rate variability, mindful minutes, and dietary energy and protein. You may also write your exercise and mindfulness entries back to Health.</p>
+        <p>This data is <strong>used on-device only — never uploaded, never written to iCloud, and never used for any other purpose</strong>. Revoke access at any time in iOS Settings → Privacy &amp; Security → Health.</p>
 
-        <h2>3. Data Sharing</h2>
-        <p>LifeTree does not share your data with any third party, and contains no third-party analytics or advertising SDK.</p>
+        <h2>3. Storage and iCloud sync</h2>
+        <p>Data is kept in the on-device iOS database by default. You can turn on sync under Profile → iCloud; when you do, <strong>only these four kinds sync</strong>:</p>
+        <ul>
+            <li>Nickname</li>
+            <li>Nutrition pack records</li>
+            <li>Challenge progress</li>
+            <li>Notes you write</li>
+        </ul>
+        <p>Check-ins, survey answers, your profile and all Health data <strong>never sync</strong>. Syncing uses your own private iCloud database that the developer cannot see. If your Apple ID is registered in mainland China, that data is operated by Guizhou-Cloud Big Data (GCBD) and stored in mainland China.</p>
+        <p>Turning the switch off or signing out of iCloud stops further syncing immediately.</p>
 
-        <h2>4. Permissions</h2>
-        <p>The app does not request network, location, contacts, camera, microphone or HealthKit access. Everything is entered by you manually; the app never reads your system health records.</p>
+        <h2>4. Widgets and Control Center</h2>
+        <p>Home Screen and Lock Screen widgets and the Control Center "Quick check-in" button show only <strong>counts</strong> such as "check-ins today" and <strong>no health values at all</strong>. They read locally on your device through an App Group and never access the network.</p>
 
-        <h2>5. Community Content</h2>
-        <p>Posts, likes and reports in the community are generated and reviewed on-device. Nothing is uploaded, and there is no real server content visible to other users.</p>
+        <h2>5. Reminders and notifications</h2>
+        <p>Check-in reminders are delivered locally by your device (system alarms on iOS 26 and later, local notifications on earlier versions). Your reminder settings, sounds and messages stay on-device and are never uploaded.</p>
 
-        <h2>6. Important Notice</h2>
+        <h2>6. Network activity</h2>
+        <ul>
+            <li><strong>iCloud sync</strong>: only if you enable it, syncing the four kinds listed in section 3 with Apple's servers.</li>
+            <li><strong>Check for updates</strong>: only when you tap it, sending the app identifier once to Apple's public API to look for a new version.</li>
+            <li><strong>Purchases</strong>: if you buy the Pro version, the transaction is handled entirely by Apple; we receive no payment details.</li>
+        </ul>
+        <p>Apart from these, the app does not connect to the network on its own.</p>
+
+        <h2>7. Sharing</h2>
+        <p>LifeTree never sells, rents or shares your data with any third party. There are no third-party analytics, advertising or social SDKs in the app.</p>
+
+        <h2>8. Important notice</h2>
         <div class="notice">
-            <p>The life expectancy estimate is a <strong>statistical estimate</strong> based on population studies. It is not a medical diagnosis and does not replace professional medical advice. Please do not make medical decisions based on it; consult a medical professional for any health concern. The app also provides a mental health hotline entry point if you need it.</p>
+            <p>The <strong>"tree lifespan" is a game value for a virtual tree</strong>, set only by its species baseline, your four-dimension health and the packs you earn. It <strong>does not predict or involve any person's lifespan</strong>. The four-dimension advice draws on published population research, is uncertain, and is <strong>not a medical diagnosis or treatment advice</strong>; it does not replace professional medical advice. Please consult a doctor for any health concern. The app also provides mental health support information if you need it.</p>
         </div>
 
-        <h2>7. User Rights</h2>
+        <h2>9. Your rights</h2>
         <ul>
             <li><strong>Access</strong>: view your profile and all records in the app at any time</li>
-            <li><strong>Deletion</strong>: erase all data at any time, or uninstall the app to remove everything</li>
-            <li><strong>Control</strong>: sensitive items such as genetics can be skipped — the app works fine without them</li>
-            <li><strong>Information</strong>: you have the right to know how we handle your data</li>
+            <li><strong>Deletion</strong>: erase all data under Profile → Erase all data; uninstalling the app removes all on-device data with it</li>
+            <li><strong>Deleting synced content</strong>: after turning sync off and erasing data, content already in your private iCloud database is removed on sync</li>
+            <li><strong>Choice</strong>: sensitive items such as genetics can be skipped; you can deny Health access and still log everything manually</li>
         </ul>
 
-        <h2>8. Data Security</h2>
-        <p>Because data never leaves the device, there is no transfer or server-side storage risk. The app also follows iOS platform data protection requirements.</p>
+        <h2>10. Data security</h2>
+        <p>Health data never leaves the device. Synced data is transmitted and stored encrypted under your iCloud account, following iOS platform data protection requirements.</p>
 
-        <h2>9. Children's Privacy</h2>
-        <p>Our application is not intended for children under 13 years of age, and we do not knowingly collect personal information from children.</p>
+        <h2>11. Children's privacy</h2>
+        <p>This app is not intended for children under 13, and we do not knowingly collect personal information from children.</p>
 
-        <h2>10. Policy Changes</h2>
-        <p>We may update this privacy policy from time to time. If there are significant changes, we will notify you in the app or on this page.</p>
+        <h2>12. Changes to this policy</h2>
+        <p>We may update this policy from time to time. Significant changes will be announced in the app or on this page.</p>
 
-        <h2>11. Contact</h2>
+        <h2>13. Contact</h2>
         <div class="contact-info">
             <h3>Contact us</h3>
             <p>If you have any questions or suggestions about this privacy policy, please reach us at:</p>
+            <p>Email: <a href="mailto:yufei.han@hotmail.com">yufei.han@hotmail.com</a></p>
             <p>GitHub Issues: <a href="https://github.com/mackhan/mackhan.github.io/issues">github.com/mackhan/mackhan.github.io/issues</a></p>
         </div>
         <a href="/" class="back-link">&larr; Back to home</a>

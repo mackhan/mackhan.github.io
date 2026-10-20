@@ -167,7 +167,7 @@
       "name": "生命树",
       "name_en": "LifeTree",
       "color": "#30d158",
-      "desc": "四维健康树格（睡眠 / 饮食 / 运动 / 压力）测出你的树型，每天打卡让生命树生长，并给出寿命估算与改善建议。数据全部留在本机。",
+      "desc": "50 题问卷测出你的四维健康树格（睡眠 / 饮食 / 运动 / 压力），每天打卡让生命树生长。健康数据只留在本机；开启同步后只同步昵称、营养包、挑战进度和文字记录。",
       "platforms": [
         "iOS"
       ],
@@ -181,7 +181,7 @@
           "label_en": "iOS · TestFlight"
         }
       ],
-      "note": "需要 iOS 17 或更高版本。寿命预测是基于群体研究的统计估算，不是医疗诊断，也不能替代专业医疗建议。",
+      "note": "需要 iOS 17 或更高版本。App 中的「树的寿命」是虚拟生命树的游戏化数值，不预测任何人的寿命；健康建议不构成医疗诊断。",
       "links": [
         {
           "label": "隐私政策",
@@ -189,8 +189,8 @@
           "label_en": "Privacy Policy"
         }
       ],
-      "desc_en": "A four-dimension health ArborType (sleep / diet / activity / stress) places you in one of 16 tree types; daily check-ins grow your life tree, with a life expectancy estimate and suggestions. All data stays on your device.",
-      "note_en": "Requires iOS 17 or later. The life expectancy estimate is a statistical estimate based on population studies, not a medical diagnosis, and does not replace professional medical advice."
+      "desc_en": "A 50-question survey places you in one of 16 four-dimension health ArborTypes (sleep / diet / activity / stress); daily check-ins grow your life tree. Health data stays on your device; with sync on, only your nickname, packs, challenge progress and notes sync.",
+      "note_en": "Requires iOS 17 or later. The \"tree lifespan\" is a game value for your virtual tree and predicts no one's lifespan; the health advice is not a medical diagnosis."
     }
   ],
   "base_url": "https://mackhan.github.io/",
