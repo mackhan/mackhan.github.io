@@ -6,7 +6,7 @@
 // - 只在打开和下拉刷新时拉取；带 ETag 条件请求，没变化时 GitHub 返回 304，不下载也不算额度。
 (function () {
   "use strict";
-  var VERSION = "0.2.1";
+  var VERSION = "0.3.0";
   var AAD = new TextEncoder().encode("prompt-archive/v1");   // 协议标识沿用旧名，与电脑端 sync.rs 一致
   var CFG_KEY = "pa.cfg", CACHE_KEY = "pa.cache";
   var $ = function (id) { return document.getElementById(id); };
@@ -54,8 +54,9 @@
     if (!m) return;
     try {
       var p = JSON.parse(new TextDecoder().decode(b64ToBytes(m[1])));
-      if (!/^[\w.-]+\/[\w.-]+$/.test(p.r) || !p.t || b64ToBytes(p.k).length !== 32) throw new Error("bad");
-      save(CFG_KEY, { repo: p.r, token: p.t, key: p.k });
+      if (!/^[\w.-]+\/[\w.-]+$/.test(p.r) || b64ToBytes(p.k).length !== 32) throw new Error("bad");
+      // 令牌可以为空：仓库公开时直接读密文，不需要凭证。分支优先用二维码里带的。
+      save(CFG_KEY, { repo: p.r, token: p.t || "", key: p.k, branch: p.d || "" });
       localStorage.removeItem(CACHE_KEY);
       banner("配对成功。建议现在「添加到主屏幕」，以后从桌面图标打开。");
     } catch (e) {
@@ -66,10 +67,17 @@
 
   // ---------- 拉取与解密 ----------
   function gh(cfg, path, etag) {
-    var headers = { "Authorization": "Bearer " + cfg.token, "Accept": "application/vnd.github.raw+json",
-                    "X-GitHub-Api-Version": "2022-11-28" };
+    var headers = { "Accept": "application/vnd.github.raw+json", "X-GitHub-Api-Version": "2022-11-28" };
+    if (cfg.token) headers["Authorization"] = "Bearer " + cfg.token;
     if (etag) headers["If-None-Match"] = etag;
     return fetch("https://api.github.com/repos/" + cfg.repo + path, { headers: headers, cache: "no-store" });
+  }
+  // 公开仓库走 raw：不带令牌、不占 API 配额（未登录只有 60 次/小时，多刷几次就没了）
+  function raw(cfg, br, etag) {
+    var headers = { "Accept": "application/vnd.github.raw+json" };
+    if (etag) headers["If-None-Match"] = etag;
+    return fetch("https://raw.githubusercontent.com/" + cfg.repo + "/" + br + "/bundle.json",
+                 { headers: headers, cache: "no-store" });
   }
   function apiError(r) {
     if (r.status === 401) return "令牌无效或已过期：请在电脑上换一个只读令牌，重新配对";
@@ -79,15 +87,20 @@
 
   function fetchAll(cfg) {
     var cache = load(CACHE_KEY, {});
-    return gh(cfg, "/branches?per_page=100").then(function (r) {
-      if (!r.ok) throw new Error(apiError(r));
-      return r.json();
-    }).then(function (branches) {
+    var listed = cfg.branch ? Promise.resolve([{ name: cfg.branch }])
+      : gh(cfg, "/branches?per_page=100").then(function (r) {
+          if (!r.ok) throw new Error(apiError(r));
+          return r.json();
+        });
+    return listed.then(function (branches) {
       var names = branches.map(function (b) { return b.name; }).filter(function (n) { return /^dev-/.test(n); });
       if (!names.length) throw new Error("仓库里还没有数据：在电脑托盘 App 的设置里点「立即同步」");
       return Promise.all(names.map(function (name) {
         var c = cache[name] || {};
-        return gh(cfg, "/contents/bundle.json?ref=" + encodeURIComponent(name), c.etag).then(function (r) {
+        var get = cfg.token
+          ? gh(cfg, "/contents/bundle.json?ref=" + encodeURIComponent(name), c.etag)
+          : raw(cfg, name, c.etag);
+        return get.then(function (r) {
           if (r.status === 304 && c.body) return c;
           if (!r.ok) throw new Error(apiError(r));
           return r.text().then(function (body) { return { etag: r.headers.get("ETag"), body: body }; });
@@ -153,6 +166,7 @@
         if (p.last_active > t.last_active) { t.last_active = p.last_active; t.recent = p.recent; }
       });
       s.repeats = (s.repeats || []).concat(o.repeats || []);
+      base.prompts = (base.prompts || []).concat(b.prompts || []);
       var have = {};
       base.manuals.forEach(function (m) { have[m.project + "/" + m.name] = 1; });
       (b.manuals || []).forEach(function (m) { if (!have[m.project + "/" + m.name]) base.manuals.push(m); });
@@ -269,7 +283,19 @@
       + " · 剩余 ¥" + money(q.remainingCny) + "（" + pct1(left) + "）"));
     box.appendChild(el("div", "qmeta", [q.user, q.dailyUsedCny ? "今日 ¥" + money(q.dailyUsedCny) : "",
       (q.stale ? "上次取到 " : "") + ago(q.fetchedAt)].filter(Boolean).join(" · ")));
+    if (q.resetAt) {
+      var gap = Number(q.shortDays) > 0;
+      box.appendChild(el("div", "qplan" + (gap ? " warn" : ""),
+        "重置 " + shortTime(q.resetAt) + "（" + day1(q.resetInDays) + " 天后）"
+        + (q.exhaustAt ? " · 日均 ¥" + money(q.avgDailyCny) + "，预计 " + shortTime(q.exhaustAt) + " 耗尽"
+            + (gap ? "，空窗 " + day1(q.shortDays) + " 天" : "") : "")));
+    }
   }
+  function shortTime(x) {
+    var m = /(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2})/.exec(x || "");
+    return m ? m[2] + "-" + m[3] + " " + m[4] + ":" + m[5] : (x || "");
+  }
+  function day1(n) { return (Number(n) || 0).toFixed(1); }
   // 30 天各项目 Token 占比条（前 5 个 + 其他 + 未归类）
   var SHARE_COLORS = ["#ff9f43", "#5b8def", "#34c759", "#af52de", "#ff6b81"];
   function renderShare(s) {
@@ -326,7 +352,39 @@
   }
   function closeDoc() { $("reader").hidden = true; $("main").hidden = false; $("tabs").hidden = false; }
 
+  var searchIndex = [];
+  function renderSearch() {
+    var q = ($("s-q").value || "").trim().toLowerCase();
+    var box = $("s-results");
+    box.replaceChildren();
+    if (!searchIndex.length) {
+      box.appendChild(el("li", "empty", "这台电脑还没同步提示词索引（电脑端升级后同步一次即可）"));
+      return;
+    }
+    if (q.length < 2) {
+      box.appendChild(el("li", "empty", "输入两个字以上，在 " + searchIndex.length + " 条历史提示词里搜"));
+      return;
+    }
+    var hit = searchIndex.filter(function (x) {
+      return (x.t + " " + x.p).toLowerCase().indexOf(q) >= 0;
+    }).slice(0, 80);
+    if (!hit.length) { box.appendChild(el("li", "empty", "没有匹配的提示词")); return; }
+    hit.forEach(function (x) {
+      var li = el("li");
+      li.appendChild(el("span", "grow", x.t));
+      li.appendChild(el("span", "tag", (x.d || "").slice(5) + " · " + (x.p || "未归类")));
+      box.appendChild(li);
+    });
+    if (hit.length === 80) box.appendChild(el("li", "empty", "只显示前 80 条，再输入几个字缩小范围"));
+  }
+
   function render(b) {
+    searchIndex = (b.prompts || []).slice();
+    if (b.live && b.live.projects) {                  // 状态跃迁时电脑会立刻推一次，手机上是新鲜的
+      $("live").textContent = b.live.projects.filter(function (x) { return x.state === "working" || x.state === "waiting" || x.state === "deciding"; })
+        .map(function (x) { return x.project + " " + ({ working: "生成中", waiting: "等响应", deciding: "等决策" }[x.state] || x.state); })
+        .join(" · ");
+    }
     var s = b.snapshot;
     kpis("t", s.today);
     kpis("w", s.week);
@@ -403,6 +461,7 @@
       .then(function () { $("refresh").disabled = false; });
   }
 
+  $("s-q").addEventListener("input", renderSearch);
   $("tabs").addEventListener("click", function (e) {
     var b = e.target.closest("button");
     if (!b) return;

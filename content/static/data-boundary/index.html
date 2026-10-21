@@ -1,0 +1,123 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>数据边界 · PromptLedger 提示词账本</title>
+<meta name="description" content="PromptLedger 会把哪些数据留在本机、哪些会离开、加密怎么做。">
+<style>
+  :root { --bg:#fbfbfc; --fg:#1c1c1e; --muted:#5f5f66; --dim:#8a8a90; --card:#fff; --line:#e6e6ea;
+          --accent:#ff9f43; --ok:#1f9d55; --warn:#b26a00; }
+  @media (prefers-color-scheme: dark) {
+    :root { --bg:#161618; --fg:#f2f2f7; --muted:#b0b0b8; --dim:#7c7c81; --card:#1e1e21; --line:#2e2e34;
+            --accent:#ffb057; --ok:#4ac47a; --warn:#e0a44a; }
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--fg); line-height: 1.72;
+         font: 15px/1.72 -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", sans-serif; }
+  .wrap { max-width: 720px; margin: 0 auto; padding: 56px 22px 80px; }
+  .back { color: var(--dim); text-decoration: none; font-size: 13px; }
+  .back:hover { color: var(--accent); }
+  h1 { font-size: 30px; line-height: 1.3; margin: 18px 0 6px; letter-spacing: -.01em; }
+  .sub { color: var(--muted); margin: 0 0 34px; }
+  h2 { font-size: 18px; margin: 42px 0 10px; letter-spacing: -.005em; }
+  h3 { font-size: 15px; margin: 24px 0 6px; }
+  p, li { color: var(--muted); }
+  strong { color: var(--fg); font-weight: 600; }
+  code { font: 13px ui-monospace, SFMono-Regular, Menlo, monospace; background: var(--card);
+         border: 1px solid var(--line); border-radius: 5px; padding: 1px 5px; color: var(--fg); }
+  table { width: 100%; border-collapse: collapse; margin: 14px 0 6px; font-size: 14px; }
+  th, td { text-align: left; padding: 9px 10px; border-bottom: 1px solid var(--line); vertical-align: top; }
+  th { font-weight: 600; color: var(--fg); font-size: 13px; }
+  td { color: var(--muted); }
+  .yes { color: var(--warn); font-weight: 600; }
+  .no { color: var(--ok); font-weight: 600; }
+  .box { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 16px 18px; margin: 18px 0; }
+  .box p:first-child { margin-top: 0; }
+  .box p:last-child { margin-bottom: 0; }
+  ul { padding-left: 20px; }
+  li { margin: 5px 0; }
+  hr { border: 0; border-top: 1px solid var(--line); margin: 44px 0; }
+  .en { color: var(--dim); font-size: 13.5px; }
+  footer { margin-top: 56px; color: var(--dim); font-size: 13px; }
+  a { color: var(--accent); }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <a class="back" href="../">‹ 返回</a>
+  <h1>数据边界</h1>
+  <p class="sub">PromptLedger 会读你所有的提示词，所以它必须把「什么留在本机、什么会出去」讲清楚。</p>
+
+  <div class="box">
+    <p><strong>一句话</strong>：提示词、对话、手册、统计<strong>全部只写在本机</strong>
+      <code>~/.prompt-archive/</code>；只有两样东西会离开这台电脑——你主动开启的加密数据包，以及一次额度查询。</p>
+  </div>
+
+  <h2>逐项说明</h2>
+  <table>
+    <thead><tr><th>数据</th><th>存在哪</th><th>会不会离开本机</th></tr></thead>
+    <tbody>
+      <tr><td>你写的提示词</td><td>本机 SQLite（<code>archive.db</code>）</td><td class="no">不会</td></tr>
+      <tr><td>AI 回复、工具调用、截图（原始存档）</td><td>本机 gzip 文件</td><td class="no">不会</td></tr>
+      <tr><td>Token 用量</td><td>本机 SQLite</td><td class="no">不会</td></tr>
+      <tr><td>项目手册 / 周报</td><td>你的仓库 + 本机</td><td class="no">不会</td></tr>
+      <tr><td>手机端数据包</td><td>你的 GitHub 仓库（<strong>密文</strong>）</td><td class="yes">会（默认关闭）</td></tr>
+      <tr><td>本月额度</td><td>公司额度接口</td><td class="yes">会（只发访问令牌）</td></tr>
+      <tr><td>匿名使用统计</td><td>一个私有仓库</td><td class="yes">会（可在设置里关）</td></tr>
+    </tbody>
+  </table>
+
+  <h2>手机同步：GitHub 上只有密文</h2>
+  <p>开启手机同步后，电脑会先把数据包用 <strong>AES-256-GCM</strong> 加密，再推到你的 GitHub 仓库。
+    密钥是 32 字节随机数，<strong>只存在于二维码和你的手机里</strong>，不上传、不写进仓库、不经过任何服务器。</p>
+  <ul>
+    <li>仓库里拿到密文的人，没有密钥解不开——这是标准 AEAD，没有「弱口令爆破」这条路。</li>
+    <li>二维码里含密钥，<strong>不要截图外传</strong>；泄露了就在设置里换一台设备重新配对。</li>
+    <li>不想留任何痕迹：设置里关掉「开启手机同步」，电脑就再也不上传，仓库里的旧文件自己删掉即可。</li>
+  </ul>
+
+  <h2>额度查询：只发令牌，不发内容</h2>
+  <p>额度来自公司内部的 Tencent Token Dashboard。App 只读它写在本机的登录会话，用同一个接口
+    <code>GET /v1/me/quota-realtime</code> 取回「已用多少钱 / 总额度」。请求里只有一个访问令牌和设备号，
+    <strong>不包含任何提示词、项目名或路径</strong>。这条接口在内网，外部网络下这个功能会直接不显示。</p>
+
+  <h2>匿名使用统计</h2>
+  <p>默认开启，可以关。只上报：哪台设备、哪个版本、用了哪些功能、用了多久，以及若干数字。
+    有硬护栏：<strong>只允许短字符串（≤64 字）、数字、布尔值，最多 12 个键</strong>，数组和嵌套结构一律丢弃——
+    就算代码写错，也传不出提示词、路径或项目名。</p>
+
+  <h2>断网自检</h2>
+  <p>设置里有一个「断网自检」按钮：它跑一遍纯本地的查询，只读本机文件、不发任何网络请求，
+    然后告诉你读到了多少条记录、用了多少毫秒。这是「本地优先」最直接的证据——
+    拔掉网线，今日/本周/项目/文档照常显示。</p>
+
+  <h2>怎么彻底清空</h2>
+  <ul>
+    <li>原始对话存档：设置 → 存储空间 → 选时间范围 → 预览 → 确认删除。</li>
+    <li>全部数据：删除 <code>~/.prompt-archive/</code>，重启 App 会重新采集；不想再采集就把各 Agent 的钩子关掉。</li>
+    <li>手机端：在手机上删除主屏图标 + 清除站点数据；再在 GitHub 上删除同步仓库。</li>
+  </ul>
+
+  <hr>
+
+  <h2 class="en">Data boundary (English)</h2>
+  <p class="en">PromptLedger reads all of your prompts, so it has to be explicit about what stays on the machine.</p>
+  <p class="en"><strong>Prompts, conversations, manuals and statistics never leave your Mac</strong> — they live in
+    <code>~/.prompt-archive/</code>. Only two things go out: an <strong>encrypted bundle</strong> you explicitly enable
+    (AES-256-GCM; the 32-byte key exists only in the pairing QR code and on your phone), and one
+    <strong>quota request</strong> that carries an access token but no prompt content.</p>
+  <p class="en">Anonymous usage statistics are opt-out and pass through a strict filter: flat short strings (≤64 chars),
+    numbers and booleans only, at most 12 keys. Arrays and nested objects are dropped, so a coding mistake still
+    cannot leak a prompt, a path or a project name.</p>
+  <p class="en">The “offline self-check” button in Settings runs a purely local query, makes no network request, and
+    reports how many records it read and how long it took. Unplug the network and the app keeps working —
+    that is the whole point.</p>
+
+  <footer>
+    <a href="../">Atelier raIn</a> · PromptLedger 提示词账本 ·
+    <a href="mailto:yufei.han@hotmail.com">yufei.han@hotmail.com</a>
+  </footer>
+</div>
+</body>
+</html>

@@ -103,3 +103,16 @@ footer a { color: var(--dim); text-decoration: underline; cursor: pointer; margi
 .share-bar span { display: block; height: 100%; }
 .share-legend { display: flex; flex-wrap: wrap; gap: 4px 12px; margin-top: 7px; font-size: 12px; color: var(--muted); }
 .share-legend i { display: inline-block; width: 9px; height: 9px; border-radius: 2px; margin-right: 5px; vertical-align: -0.5px; }
+
+/* 搜索页：本地过滤提示词索引 */
+.searchbox { margin: 4px 0 10px; }
+.searchbox input { width: 100%; font: 15px -apple-system, system-ui, "PingFang SC", sans-serif;
+                   padding: 9px 12px; border: 1px solid var(--line); border-radius: 10px;
+                   background: var(--card); color: var(--fg); }
+.searchbox input:focus { outline: none; border-color: var(--accent); }
+/* 额度卡第三行：重置倒计时 + 预计耗尽 */
+.qplan { margin-top: 6px; padding: 6px 8px; background: var(--card); border-radius: 8px;
+         font-size: 11.5px; line-height: 1.5; color: var(--dim); }
+.qplan.warn { color: var(--warn, #b26a00); }
+/* 现在谁在干活（电脑状态跃迁时立刻推过来的那一份） */
+.live { margin: 6px 0 0; font-size: 11.5px; color: var(--dim); }

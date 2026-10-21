@@ -1,6 +1,6 @@
 // 只缓存页面本身（离线也能打开）；数据由页面自己用 ETag 管，GitHub API 请求不经过缓存。
-var CACHE = "pa-shell-0.2.1";
-var SHELL = ["./", "index.html", "style.css?v=0.2.1", "app.js?v=0.2.1", "manifest.webmanifest",
+var CACHE = "pa-shell-0.3.0";
+var SHELL = ["./", "index.html", "style.css?v=0.3.0", "app.js?v=0.3.0", "manifest.webmanifest",
              "icons/icon-192.png", "icons/icon-512.png", "icons/apple-touch-icon.png"];
 
 self.addEventListener("install", function (e) {

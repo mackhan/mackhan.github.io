@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta http-equiv="Content-Security-Policy"
-      content="default-src 'self'; connect-src https://api.github.com; img-src 'self' data:; style-src 'self'; script-src 'self'; base-uri 'none'; form-action 'none'">
+      content="default-src 'self'; connect-src https://api.github.com https://raw.githubusercontent.com; img-src 'self' data:; style-src 'self'; script-src 'self'; base-uri 'none'; form-action 'none'">
 <meta name="referrer" content="no-referrer">
 <meta name="theme-color" content="#fbfbfc" media="(prefers-color-scheme: light)">
 <meta name="theme-color" content="#1c1c1e" media="(prefers-color-scheme: dark)">
@@ -15,7 +15,7 @@
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
 <link rel="icon" href="icons/icon-192.png">
-<link rel="stylesheet" href="style.css?v=0.2.1">
+<link rel="stylesheet" href="style.css?v=0.3.0">
 <title>PromptLedger 提示词账本</title>
 </head>
 <body>
@@ -38,12 +38,14 @@
     <button data-tab="today" class="on">今日</button>
     <button data-tab="week">本周</button>
     <button data-tab="projects">项目</button>
+    <button data-tab="search">搜索</button>
     <button data-tab="docs">文档</button>
   </nav>
 
   <main id="main" hidden>
     <section id="tab-today" class="tab">
       <div class="quota" id="quota"></div>
+      <p class="live" id="live"></p>
       <div class="kpis">
         <div class="kpi"><b id="t-turns">–</b><small>轮提示词</small></div>
         <div class="kpi"><b id="t-tokens">–</b><small>总处理量</small></div>
@@ -75,6 +77,14 @@
     <section id="tab-projects" class="tab" hidden>
       <div class="share" id="share"></div>
       <ul class="projects" id="projects"></ul>
+    </section>
+
+    <section id="tab-search" class="tab" hidden>
+      <div class="searchbox">
+        <input id="s-q" type="search" placeholder="搜历史提示词（两个字以上）" autocomplete="off" spellcheck="false">
+      </div>
+      <ul class="list" id="s-results"><li class="empty">输入两个字以上开始搜</li></ul>
+      <p class="dim">只搜你自己写的话，最多带前 80 个字；数据来自电脑同步的加密包，在本机解密。</p>
     </section>
 
     <section id="tab-docs" class="tab" hidden>
