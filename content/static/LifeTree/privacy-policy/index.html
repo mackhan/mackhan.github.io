@@ -36,7 +36,7 @@
     </div>
     <div id="zh" class="container">
         <h1>生命树 隐私政策</h1>
-        <p class="last-updated">最后更新日期：2026-10-20（适用版本 1.2.0）</p>
+        <p class="last-updated">最后更新日期：2026-10-21（适用版本 1.3.0）</p>
         <p>生命树（LifeTree）是一款健康习惯 App：用 50 道题测出你的四维健康树格（睡眠 / 饮食 / 运动 / 压力），每天打卡让生命树生长。健康数据比照片更私密，所以我们的做法很直接：<strong>健康数据只留在你的手机上，不上传，也不进入 iCloud 同步</strong>。</p>
 
         <h2>1. 我们收集哪些信息</h2>
@@ -53,6 +53,12 @@
         <p>只有你主动授权后，App 才会读取「健康」App 中的数据用于自动填写打卡，包括：睡眠时长、睡眠分段、步数、运动时间、爬楼、静息心率、心率变异性、正念时长、饮食能量与蛋白质。你也可以在打卡时把运动与正念记录写回「健康」App。</p>
         <p>这些数据<strong>只在本机参与计算，不会被上传、不会写入 iCloud，也不会用于任何其他目的</strong>。你可以在 iOS 设置 → 隐私与安全性 → 健康 中随时撤销授权。</p>
 
+        <h2>2.1 相机、照片与「运动与健身」</h2>
+        <ul>
+            <li><strong>相机 / 相册</strong>：只有你在饮食打卡里主动点「拍照」或「相册」时才会调用。照片写入 App 自己的目录，<strong>只留在本机</strong>，不上传、不进入 iCloud 同步，也不进入 iCloud 备份。</li>
+            <li><strong>运动与健身（CMPedometer）</strong>：只有你打开「智能久坐」后才会读取手机计步器，用来判断当前这一小时是否走动过——走动过就跳过这次久坐提醒。<strong>步数即读即用，不保存、不上传</strong>。你可以随时在 iOS 设置 → 隐私与安全性 → 运动与健身 中关闭，关闭后久坐提醒照常按时间发出。</li>
+        </ul>
+
         <h2>3. 数据存储与 iCloud 同步</h2>
         <p>数据默认用 iOS 本地数据库存在你的设备上。你可以在「我的 → iCloud」中开启同步，此时<strong>只有以下四类会同步</strong>：</p>
         <ul>
@@ -64,11 +70,19 @@
         <p>打卡记录、问卷答案、健康档案以及「健康」App 的数据<strong>一律不同步</strong>。同步走的是你自己的 iCloud 私有数据库，开发者无法查看。若你的 Apple ID 属于中国内地，相关数据由「云上贵州」（GCBD）运营并存储在境内。</p>
         <p>关闭同步开关或退出 iCloud 登录后，新的同步立即停止。</p>
 
-        <h2>4. 小组件与控制中心</h2>
-        <p>主屏 / 锁屏小组件与控制中心的「快速打卡」按钮只显示「今天打了几张卡」这类<strong>计数</strong>，<strong>不含任何健康数值</strong>。它们通过 App 组（App Group）在你的设备上本地读取，不联网。</p>
+        <h2>4. 小组件、控制中心、灵动岛与锁屏实时活动</h2>
+        <p>主屏 / 锁屏小组件与控制中心的「快速打卡」按钮只显示「今天打了几张卡」这类<strong>计数</strong>，不含任何健康数值。</p>
+        <p>若你开启「灵动岛与锁屏进度」，锁屏和灵动岛会显示今天的打卡项、<strong>你今天喝了多少毫升水</strong>与下次提醒时间，并可直接「+1 杯」。这些内容通过 App 组（App Group）在你的设备上本地读写，<strong>不联网</strong>，也可在「我的 → 提醒」中随时关闭。</p>
 
         <h2>5. 提醒与通知</h2>
         <p>打卡提醒由你的设备本地发出（iOS 26 及以上使用系统闹钟，更早版本使用本地通知），提醒的设置项、铃声与推送语都保存在本机，不会上传。</p>
+
+        <h2>5.1 久坐与喝水提醒、喝水记录</h2>
+        <ul>
+            <li><strong>久坐 / 喝水提醒</strong>同样是本机本地通知。通知上的「+1 杯」「+1 瓶」「已起身」「15 分钟后提醒」按钮只在你的设备上改本地记录，不联网。</li>
+            <li><strong>喝水与起身记录</strong>（每天喝了多少毫升、点了几次「已起身」）保存在 App 组里，<strong>只留在本机</strong>，不上传、不进入 iCloud 同步、也不会写入「健康」App。最多保留约 400 天，用于生成周报 / 月报 / 年报。</li>
+            <li><strong>专注模式</strong>：你可以为某个专注模式添加「生命树」过滤条件来暂停久坐 / 喝水提醒。App 只知道「是否被暂停」，<strong>读不到你开的是哪个专注模式</strong>，这个状态也只存在本机。</li>
+        </ul>
 
         <h2>6. 联网说明</h2>
         <ul>
@@ -114,7 +128,7 @@
     </div>
     <div id="en" class="container">
         <h1>LifeTree Privacy Policy</h1>
-        <p class="last-updated">Last updated: 2026-10-20 (applies to version 1.2.0)</p>
+        <p class="last-updated">Last updated: 2026-10-21 (applies to version 1.3.0)</p>
         <p>LifeTree is a health habit app: a 50-question survey places you in a four-dimension Health ArborType (sleep / diet / activity / stress), and daily check-ins grow your life tree. Health data is more private than photos, so our approach is simple: <strong>it stays on your phone, is never uploaded, and never syncs through iCloud</strong>.</p>
 
         <h2>1. What we collect</h2>
@@ -131,6 +145,12 @@
         <p>Only after you grant permission does the app read Health data to pre-fill check-ins: sleep duration and stages, steps, exercise time, flights climbed, resting heart rate, heart rate variability, mindful minutes, and dietary energy and protein. You may also write your exercise and mindfulness entries back to Health.</p>
         <p>This data is <strong>used on-device only — never uploaded, never written to iCloud, and never used for any other purpose</strong>. Revoke access at any time in iOS Settings → Privacy &amp; Security → Health.</p>
 
+        <h2>2.1 Camera, photos and Motion &amp; Fitness</h2>
+        <ul>
+            <li><strong>Camera / photo library</strong>: used only when you tap "Camera" or "Library" in a meal check-in. Photos are written to the app's own folder and <strong>stay on this device</strong> — never uploaded, never synced through iCloud, never included in iCloud backups.</li>
+            <li><strong>Motion &amp; Fitness (CMPedometer)</strong>: read only after you turn on the smart move reminder, to tell whether you've walked during the current hour — if you have, that move reminder is skipped. <strong>Steps are used on the spot and never stored or uploaded.</strong> You can turn it off at any time in iOS Settings → Privacy &amp; Security → Motion &amp; Fitness; reminders then fire on schedule as usual.</li>
+        </ul>
+
         <h2>3. Storage and iCloud sync</h2>
         <p>Data is kept in the on-device iOS database by default. You can turn on sync under Profile → iCloud; when you do, <strong>only these four kinds sync</strong>:</p>
         <ul>
@@ -142,11 +162,19 @@
         <p>Check-ins, survey answers, your profile and all Health data <strong>never sync</strong>. Syncing uses your own private iCloud database that the developer cannot see. If your Apple ID is registered in mainland China, that data is operated by Guizhou-Cloud Big Data (GCBD) and stored in mainland China.</p>
         <p>Turning the switch off or signing out of iCloud stops further syncing immediately.</p>
 
-        <h2>4. Widgets and Control Center</h2>
-        <p>Home Screen and Lock Screen widgets and the Control Center "Quick check-in" button show only <strong>counts</strong> such as "check-ins today" and <strong>no health values at all</strong>. They read locally on your device through an App Group and never access the network.</p>
+        <h2>4. Widgets, Control Center, Dynamic Island and Live Activity</h2>
+        <p>Home Screen and Lock Screen widgets and the Control Center "Quick check-in" button show only <strong>counts</strong> such as "check-ins today" and no health values.</p>
+        <p>If you turn on "Dynamic Island &amp; Lock Screen", the Lock Screen and Dynamic Island show today's check-in items, <strong>how many millilitres of water you've had today</strong> and the next reminder time, with a "+1 glass" button. Everything is read and written locally through an App Group, <strong>never over the network</strong>, and can be turned off under Profile → Reminders.</p>
 
         <h2>5. Reminders and notifications</h2>
         <p>Check-in reminders are delivered locally by your device (system alarms on iOS 26 and later, local notifications on earlier versions). Your reminder settings, sounds and messages stay on-device and are never uploaded.</p>
+
+        <h2>5.1 Move and water reminders, water log</h2>
+        <ul>
+            <li><strong>Move / water reminders</strong> are local notifications too. The "+1 glass", "+1 bottle", "I'm up" and "remind me in 15 minutes" buttons on a notification only change local records on your device; they make no network requests.</li>
+            <li><strong>Water and stand-up logs</strong> (how many millilitres a day, how many times you tapped "I'm up") are stored in an App Group and <strong>stay on this device</strong> — never uploaded, never synced through iCloud, never written to Health. They are kept for about 400 days to build weekly, monthly and yearly reports.</li>
+            <li><strong>Focus</strong>: you can add a LifeTree filter to a Focus to pause move / water reminders. The app only knows <strong>whether</strong> they're paused — it cannot see which Focus you turned on, and that flag is stored on-device only.</li>
+        </ul>
 
         <h2>6. Network activity</h2>
         <ul>
