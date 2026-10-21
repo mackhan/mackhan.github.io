@@ -76,7 +76,8 @@
   function raw(cfg, br, etag) {
     var headers = { "Accept": "application/vnd.github.raw+json" };
     if (etag) headers["If-None-Match"] = etag;
-    return fetch("https://raw.githubusercontent.com/" + cfg.repo + "/" + br + "/bundle.json",
+    // 带一个时间戳参数：raw 的 CDN 会缓存旧文件，不带的话刚同步完手机还看到上一版
+    return fetch("https://raw.githubusercontent.com/" + cfg.repo + "/" + br + "/bundle.json?_=" + Date.now(),
                  { headers: headers, cache: "no-store" });
   }
   function apiError(r) {
