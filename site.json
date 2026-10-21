@@ -21,7 +21,18 @@
         }
       ],
       "note": "Windows 版即将提供；两台电脑请安装同一版本。",
+      "page": "KVMini",
       "links": [
+        {
+          "label": "项目主页",
+          "url": "/KVMini/",
+          "label_en": "Homepage"
+        },
+        {
+          "label": "更新日志",
+          "url": "/changelog/?p=kvmini",
+          "label_en": "Changelog"
+        },
         {
           "label": "隐私政策",
           "url": "/KVMini/privacy-policy/",
@@ -56,7 +67,25 @@
           "label_en": "App Store · Other regions"
         }
       ],
-      "desc_en": "Screenshot-to-text in the menu bar: select part of the screen and the text goes straight to your clipboard, fully offline."
+      "desc_en": "Screenshot-to-text in the menu bar: select part of the screen and the text goes straight to your clipboard, fully offline.",
+      "page": "snipscribe",
+      "links": [
+        {
+          "label": "项目主页",
+          "url": "/snipscribe/",
+          "label_en": "Homepage"
+        },
+        {
+          "label": "更新日志",
+          "url": "/changelog/?p=snipscribe",
+          "label_en": "Changelog"
+        },
+        {
+          "label": "隐私政策",
+          "url": "/snipscribe/privacy-policy/",
+          "label_en": "Privacy Policy"
+        }
+      ]
     },
     {
       "id": "moviebox",
@@ -124,7 +153,18 @@
       "platforms_en": [
         "Rokid glasses"
       ],
+      "page": "rokidchart",
       "links": [
+        {
+          "label": "项目主页",
+          "url": "/rokidchart/",
+          "label_en": "Homepage"
+        },
+        {
+          "label": "更新日志",
+          "url": "/changelog/?p=tupu",
+          "label_en": "Changelog"
+        },
         {
           "label": "隐私政策",
           "url": "/rokidchart/privacy-policy/",
@@ -154,6 +194,16 @@
       "note": "照片全程在本机处理，不联网、不上传；一次买断，不订阅。",
       "links": [
         {
+          "label": "项目主页",
+          "url": "/idphoto/",
+          "label_en": "Homepage"
+        },
+        {
+          "label": "更新日志",
+          "url": "/changelog/?p=idphoto",
+          "label_en": "Changelog"
+        },
+        {
           "label": "隐私政策",
           "url": "/idphoto/privacy-policy/",
           "label_en": "Privacy Policy"
@@ -182,7 +232,18 @@
         }
       ],
       "note": "需要 iOS 17 或更高版本。App 中的「树的寿命」是虚拟生命树的游戏化数值，不预测任何人的寿命；健康建议不构成医疗诊断。",
+      "page": "LifeTree",
       "links": [
+        {
+          "label": "项目主页",
+          "url": "/LifeTree/",
+          "label_en": "Homepage"
+        },
+        {
+          "label": "更新日志",
+          "url": "/changelog/?p=lifetree",
+          "label_en": "Changelog"
+        },
         {
           "label": "隐私政策",
           "url": "/LifeTree/privacy-policy/",

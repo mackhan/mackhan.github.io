@@ -11,6 +11,9 @@
     dist/en/changelog/index.html       英文更新日志（content/changelog/en/<产品>.md）
     dist/updates/<产品>/changelog.json 应用内「有新版本」弹窗读这个（与网页同源）
     dist/updates/all.json
+    dist/<产品>/index.html             产品落地页（介绍 + 下载 + 本产品更新日志），目录名用
+                                       site.json 的 page 字段，缺省是 id；有 site 字段的
+                                       产品（MovieBox）用自己的独立站点，这里不生成
     dist/<路径>                        content/static/<路径> 原样复制（如 KVMini/privacy-policy/）
 
 多语言：
@@ -66,6 +69,7 @@ LANGS = {
         "all": "全部", "empty": "还没有发布记录。", "unreleased": "尚未发布", "soon": "即将提供",
         "note": "注：", "footer": "站点 v%s · 构建于 %s", "zh_only": "",
         "stat_products": "款产品", "stat_platforms": "个平台", "stat_updated": "最近更新",
+        "p_eyebrow": "App", "p_cl": "更新日志", "p_back": "← 全部产品", "p_empty": "还没有发布记录。",
     },
     "en": {
         "html_lang": "en", "hreflang": "en", "root": "en/", "switch_to": "zh", "switch_label": "中文",
@@ -80,6 +84,7 @@ LANGS = {
         "note": "Note: ", "footer": "Site v%s · built %s",
         "zh_only": "Release notes for %s are only available in Chinese.",
         "stat_products": "products", "stat_platforms": "platforms", "stat_updated": "Last update",
+        "p_eyebrow": "App", "p_cl": "Changelog", "p_back": "← All products", "p_empty": "No releases yet.",
     },
 }
 
@@ -243,6 +248,26 @@ def page(site, lang, title, body, active, path, depth, up=None, redirect=True):
        "repo": e(site["repo_url"])}
 
 
+def rel_url(base, url, dname):
+    """站内链接按当前页面深度转成相对链接，英文页才不会跳回中文站。
+
+    只有两种路径每个语言都有一份：产品落地页和 /changelog/。隐私政策这类静态页只在根目录
+    存在一份（页面内部自带中英切换），保持绝对链接，转相对反而会 404。
+    """
+    if url.startswith("/changelog/") or url.rstrip("/") == "/" + dname:
+        return base + url.lstrip("/")
+    return url
+
+
+def page_dir(p):
+    """产品落地页所在的目录名，默认就是 id。
+
+    site.json 里可以用 page 字段覆盖，用来跟已有的隐私政策目录保持一致（KVMini / LifeTree
+    的目录是大写，而 macOS 文件系统不区分大小写，另起一个小写目录会让本地构建和 CI 行为不一致）。
+    """
+    return p.get("page") or p["id"]
+
+
 def product_cards(site, latest, base, lang):
     """base：本语言的站点根（相对当前页），用于拼更新日志链接"""
     L = LANGS[lang]
@@ -263,16 +288,23 @@ def product_cards(site, latest, base, lang):
                 dls.append('<a href="%s">%s</a>' % (html.escape(d["url"], quote=True), label))
             else:
                 dls.append('<span class="soon" title="%s">%s · %s</span>' % (L["soon"], label, L["soon"]))
-        links = "".join('<a href="%s">%s</a>' % (html.escape(l["url"], quote=True), html.escape(tr(l, "label", lang)))
-                        for l in p.get("links", []) if l.get("url") and SAFE_URL.match(l["url"]))
+        links = "".join(
+            '<a href="%s">%s</a>' % (html.escape(rel_url(base, l["url"], page_dir(p)), quote=True),
+                                     html.escape(tr(l, "label", lang)))
+            for l in p.get("links", []) if l.get("url") and SAFE_URL.match(l["url"]))
         note = tr(p, "note", lang)
         note = '<p class="pnote">%s</p>' % inline(note) if note else ""
         # 产品名优先链到产品自己的站点（site.json 里的 site 字段，通常由
-        # tools/sync_*.py 从产品 manifest 同步而来）；没有独立站点就不加链接
+        # tools/sync_*.py 从产品 manifest 同步而来）；没有独立站点就链到本站生成的产品页
         name = html.escape(tr(p, "name", lang))
         psite = p.get("site")
+        href = ""
         if psite and SAFE_URL.match(psite):
-            name = '<a class="pname" href="%s">%s</a>' % (html.escape(psite, quote=True), name)
+            href = psite
+        elif not psite:
+            href = base + page_dir(p) + "/"
+        if href:
+            name = '<a class="pname" href="%s">%s</a>' % (html.escape(href, quote=True), name)
         out.append("""<div class="prod" style="--c:%s" data-k="%s">
   <div class="ptop"><span class="dot"></span><h3>%s</h3>%s</div>
   <div class="pmeta">%s%s</div>
@@ -284,19 +316,66 @@ def product_cards(site, latest, base, lang):
     return '<section class="products" id="products">%s</section>' % "".join(out)
 
 
-def entry(r, p, lang):
+def entry(r, p, lang, show_tag=True):
+    """show_tag=False：产品落地页上每条都已属于同一个产品，不再重复显示产品名标签"""
     rid = "%s-v%s" % (r["product"], r["version"])
     plats = "".join('<span class="plat">%s</span>' % html.escape(x)
                     for x in (tr(p, "platforms", lang) or []))
     flag = '<span class="flag">%s</span>' % html.escape(r["flag"]) if r["flag"] else ""
+    tag = ('<span class="tag" style="--c:%s">%s</span>' % (
+        html.escape(p["color"]), html.escape(tr(p, "name", lang)))) if show_tag else ""
     groups = "".join("<h3>%s</h3><ul>%s</ul>" % (html.escape(g["title"]), "".join("<li>%s</li>" % i for i in g["items_html"]))
                      for g in r["groups"] if g["items"])
     note = '<p class="note">%s%s</p>' % (LANGS[lang]["note"], inline(r["note"])) if r["note"] else ""
     return """<article class="entry" id="%s" data-p="%s">
-  <div class="meta"><a class="ver" href="#%s">v%s</a><span class="tag" style="--c:%s">%s</span>
+  <div class="meta"><a class="ver" href="#%s">v%s</a>%s
   <span class="date">%s</span>%s%s</div>%s%s</article>""" % (
-        rid, r["product"], rid, html.escape(r["version"]), html.escape(p["color"]), html.escape(tr(p, "name", lang)),
+        rid, r["product"], rid, html.escape(r["version"]), tag,
         fmt_date(r["date"], lang), plats, flag, groups, note)
+
+
+def product_page(p, rs, lang, base):
+    """产品落地页：完整介绍 + 平台 + 下载 + 本产品全部更新日志 + 相关链接
+
+    base：本语言的站点根（相对本页），如 "../"（中文产品页）或 "../../"（英文产品页）
+    """
+    L = LANGS[lang]
+    e = html.escape
+    plats = tr(p, "platforms", lang) or []
+    plats_html = "".join('<span class="plat">%s</span>' % e(str(x)) for x in plats)
+    dls = []
+    for d in p.get("downloads", []):
+        label = e(tr(d, "label", lang))
+        if d.get("url"):
+            dls.append('<a href="%s">%s</a>' % (e(d["url"], quote=True), label))
+        else:
+            dls.append('<span class="soon">%s · %s</span>' % (label, L["soon"]))
+    r = rs[0] if rs else None
+    when = '<span class="date">%s</span>' % (
+        ("v%s · %s" % (e(r["version"]), fmt_date(r["date"], lang))) if r else L["unreleased"])
+    note = tr(p, "note", lang)
+    note_html = '<p class="note">%s</p>' % inline(note) if note else ""
+    links = "".join(
+        '<a href="%s">%s</a>' % (e(rel_url(base, l["url"], page_dir(p)), quote=True), e(tr(l, "label", lang)))
+        for l in p.get("links", []) if l.get("url") and SAFE_URL.match(l["url"]))
+    entries = "".join(entry(x, p, lang, show_tag=False) for x in rs) or \
+        '<p class="empty">%s</p>' % L["p_empty"]
+    return """<main>
+  <div class="eyebrow">%s</div>
+  <h1>%s</h1>
+  <p class="lead">%s</p>
+  <div class="pmeta">%s%s</div>
+  <div class="pdl">%s</div>
+  %s%s<section class="pcl">
+    <h2>%s</h2>
+    %s
+  </section>
+  <p class="more"><a href="%s">%s</a></p>
+</main>""" % (L["p_eyebrow"], e(tr(p, "name", lang)), e(tr(p, "desc", lang)),
+              '<div class="plats">%s</div>' % plats_html if plats_html else "", when,
+              "".join(dls), note_html,
+              '<div class="plinks">%s</div>' % links if links else "",
+              L["p_cl"], entries, base, L["p_back"])
 
 
 def load_changelogs(cdir, prods):
@@ -357,6 +436,10 @@ def build(root=ROOT, out=None):
                 raise ChangelogError("content/static/%s 与生成的页面重名" % name)
             src, dst = os.path.join(static, name), os.path.join(out, name)
             (shutil.copytree if os.path.isdir(src) else shutil.copy2)(src, dst)
+        # 产品落地页是生成出来的，content/static/<目录>/index.html 不能挡在它前面
+        for p in site["products"]:
+            if not p.get("site") and os.path.isfile(os.path.join(static, page_dir(p), "index.html")):
+                raise ChangelogError("content/static/%s/index.html 会覆盖生成的产品页" % page_dir(p))
 
     e = html.escape
     for lang, L in LANGS.items():
@@ -408,6 +491,18 @@ def build(root=ROOT, out=None):
 </main>""" % (L["cl_eyebrow"], L["cl_h1"], L["cl_lead"], product_cards(site, latest, "../", lang), filt, notice, entries)
         write(os.path.join(ldir, "changelog", "index.html"),
               page(site, lang, L["cl_title"], cl, "changelog", "changelog/", hd + 1))
+
+        # 每个产品一页：有自己独立站点的（site 字段）不在这里重复生成
+        pbase = "../" * (hd + 1)
+        for p in site["products"]:
+            if p.get("site"):
+                continue
+            dname = page_dir(p)
+            pd = os.path.join(ldir, dname)
+            os.makedirs(pd, exist_ok=True)
+            body = product_page(p, by_p[p["id"]], lang, pbase)
+            write(os.path.join(pd, "index.html"),
+                  page(site, lang, tr(p, "name", lang), body, "", dname + "/", hd + 1))
 
     nf = ('<main><div class="eyebrow">404</div><h1>页面不存在 · Page not found</h1>'
           '<p class="lead"><a href="/">回到首页 →</a> · <a href="/en/">Back to home →</a></p></main>')

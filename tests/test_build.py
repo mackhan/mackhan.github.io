@@ -156,6 +156,67 @@ class TestBuild(unittest.TestCase):
         self.assertIn('href="/KVMini/privacy-policy/"', home)
         self.assertIn("隐私政策", home)
 
+    def _add_links(self, links):
+        site = json.load(open(os.path.join(self.tmp, "site.json"), encoding="utf-8"))
+        site["products"][0]["links"] = links
+        json.dump(site, open(os.path.join(self.tmp, "site.json"), "w", encoding="utf-8"), ensure_ascii=False)
+
+    def test_product_page_generated_per_language(self):
+        """没有独立站点的产品，每个语言都生成一页；页里只列本产品的更新日志"""
+        self._add_links([{"label": "项目主页", "url": "/a/"},
+                         {"label": "更新日志", "url": "/changelog/?p=a"},
+                         {"label": "隐私政策", "url": "/a/privacy-policy/"}])
+        out = build.build(self.tmp)
+        for rel in ("a/index.html", "en/a/index.html", "b/index.html"):
+            self.assertTrue(os.path.isfile(os.path.join(out, rel)), rel)
+        zh = open(os.path.join(out, "a", "index.html"), encoding="utf-8").read()
+        self.assertIn("Alpha", zh)
+        self.assertIn('id="a-v1.2.0"', zh)          # 本产品的版本
+        self.assertNotIn('id="b-v', zh)             # 不该出现别的产品
+        self.assertIn('href="../changelog/?p=a"', zh)
+        self.assertIn('href="/a/privacy-policy/"', zh)   # 静态隐私页只有一份，保持绝对链接
+        en = open(os.path.join(out, "en", "a", "index.html"), encoding="utf-8").read()
+        self.assertIn('href="../../changelog/?p=a"', en)   # 英文页不能跳回中文更新日志
+
+    def test_product_page_for_unreleased_product(self):
+        """没发布过的产品：显示「尚未发布」和空状态，下载地址为空时显示「即将提供」"""
+        self._add_links([])
+        site = json.load(open(os.path.join(self.tmp, "site.json"), encoding="utf-8"))
+        site["products"][0]["downloads"] = [{"label": "macOS", "url": ""}]
+        json.dump(site, open(os.path.join(self.tmp, "site.json"), "w", encoding="utf-8"), ensure_ascii=False)
+        out = build.build(self.tmp)
+        a = open(os.path.join(out, "a", "index.html"), encoding="utf-8").read()
+        self.assertIn("即将提供", a)
+        b = open(os.path.join(out, "b", "index.html"), encoding="utf-8").read()
+        self.assertIn("尚未发布", b)
+        self.assertIn("还没有发布记录。", b)
+
+    def test_product_with_own_site_has_no_generated_page(self):
+        """有 site 字段的产品用自己的独立站点，本站不再重复生成一页"""
+        site = json.load(open(os.path.join(self.tmp, "site.json"), encoding="utf-8"))
+        site["products"][0]["site"] = "https://example.com/alpha/"
+        json.dump(site, open(os.path.join(self.tmp, "site.json"), "w", encoding="utf-8"), ensure_ascii=False)
+        out = build.build(self.tmp)
+        self.assertFalse(os.path.exists(os.path.join(out, "a", "index.html")))
+        home = open(os.path.join(out, "index.html"), encoding="utf-8").read()
+        self.assertIn('href="https://example.com/alpha/"', home)
+
+    def test_page_field_overrides_directory_name(self):
+        """page 字段让落地页目录跟已有的隐私政策目录对齐（大小写也要一致）"""
+        site = json.load(open(os.path.join(self.tmp, "site.json"), encoding="utf-8"))
+        site["products"][0]["page"] = "Alpha"
+        json.dump(site, open(os.path.join(self.tmp, "site.json"), "w", encoding="utf-8"), ensure_ascii=False)
+        out = build.build(self.tmp)
+        self.assertTrue(os.path.isfile(os.path.join(out, "Alpha", "index.html")))
+        self.assertIn('href="Alpha/"', open(os.path.join(out, "index.html"), encoding="utf-8").read())
+
+    def test_static_index_html_cannot_shadow_product_page(self):
+        d = os.path.join(self.tmp, "content", "static", "a")
+        os.makedirs(d)
+        open(os.path.join(d, "index.html"), "w", encoding="utf-8").write("x")
+        with self.assertRaises(build.ChangelogError):
+            build.build(self.tmp)
+
 
 class RealContentTest(unittest.TestCase):
     """仓库里的真实内容：KVMini 必须有可用下载、有效的隐私政策页、更新日志不落后"""
@@ -178,6 +239,36 @@ class RealContentTest(unittest.TestCase):
         page = os.path.join(self.dist, "KVMini", "privacy-policy", "index.html")
         self.assertTrue(os.path.isfile(page), "应用内隐私政策链接指向这里")
         self.assertIn("KVMini", open(page, encoding="utf-8").read())
+
+    def test_every_product_links_to_home_privacy_and_changelog(self):
+        """每个产品都要有「项目主页 / 隐私政策 / 更新日志」三件套，链到的页面必须真的存在"""
+        site = json.load(open(os.path.join(self.root, "site.json"), encoding="utf-8"))
+        self.assertEqual(len(site["products"]), 6)
+        for p in site["products"]:
+            links = {l["label"]: l["url"] for l in p.get("links", [])}
+            self.assertEqual({"项目主页", "隐私政策", "更新日志"} - set(links), set(),
+                             "%s 缺少链接，现有：%s" % (p["id"], sorted(links)))
+            for label in ("项目主页", "隐私政策"):
+                url = links[label]
+                if url.startswith("/"):        # 外部站点（MovieBox）不检查
+                    f = os.path.join(self.dist, url.lstrip("/"), "index.html")
+                    self.assertTrue(os.path.isfile(f), "%s 的「%s」指向 %s，但文件不存在" % (p["id"], label, url))
+            if links["更新日志"].startswith("/"):
+                self.assertIn("?p=%s" % p["id"], links["更新日志"])
+
+    def test_product_pages_render_for_every_product_without_own_site(self):
+        """没有独立站点的产品，本站每个语言都要有一页落地页"""
+        site = json.load(open(os.path.join(self.root, "site.json"), encoding="utf-8"))
+        for p in site["products"]:
+            if p.get("site"):
+                continue
+            d = build.page_dir(p)
+            for root in ("", "en"):
+                f = os.path.join(self.dist, root, d, "index.html")
+                self.assertTrue(os.path.isfile(f), f)
+            zh = open(os.path.join(self.dist, d, "index.html"), encoding="utf-8").read()
+            self.assertIn(build.tr(p, "name", "zh"), zh)
+            self.assertIn("id=\"%s-v" % p["id"], zh)
 
     def test_kvmini_latest_release_no_longer_claims_plaintext(self):
         data = json.load(open(os.path.join(self.dist, "updates", "kvmini", "changelog.json"), encoding="utf-8"))
