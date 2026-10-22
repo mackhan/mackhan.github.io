@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PromptLedger 隐私政策 / Privacy Policy</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            line-height: 1.65; color: #1d1d1f; background-color: #f5f5f7;
+            padding: 20px; max-width: 800px; margin: 0 auto;
+        }
+        @media (prefers-color-scheme: dark) {
+            body { background-color: #1c1c1e; color: #f5f5f7; }
+            .container { background: #2c2c2e; box-shadow: 0 2px 10px rgba(0,0,0,.4); }
+            h1, h2, h3 { color: #f5f5f7; }
+            .contact-info { background: #3a3a3c; }
+            table th { background: #3a3a3c; }
+            th, td { border-color: #48484a; }
+            .last-updated { color: #a1a1a6; }
+        }
+        .container { background: white; border-radius: 12px; padding: 30px; box-shadow: 0 2px 10px rgba(0,0,0,0.06); margin-bottom: 20px; }
+        h1 { color: #1d1d1f; margin-bottom: 20px; font-size: 24px; font-weight: 600; letter-spacing: -.01em; }
+        h2 { color: #1d1d1f; margin: 26px 0 12px; font-size: 17px; font-weight: 600; }
+        p { margin-bottom: 14px; font-size: 14px; }
+        ul { margin-left: 20px; margin-bottom: 14px; }
+        li { margin-bottom: 6px; font-size: 14px; }
+        code { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 12.5px;
+               background: rgba(128,128,128,.14); padding: 1px 5px; border-radius: 4px; }
+        .last-updated { color: #86868b; font-size: 12px; margin-bottom: 20px; }
+        .contact-info { background: #f5f5f7; padding: 15px; border-radius: 8px; margin: 20px 0; }
+        .contact-info h3 { margin-bottom: 8px; font-size: 15px; }
+        .lang-switch { text-align: right; margin-bottom: 10px; }
+        .lang-switch a { color: #007AFF; text-decoration: none; font-size: 14px; cursor: pointer; }
+        .lang-switch a:hover { text-decoration: underline; }
+        table { width: 100%; border-collapse: collapse; margin: 10px 0 16px; }
+        th, td { border: 1px solid #e5e5e5; padding: 8px 12px; text-align: left; font-size: 13.5px; vertical-align: top; }
+        th { background: #f5f5f7; font-weight: 600; }
+        .back-link { display: inline-block; margin-top: 18px; color: #007AFF; text-decoration: none; font-size: 14px; }
+        .back-link:hover { text-decoration: underline; }
+        #en { display: none; }
+    </style>
+</head>
+<body>
+    <div class="lang-switch">
+        <a onclick="document.getElementById('zh').style.display='block';document.getElementById('en').style.display='none';">中文</a> |
+        <a onclick="document.getElementById('zh').style.display='none';document.getElementById('en').style.display='block';">English</a>
+    </div>
+
+    <div id="zh" class="container">
+        <h1>PromptLedger 隐私政策</h1>
+        <p class="last-updated">最后更新：2026 年 10 月 22 日 · 适用于 PromptLedger 0.6.x（macOS）</p>
+
+        <p>PromptLedger 是一个<b>本地优先</b>的提示词账本：它统计你每天对 AI 说了多少、花了多少 Token，并把提示词存成可搜索的档案。它没有账号，没有服务器，不要求你登录任何东西。</p>
+
+        <h2>一、PromptLedger 读取什么</h2>
+        <p>这些数据本来就已经在你自己的电脑上（是各个 AI 工具自己写的记录），PromptLedger 只是把它们读出来、算成统计：</p>
+        <ul>
+            <li>各个 AI 客户端（WorkBuddy、CodeBuddy、Cursor 等）写在用户目录下的会话记录、提示词日志；</li>
+            <li>你本机 git 仓库的提交记录（用来算「代码行数」和「本周新增」）；</li>
+            <li>本机的进程列表（用来判断某个 AI 应用是不是开着）。</li>
+        </ul>
+        <p><b>这些内容一律留在本机</b>，写在 <code>~/.prompt-archive/</code> 里，不上传到任何服务器。</p>
+
+        <h2>二、会离开这台机器的数据</h2>
+        <p>只有两项，而且都可以在设置里关掉：</p>
+        <table>
+            <tr><th>数据</th><th>去哪儿</th><th>内容</th><th>怎么关</th></tr>
+            <tr>
+                <td>匿名使用统计</td>
+                <td>统计服务（腾讯云）</td>
+                <td>只记版本号、功能名（如「搜索」「导出」）、次数、匿名安装 ID。<b>不含</b>提示词、项目名、文件路径、文件内容</td>
+                <td>设置 → 通用 → 发送匿名使用统计（默认开）</td>
+            </tr>
+            <tr>
+                <td>手机同步数据包</td>
+                <td>你自己指定的 GitHub 仓库</td>
+                <td>用于在手机上看统计的<b>加密</b>数据包（AES-256-GCM）。仓库里只有密文，解密密钥只在你手机扫的二维码里</td>
+                <td>设置 → 手机 → 开启手机同步（默认关）</td>
+            </tr>
+        </table>
+        <p>另外，额度数字来自公司内部的额度接口（只读、带访问令牌），<b>只带令牌，不带任何提示词内容</b>。</p>
+
+        <h2>三、不会做的事</h2>
+        <ul>
+            <li>不收集提示词正文、AI 回复正文、项目名、文件路径、代码内容；</li>
+            <li>不注册账号、不读取通讯录 / 相册 / 定位 / 麦克风 / 摄像头；</li>
+            <li>不把你的数据卖给、分享给任何第三方；</li>
+            <li>不在后台偷偷联网（设置页的「断网自检」会跑一遍纯本地查询，证明这一遍没有发出任何网络请求）。</li>
+        </ul>
+
+        <h2>四、数据保留与删除</h2>
+        <ul>
+            <li>所有数据都在你的磁盘上，你随时可以删：设置 → 数据 → 存储空间（按时间 / 按 Agent 清理原始存档）；</li>
+            <li>删掉的会话先进入「最近删除」，30 天内可以恢复，过期后彻底删除；</li>
+            <li>卸载 App 不会自动删数据（方便你重装后接上），需要时手动删 <code>~/.prompt-archive/</code> 即可；</li>
+            <li>已经上传的加密包：到那个 GitHub 仓库里删掉对应分支即可，你完全控制它。</li>
+        </ul>
+
+        <h2>五、权限与系统能力</h2>
+        <ul>
+            <li><b>通知</b>：仅用于「AI 生成完成」这类提醒，可在系统设置里关闭；</li>
+            <li><b>开机启动</b>：可选，默认关，设置页随时可关；</li>
+            <li>不需要辅助功能、屏幕录制、完全磁盘访问等敏感权限。</li>
+        </ul>
+
+        <h2>六、儿童</h2>
+        <p>PromptLedger 不是面向儿童的产品，也不会有意收集儿童信息。</p>
+
+        <h2>七、政策变更</h2>
+        <p>隐私政策有实质变化时，会在 App 的更新日志里说明，并更新本页顶部的日期。</p>
+
+        <div class="contact-info">
+            <h3>联系我们</h3>
+            <p>关于隐私的任何问题、或者想让我删掉某条数据，写信到：<a href="mailto:yufei.han@hotmail.com">yufei.han@hotmail.com</a></p>
+        </div>
+
+        <a class="back-link" href="https://mackhan.github.io/">← 返回 mackhan.github.io</a>
+    </div>
+
+    <div id="en" class="container">
+        <h1>PromptLedger Privacy Policy</h1>
+        <p class="last-updated">Last updated: October 22, 2026 · applies to PromptLedger 0.6.x (macOS)</p>
+
+        <p>PromptLedger is a <b>local-first</b> ledger for your AI prompts: it counts how much you ask and how many tokens you spend, and keeps your prompts searchable. There is no account, no server, and nothing to sign in to.</p>
+
+        <h2>1. What PromptLedger reads</h2>
+        <p>All of it is already on your own machine — written by the AI tools you use. PromptLedger only reads and summarises:</p>
+        <ul>
+            <li>session transcripts and prompt logs that AI clients (WorkBuddy, CodeBuddy, Cursor, …) write into your home directory;</li>
+            <li>commit history of your local git repositories (for the lines-of-code numbers);</li>
+            <li>the local process list (to tell whether an AI app is running).</li>
+        </ul>
+        <p><b>None of this leaves your machine.</b> It lives in <code>~/.prompt-archive/</code>.</p>
+
+        <h2>2. What does leave the machine</h2>
+        <p>Exactly two things, both switchable in Settings:</p>
+        <table>
+            <tr><th>Data</th><th>Destination</th><th>Contents</th><th>How to turn off</th></tr>
+            <tr>
+                <td>Anonymous usage stats</td>
+                <td>Analytics service (Tencent Cloud)</td>
+                <td>Version, feature names (e.g. "search", "export"), counts, a random install ID. <b>Never</b> prompts, project names, paths or file contents</td>
+                <td>Settings → General → Send anonymous usage stats (on by default)</td>
+            </tr>
+            <tr>
+                <td>Phone sync bundle</td>
+                <td>A GitHub repository you choose</td>
+                <td>An <b>encrypted</b> bundle (AES-256-GCM) used to show stats on your phone. The repo only holds ciphertext; the key lives in the QR code you scan</td>
+                <td>Settings → Phone → Enable phone sync (off by default)</td>
+            </tr>
+        </table>
+        <p>Quota figures come from an internal, read-only quota endpoint (access token only — no prompt content).</p>
+
+        <h2>3. What PromptLedger never does</h2>
+        <ul>
+            <li>No collection of prompt text, AI replies, project names, file paths or code;</li>
+            <li>No accounts, no access to contacts, photos, location, microphone or camera;</li>
+            <li>No selling or sharing your data with third parties;</li>
+            <li>No hidden network calls — the "offline self-check" in Settings runs a local-only query to prove it.</li>
+        </ul>
+
+        <h2>4. Retention and deletion</h2>
+        <ul>
+            <li>All data is on your disk: Settings → Data → Storage to purge raw archives by age or by agent;</li>
+            <li>Deleted conversations go to "Recently deleted" for 30 days, then disappear;</li>
+            <li>Uninstalling does not wipe data (so a reinstall can pick up where you left off); delete <code>~/.prompt-archive/</code> when you want it gone;</li>
+            <li>To remove uploaded bundles, delete the branch in your GitHub repository — you own it.</li>
+        </ul>
+
+        <h2>5. Permissions</h2>
+        <ul>
+            <li><b>Notifications</b>: only for "the AI finished" style reminders; can be turned off in System Settings;</li>
+            <li><b>Launch at login</b>: optional and off by default;</li>
+            <li>No accessibility, screen recording or full disk access is required.</li>
+        </ul>
+
+        <h2>6. Children</h2>
+        <p>PromptLedger is not directed at children and does not knowingly collect their data.</p>
+
+        <h2>7. Changes</h2>
+        <p>Material changes are noted in the app's changelog, and the date at the top of this page is updated.</p>
+
+        <div class="contact-info">
+            <h3>Contact</h3>
+            <p>Questions about privacy, or a request to delete something: <a href="mailto:yufei.han@hotmail.com">yufei.han@hotmail.com</a></p>
+        </div>
+
+        <a class="back-link" href="https://mackhan.github.io/">← Back to mackhan.github.io</a>
+    </div>
+</body>
+</html>
