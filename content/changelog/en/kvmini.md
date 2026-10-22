@@ -3,6 +3,21 @@ English version of content/changelog/kvmini.md. Every version in the Chinese fil
 (the build fails otherwise). Keep the same versions and dates; newest first.
 -->
 
+## v0.4.7 · 2026-10-22
+
+### New
+
+- New tray item "Show Desktop Bubble": the way to bring the bubble back after hiding it (a hidden bubble has no menu of its own)
+
+### Improved
+
+- While hidden, the bubble stops asking for status every 2 seconds and no longer stacks up pending requests
+
+### Fixed
+
+- Fixed: after picking an item in the bubble's right-click menu, the bubble stayed at the menu's size instead of shrinking back to the ball
+- Fixed: hiding the bubble from its menu is no longer undone the next time you close the main window — your choice is remembered
+
 ## v0.4.6 · 2026-10-22
 
 ### New
