@@ -6,7 +6,7 @@
 // - 只在打开和下拉刷新时拉取；带 ETag 条件请求，没变化时 GitHub 返回 304，不下载也不算额度。
 (function () {
   "use strict";
-  var VERSION = "0.3.0";
+  var VERSION = "0.3.1";
   var AAD = new TextEncoder().encode("prompt-archive/v1");   // 协议标识沿用旧名，与电脑端 sync.rs 一致
   var CFG_KEY = "pa.cfg", CACHE_KEY = "pa.cache";
   var $ = function (id) { return document.getElementById(id); };
@@ -342,6 +342,11 @@
       li.appendChild(r);
     }
     if (!weekOnly && p.last_active) li.appendChild(el("div", "tag", "最近活动 " + p.last_active));
+    var l = p.loc;
+    if (!weekOnly && l && l.code) {
+      var langs = (l.langs || []).slice(0, 2).map(function (x) { return x.name; }).join("、");
+      li.appendChild(el("div", "tag", "代码 " + fmt(l.code) + " 行 · " + l.files + " 个文件" + (langs ? " · " + langs : "")));
+    }
     return li;
   }
   function openDoc(title, md) {
