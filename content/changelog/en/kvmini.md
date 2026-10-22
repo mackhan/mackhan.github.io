@@ -3,6 +3,87 @@ English version of content/changelog/kvmini.md. Every version in the Chinese fil
 (the build fails otherwise). Keep the same versions and dates; newest first.
 -->
 
+## v0.4.6 · 2026-10-22
+
+### New
+
+- Desktop bubble: when you hide the main window, a small ball stays on the desktop with a ring that shows the current latency in colour, so you can see at a glance whether you are connected and who is in control. Hover for details, drag it anywhere, right-click for its menu
+
+### Improved
+
+- Closing the main window now hides it to the tray instead of quitting (use Quit in the tray menu to actually exit)
+- Mouse and keyboard come first: file transfers and clipboard sync use their own channel and no longer block the mouse; when the network degrades, transfers slow down to leave room for input
+- Performance: smoother mouse movement, and logging no longer slows down input
+
+## v0.4.5 · 2026-10-21
+
+### New
+
+- Anonymous usage statistics: only events like "connected", "switched", "which feature was used" and "where it failed" are counted, to decide what to fix first. Turn it off anytime in Settings
+
+### Improved
+
+- No IP, hostname, file name or path, clipboard content, keystrokes or screen content is collected; "Reset Anonymous ID" unlinks later records from earlier ones
+- The privacy policy now spells out what is collected, in both Chinese and English
+
+## v0.4.4 · 2026-10-20
+
+### New
+
+- New "Dual-keyboard control" switch (off by default): when on, both keyboards type on whichever computer the cursor is on; when off, typing on the controlled computer brings the cursor back to it. Both computers share the setting
+
+### Fixed
+
+- System shortcuts such as screenshots no longer run on the Mac while it controls the other computer
+- After a screenshot on the Mac, pasting on Windows no longer gets overwritten by Windows' old clipboard or lands on the wrong computer
+- Dragging files from a Mac to the other computer no longer quits KVMini
+- Clicking your own mouse while being controlled takes control back (Windows now behaves like the Mac)
+- An internal error no longer closes the app: it is logged and you are notified
+
+## v0.4.3 · 2026-10-16
+
+### Fixed
+
+- Dragging files from a Mac to the other computer did nothing
+- Dragging files from Windows worked only sometimes: the cursor crossed the edge before the files were read
+- Releasing the mouse before the dragged files were read left the other computer holding files it never dropped
+- A leftover cursor stayed at the edge of the Mac screen while it controlled the other computer
+- After a screenshot tool moved the cursor on the controlled computer, the next mouse move jumped it back
+
+## v0.4.2 · 2026-10-15
+
+### New
+
+- Dragging files from the other computer onto a Mac now follows the cursor and drops where you release
+
+### Fixed
+
+- During a cross-screen drag the source computer also dropped the files at its own cursor (on the same disk they could be moved)
+- After a drag was interrupted — disconnect, cancel, or moving back to your own screen — the drag stayed stuck to the cursor on the other computer
+- Files received during a drag were dropped along with it
+- Dropping into a folder with the same name also dragged away the files already in it
+- Dragging the same file twice in quick succession could corrupt the received file
+
+## v0.4.1 · 2026-10-14
+
+### New
+
+- Native cross-screen drag and drop on Mac: drag a file from Finder past the screen edge and it lands on the other computer where you release it
+
+### Fixed
+
+- Dragging a folder dropped only one of its files: the whole folder is now dropped once every file has arrived
+- After a cancelled or failed drag the other computer kept waiting for files (and could mistake later transfers for the drag)
+- Releasing before the transfer finished made your next click act as the drop; the files now stay in the receive folder
+- Dragging files onto Windows was cancelled before you released the mouse
+- Dragging text or a window across screens could send the files from your previous drag
+
+## v0.4.0 · 2026-10-14
+
+### Fixed
+
+- On Windows the trial period was reset on every restart
+
 ## v0.3.4 · 2026-10-14
 ### New
 - **Drag files across screens (Windows)**: drag a file from File Explorer past the screen edge and it is sent to the other computer and dropped where you release the mouse — no more copy-then-paste

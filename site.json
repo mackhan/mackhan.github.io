@@ -16,8 +16,8 @@
       "downloads": [
         {
           "label": "macOS · Apple 芯片 / Intel",
-          "url": "https://github.com/mackhan/KVMini/releases/latest",
-          "label_en": "macOS · Apple silicon / Intel"
+          "label_en": "macOS · Apple silicon / Intel",
+          "url": "https://github.com/mackhan/KVMini/releases/latest"
         }
       ],
       "note": "Windows 版即将提供；两台电脑请安装同一版本。",
@@ -45,7 +45,8 @@
         }
       ],
       "desc_en": "One keyboard and mouse for your Mac and Windows computers. Connect and go — copied text, images, rich text and files paste straight onto the other computer. TLS encrypted end to end.",
-      "note_en": "Windows version coming soon; please install the same version on both computers."
+      "note_en": "Windows version coming soon; please install the same version on both computers.",
+      "manifest": "https://github.com/mackhan/KVMini/releases/latest/download/manifest.json"
     },
     {
       "id": "snipscribe",
