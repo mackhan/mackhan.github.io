@@ -6,7 +6,7 @@
 // - 只在打开和下拉刷新时拉取；带 ETag 条件请求，没变化时 GitHub 返回 304，不下载也不算额度。
 (function () {
   "use strict";
-  var VERSION = "0.3.1";
+  var VERSION = "0.4.0";
   var AAD = new TextEncoder().encode("prompt-archive/v1");   // 协议标识沿用旧名，与电脑端 sync.rs 一致
   var CFG_KEY = "pa.cfg", CACHE_KEY = "pa.cache";
   var $ = function (id) { return document.getElementById(id); };
@@ -135,36 +135,98 @@
   // ---------- 多台电脑合并 ----------
   var NUM = ["turns", "requests", "total_tokens", "fresh_input", "output_tokens"];
   function addNums(a, b) { NUM.forEach(function (k) { a[k] = (a[k] || 0) + (b[k] || 0); }); return a; }
+  // 合并规则只有三条，别混着用：
+  //   ① 可相加 —— 按天的用量、每个项目的轮次 / Token。两台机做的是不同的会话，加起来才是对的
+  //   ② 只能取最新 —— 额度（账号级，两台机读到同一份）、代码行数（同一份仓库两台机各有一份副本，
+  //      数出来是同一个数，相加就翻倍，所以取 max）
+  //   ③ 按仓库归并 —— 同一个项目在 Mac 上是 /Users/.../X、在 Windows 上是 C:\...\X，
+  //      靠快照里带的 repo（git remote 规范化）把两边认成同一个项目；没有 repo 就退回用项目名
+  var PADD = ["week_turns", "week_tokens", "d30_turns", "d30_tokens"];
+
+  function mergeDay(a, b) {                        // 把 b 那天的账并进 a
+    NUM.forEach(function (k) { a[k] = (a[k] || 0) + (b[k] || 0); });
+    var mergeMap = function (dst, src) {
+      Object.keys(src || {}).forEach(function (k) {
+        var t = dst[k] || (dst[k] = { turns: 0, total_tokens: 0 });
+        t.turns += (src[k] || {}).turns || 0;
+        t.total_tokens += (src[k] || {}).total_tokens || 0;
+      });
+    };
+    mergeMap(a.clients, b.clients);
+    mergeMap(a.projects, b.projects);
+  }
+
   function merge(bundles) {
     bundles.sort(function (a, b) { return a.built_at < b.built_at ? 1 : -1; });   // 最新的在前
-    if (bundles.length === 1) return bundles[0];
     var base = JSON.parse(JSON.stringify(bundles[0]));
     var s = base.snapshot;
+
+    // ---- 按天 / 按月明细：这是唯一「没有保质期」的事实，窗口全部由手机自己按今天的日期算 ----
+    // days = 上月 1 号起（整月边界），months = 更早的整月。两者不重叠，相加即得任意窗口。
+    var byDay = {};
+    (s.days || []).forEach(function (d) { byDay[d.day] = JSON.parse(JSON.stringify(d)); });
+    var byMonth = {};
+    (s.months || []).forEach(function (m) { byMonth[m.month] = JSON.parse(JSON.stringify(m)); });
+
+    // ---- 项目：父项合计 + 子项按机器分开 ----
+    var proj = {};
+    var order = [];
+    function parentOf(p) {
+      var key = p.repo || ("name:" + p.name);
+      var t = proj[key];
+      if (!t) {
+        t = proj[key] = { name: p.name, repo: p.repo || "", week_turns: 0, week_tokens: 0,
+                          d30_turns: 0, d30_tokens: 0, last_active: p.last_active || "",
+                          recent: p.recent, loc: p.loc, devices: [] };
+        order.push(key);
+      }
+      return t;
+    }
+    function addProject(p, dev) {
+      var t = parentOf(p);
+      PADD.forEach(function (k) { t[k] += p[k] || 0; });
+      if ((p.last_active || "") > t.last_active) { t.last_active = p.last_active; t.recent = p.recent; }
+      // 代码行数：同一份仓库各台机数出来是同一个数 → 取最大的那份，绝不相加
+      if (p.loc && (!t.loc || (p.loc.code || 0) > (t.loc.code || 0))) t.loc = p.loc;
+      t.devices.push({ device: dev, name: p.name, week_turns: p.week_turns || 0, week_tokens: p.week_tokens || 0,
+                       d30_turns: p.d30_turns || 0, d30_tokens: p.d30_tokens || 0,
+                       last_active: p.last_active || "", loc: p.loc, recent: p.recent });
+    }
+    (s.projects || []).forEach(function (p) { addProject(p, bundles[0]._device); });
+    var allTime = s.all_time;
+
     bundles.slice(1).forEach(function (b) {
       var o = b.snapshot;
-      ["today", "week", "all_time"].forEach(function (k) { if (o[k]) addNums(s[k], o[k]); });
-      if (o.d30) {                                    // 多台电脑：30 天合计一起算
+      ["all_time"].forEach(function (k) { if (o[k]) addNums(s[k] || (s[k] = {}), o[k]); });
+      if (o.d30) {
         s.d30 = s.d30 || { total_tokens: 0, start: o.d30.start, unassigned_tokens: 0 };
         s.d30.total_tokens += o.d30.total_tokens || 0;
         s.d30.unassigned_tokens += o.d30.unassigned_tokens || 0;
       }
       // 额度是账号级的：多台电脑读到的是同一份，取最新的那次
       if (o.quota && (!s.quota || (o.quota.fetchedAt || 0) > (s.quota.fetchedAt || 0))) s.quota = o.quota;
-      ["today", "week"].forEach(function (k) {
-        (o.clients && o.clients[k] || []).forEach(function (c) {
-          var t = s.clients[k].filter(function (x) { return x.client === c.client; })[0];
-          if (t) { t.turns += c.turns; t.total_tokens += c.total_tokens; } else s.clients[k].push(c);
-        });
+      // 代码行数同理：同一份仓库各台机数出来是同一个数，取最新的那台（bundles[0]）即可，绝不相加
+      if (o.loc && !s.loc) s.loc = o.loc;
+      (o.days || []).forEach(function (d) {
+        if (!byDay[d.day]) byDay[d.day] = JSON.parse(JSON.stringify(d));
+        else mergeDay(byDay[d.day], d);
+      });
+      (o.months || []).forEach(function (m) {
+        if (!byMonth[m.month]) byMonth[m.month] = JSON.parse(JSON.stringify(m));
+        else mergeDay(byMonth[m.month], m);
       });
       (o.last7 || []).forEach(function (d) {
         var t = s.last7.filter(function (x) { return x.day === d.day; })[0];
         if (t) { t.turns += d.turns; t.total_tokens += d.total_tokens; }
       });
       (o.projects || []).forEach(function (p) {
-        var t = s.projects.filter(function (x) { return x.name === p.name; })[0];
-        if (!t) { s.projects.push(p); return; }
-        ["week_turns", "week_tokens", "d30_turns", "d30_tokens"].forEach(function (k) { t[k] += p[k] || 0; });
-        if (p.last_active > t.last_active) { t.last_active = p.last_active; t.recent = p.recent; }
+        var t = parentOf(p);
+        PADD.forEach(function (k) { t[k] += p[k] || 0; });
+        if ((p.last_active || "") > t.last_active) { t.last_active = p.last_active; t.recent = p.recent; }
+        if (p.loc && (!t.loc || (p.loc.code || 0) > (t.loc.code || 0))) t.loc = p.loc;
+        t.devices.push({ device: b._device, name: p.name, week_turns: p.week_turns || 0, week_tokens: p.week_tokens || 0,
+                         d30_turns: p.d30_turns || 0, d30_tokens: p.d30_tokens || 0,
+                         last_active: p.last_active || "", loc: p.loc, recent: p.recent });
       });
       s.repeats = (s.repeats || []).concat(o.repeats || []);
       base.prompts = (base.prompts || []).concat(b.prompts || []);
@@ -172,9 +234,94 @@
       base.manuals.forEach(function (m) { have[m.project + "/" + m.name] = 1; });
       (b.manuals || []).forEach(function (m) { if (!have[m.project + "/" + m.name]) base.manuals.push(m); });
     });
+
+    s.days = Object.keys(byDay).sort().map(function (k) { return byDay[k]; });
+    s.months = Object.keys(byMonth).sort().map(function (k) { return byMonth[k]; });
+    s.projects = order.map(function (k) { return proj[k]; });
     s.projects.sort(function (a, b) { return b.week_turns - a.week_turns || b.d30_turns - a.d30_turns; });
-    base._devices = bundles.map(function (b) { return b._device; });
+    s.all_time = allTime || s.all_time;
+    base._devices = bundles.map(function (x) { return x._device; });
     return base;
+  }
+
+  // 从按天明细算出某个窗口的合计（窗口由手机自己按 today_date 划，不信任电脑端算好的聚合值——
+  // 那是有保质期的：一台机三天没开，它那包里的「今日」是三天前的，直接相加就把今天算虚高了）
+  function sumDays(days, since, until) {
+    var o = { turns: 0, requests: 0, total_tokens: 0, fresh_input: 0, output_tokens: 0,
+              clients: {}, projects: {} };
+    (days || []).forEach(function (d) {
+      if (since && d.day < since) return;
+      if (until && d.day > until) return;
+      NUM.forEach(function (k) { o[k] += d[k] || 0; });
+      ["clients", "projects"].forEach(function (g) {
+        Object.keys(d[g] || {}).forEach(function (k) {
+          var t = o[g][k] || (o[g][k] = { turns: 0, total_tokens: 0 });
+          t.turns += (d[g][k] || {}).turns || 0;
+          t.total_tokens += (d[g][k] || {}).total_tokens || 0;
+        });
+      });
+    });
+    return o;
+  }
+
+  // ISO 日期 → 那个周的周一。
+  // 必须全程用 UTC 算：如果按本地时区解析、再用 toISOString() 输出，东八区会把周一定到前一天（周日）。
+  // 固定取当天 12:00Z，这样地球上任何时区都不会因为换算跨到另一天。
+  function mondayOf(iso) {
+    var d = new Date(iso + "T12:00:00Z");
+    var w = (d.getUTCDay() + 6) % 7;             // 周一=0
+    d.setUTCDate(d.getUTCDate() - w);
+    return d.toISOString().slice(0, 10);
+  }
+  function todayISO() {                          // 本机「今天」，不能用 UTC（东八区早上 8 点前会算成昨天）
+    var d = new Date(), p = function (n) { return String(n).padStart(2, "0"); };
+    return d.getFullYear() + "-" + p(d.getMonth() + 1) + "-" + p(d.getDate());
+  }
+
+  // 把一整月并进窗口合计（months 里的月份都是 days 覆盖不到的更早整月，不会重复算）
+  function addMonth(o, m) {
+    NUM.forEach(function (k) { o[k] += m[k] || 0; });
+    ["clients", "projects"].forEach(function (g) {
+      Object.keys(m[g] || {}).forEach(function (k) {
+        var t = o[g][k] || (o[g][k] = { turns: 0, total_tokens: 0 });
+        t.turns += (m[g][k] || {}).turns || 0;
+        t.total_tokens += (m[g][k] || {}).total_tokens || 0;
+      });
+    });
+  }
+
+  function sumRange(days, months, since, until) {
+    var o = sumDays(days, since, until);
+    (months || []).forEach(function (m) {
+      if (m.month + "-31" < since.slice(0, 7) + "-01") return;   // 整月都在窗口之前
+      if (m.month + "-01" > until) return;                       // 整月都在窗口之后
+      addMonth(o, m);
+    });
+    return o;
+  }
+
+  // 四个窗口：今日 / 本周 / 本月 / 本年。
+  // 全部由手机按 days（按天）+ months（整月）自己划；只有旧包（没有 days）才退回电脑端算好的聚合值。
+  function windows(s) {
+    var t = s.today_date || todayISO();
+    var since = { today: t, week: mondayOf(t), month: t.slice(0, 8) + "01", year: t.slice(0, 4) + "-01-01" };
+    var d = s.days, m = s.months;
+    if (!d || !d.length) {
+      return { from: "agg", since: since, today: s.today || {}, week: s.week || {},
+               month: s.month || {}, year: s.year || {} };
+    }
+    return { from: "detail", since: since,
+             today: sumRange(d, m, since.today, t), week: sumRange(d, m, since.week, t),
+             month: sumRange(d, m, since.month, t), year: sumRange(d, m, since.year, t) };
+  }
+
+  // 按天明细里存的是客户端 id（codebuddy），显示要换成名字
+  var CLIENT_NAME = { workbuddy: "WorkBuddy", codebuddy: "CodeBuddy", cursor: "Cursor", claude: "Claude Code",
+                      codex: "Codex", gemini: "Gemini CLI", trae: "Trae", opencode: "OpenCode",
+                      kiro: "Kiro", cline: "Cline" };
+  function cname(id) {
+    if (!id) return "未归类";
+    return CLIENT_NAME[id] || id.charAt(0).toUpperCase() + id.slice(1);
   }
 
   // ---------- 简易 Markdown（先整体转义，再只加我们自己的标签，所以不会注入 HTML） ----------
@@ -246,6 +393,33 @@
     li.appendChild(el("span", "tag", c.turns + " 轮 · " + (c.token_tracked ? fmt(c.total_tokens) + " Token" : "本地无 Token 记录")));
     if (c.token_tracked && c.total_tokens) li.appendChild(el("span", "pct", (c.share || 0) + "%"));
     return li;
+  }
+  // 按天明细里只有客户端 id 和项目名，这里补上显示名并排序
+  function fillClients(id, map, total, empty) {
+    var rows = Object.keys(map || {}).map(function (k) { return { k: k, v: map[k] }; })
+      .sort(function (a, b) { return b.v.total_tokens - a.v.total_tokens || b.v.turns - a.v.turns; })
+      .filter(function (x) { return x.v.turns || x.v.total_tokens; });
+    fill(id, rows, function (x) {
+      var li = el("li");
+      li.appendChild(el("span", "grow", cname(x.k)));
+      li.appendChild(el("span", "tag", x.v.turns + " 轮 · " + fmt(x.v.total_tokens) + " Token"));
+      if (total) li.appendChild(el("span", "pct", pct(x.v.total_tokens, total)));
+      return li;
+    }, empty);
+  }
+  function fillProjects(id, map, total, empty) {
+    var rows = Object.keys(map || {}).map(function (k) { return { k: k, v: map[k] }; })
+      .sort(function (a, b) { return b.v.total_tokens - a.v.total_tokens || b.v.turns - a.v.turns; })
+      .filter(function (x) { return x.v.turns; })
+      .slice(0, 12);
+    fill(id, rows, function (x) { return projStatRow(x.k, x.v, total); }, empty);
+  }
+  // 代码行数：各台电脑数的是同一份仓库 → 电脑端已经取过最新的一份，这里只显示
+  function renderLoc(s) {
+    var l = s.loc || {};
+    $("k-loc").textContent = l.code ? fmt(l.code) : "–";
+    [["today", "k-loc-today"], ["week", "k-loc-week"], ["month", "k-loc-month"], ["year", "k-loc-year"]]
+      .forEach(function (kv) { $(kv[1]).textContent = "+" + fmt((l[kv[0]] || {}).add || 0); });
   }
   // 本月额度：电脑端读到后随数据包一起发过来，这里只显示（金额和百分比都在电脑端算好）
   function money(n) {
@@ -329,24 +503,59 @@
     });
     box.appendChild(lg);
   }
-  function projectRow(p, weekOnly) {
+  // 项目页的卡片：父项 = 各台电脑合并后的合计；点开「N 台电脑」看每台机各自的数字
+  function devName(d) { return (d || "").replace(/^dev-/, "") || "这台电脑"; }
+  function projectCard(p) {
     var li = el("li"), head = el("div", "head");
     head.appendChild(el("span", "name", p.name));
-    head.appendChild(el("span", "nums", weekOnly
-      ? "本周 " + p.week_turns + " 轮 · " + fmt(p.week_tokens)
-      : "本周 " + p.week_turns + " 轮 · 30 天 " + p.d30_turns + " 轮 · " + fmt(p.d30_tokens)));
+    head.appendChild(el("span", "nums",
+      "本周 " + p.week_turns + " 轮 · 30 天 " + p.d30_turns + " 轮 · " + fmt(p.d30_tokens)));
     li.appendChild(head);
-    if (!weekOnly && p.recent && p.recent.length) {
+    if (p.recent && p.recent.length) {
       var r = el("div", "recent");
       p.recent.forEach(function (t) { r.appendChild(el("div", "", t)); });
       li.appendChild(r);
     }
-    if (!weekOnly && p.last_active) li.appendChild(el("div", "tag", "最近活动 " + p.last_active));
     var l = p.loc;
-    if (!weekOnly && l && l.code) {
+    if (l && l.code) {
       var langs = (l.langs || []).slice(0, 2).map(function (x) { return x.name; }).join("、");
       li.appendChild(el("div", "tag", "代码 " + fmt(l.code) + " 行 · " + l.files + " 个文件" + (langs ? " · " + langs : "")));
     }
+    if (p.last_active) li.appendChild(el("div", "tag", "最近活动 " + p.last_active));
+
+    var devs = (p.devices || []).slice().sort(function (a, b) { return b.d30_turns - a.d30_turns; });
+    if (devs.length > 1) {
+      var btn = el("button", "more", devs.length + " 台电脑 ›");
+      var sub = el("ul", "subs");
+      sub.hidden = true;
+      btn.onclick = function () {
+        sub.hidden = !sub.hidden;
+        btn.classList.toggle("on", !sub.hidden);
+        btn.textContent = devs.length + " 台电脑 " + (sub.hidden ? "›" : "⌄");
+      };
+      devs.forEach(function (d) {
+        var row = el("li"), top = el("div", "dline");
+        top.appendChild(el("span", "dname", devName(d.device)));
+        top.appendChild(el("span", "dnums", "本周 " + d.week_turns + " 轮 · 30 天 " + d.d30_turns
+          + " 轮 · " + fmt(d.d30_tokens)));
+        row.appendChild(top);
+        row.appendChild(el("div", "dnums", "最近活动 " + (d.last_active || "–")
+          + (d.loc && d.loc.code ? " · 代码 " + fmt(d.loc.code) + " 行" : "")));
+        sub.appendChild(row);
+      });
+      li.appendChild(btn);
+      li.appendChild(sub);
+    } else if (devs.length === 1) {
+      li.appendChild(el("div", "tag", devName(devs[0].device)));
+    }
+    return li;
+  }
+  // 今日 / 本周 / 本月 / 本年页里的「按项目」：来自按天明细，只有轮次和 Token
+  function projStatRow(name, v, total) {
+    var li = el("li");
+    li.appendChild(el("span", "grow", name));
+    li.appendChild(el("span", "tag", v.turns + " 轮 · " + fmt(v.total_tokens) + " Token"));
+    if (total) li.appendChild(el("span", "pct", pct(v.total_tokens, total)));
     return li;
   }
   function openDoc(title, md) {
@@ -392,9 +601,11 @@
         .join(" · ");
     }
     var s = b.snapshot;
-    kpis("t", s.today);
-    kpis("w", s.week);
-    $("w-range").textContent = s.week.start + " ~ " + s.week.end + "（周一至今）";
+    var W = windows(s), t = W.since.today;
+    kpis("t", W.today); kpis("w", W.week); kpis("m", W.month); kpis("y", W.year);
+    $("w-range").textContent = W.since.week + " ~ " + t + "（周一至今）";
+    $("m-range").textContent = W.since.month + " ~ " + t + "（本月 1 号至今）";
+    $("y-range").textContent = W.since.year + " ~ " + t + "（今年 1 月 1 号至今）";
 
     var max = Math.max.apply(null, s.last7.map(function (d) { return d.total_tokens; }).concat([1]));
     var bars = $("bars");
@@ -410,8 +621,19 @@
 
     renderQuota(s);
     renderShare(s);
-    fill("t-clients", (s.clients || {}).today.filter(function (c) { return c.turns || c.total_tokens; }), clientRow, "今天还没有记录");
-    fill("w-clients", (s.clients || {}).week.filter(function (c) { return c.turns || c.total_tokens; }), clientRow, "本周还没有记录");
+    renderLoc(s);
+    if (W.from === "agg") {          // 旧包：没有按天明细，只能用电脑端算好的那份
+      fill("t-clients", (s.clients || {}).today.filter(function (c) { return c.turns || c.total_tokens; }), clientRow, "今天还没有记录");
+    } else {
+      fillClients("t-clients", W.today.clients, W.today.total_tokens, "今天还没有记录");
+    }
+    ["week", "month", "year"].forEach(function (k) {
+      var p = k.charAt(0);                       // week→w / month→m / year→y
+      fillClients(p + "-clients", W[k].clients, W[k].total_tokens,
+                  ({ week: "本周", month: "本月", year: "今年" })[k] + "还没有记录");
+      fillProjects(p + "-projects", W[k].projects, W[k].total_tokens,
+                   ({ week: "本周", month: "本月", year: "今年" })[k] + "还没有项目活动");
+    });
     fill("repeats", s.repeats, function (r) {
       var li = el("li");
       li.appendChild(el("span", "count", "×" + r.count));
@@ -419,9 +641,7 @@
       li.appendChild(el("span", "tag", r.projects.join("、")));
       return li;
     }, "本周没有重复提问");
-    fill("w-projects", s.projects.filter(function (p) { return p.week_turns || p.week_tokens; }),
-         function (p) { return projectRow(p, true); }, "本周还没有项目活动");
-    fill("projects", s.projects, function (p) { return projectRow(p, false); }, "最近 30 天没有项目活动");
+    fill("projects", s.projects, projectCard, "最近 30 天没有项目活动");
     fill("reports", b.reports, function (r) {
       var li = el("li");
       li.appendChild(el("a", "grow", r.week + " 周报"));
@@ -489,5 +709,6 @@
   readPairing();
   refresh();
 
-  window.__pa = { markdown: markdown, merge: merge, decryptOne: decryptOne };   // 给自动化测试用
+  window.__pa = { markdown: markdown, merge: merge, decryptOne: decryptOne,   // 给自动化测试用
+                  windows: windows, sumRange: sumRange, render: render, projectCard: projectCard };
 })();

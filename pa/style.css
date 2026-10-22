@@ -28,8 +28,11 @@ button { font: inherit; color: inherit; cursor: pointer; }
 .pair p { color: var(--muted); margin-bottom: 10px; }
 .dim { color: var(--dim) !important; font-size: 13px; }
 .tabs { display: flex; gap: 4px; padding: 0 16px 10px; border-bottom: 1px solid var(--line);
-        position: sticky; top: 0; background: var(--bg); z-index: 2; }
-.tabs button { border: 0; background: none; padding: 6px 14px; border-radius: 999px; color: var(--muted); }
+        position: sticky; top: 0; background: var(--bg); z-index: 2;
+        overflow-x: auto; -webkit-overflow-scrolling: touch; scrollbar-width: none; }
+.tabs::-webkit-scrollbar { display: none; }
+.tabs button { border: 0; background: none; padding: 6px 14px; border-radius: 999px; color: var(--muted);
+               flex: 0 0 auto; white-space: nowrap; }
 .tabs button.on { background: var(--accent-soft); color: var(--fg); font-weight: 600; }
 main { flex: 1; }
 .tab { padding: 14px 16px 24px; }
@@ -37,6 +40,10 @@ main { flex: 1; }
 .kpi { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 12px 14px; }
 .kpi b { display: block; font: 600 22px/1.25 var(--mono); }
 .kpi small { color: var(--muted); font-size: 12.5px; }
+.kpis5 { grid-template-columns: repeat(5, 1fr); gap: 5px; }
+.kpis5 .kpi { padding: 8px 5px; text-align: center; }
+.kpis5 b { font-size: 13px; }
+.kpis5 small { font-size: 10px; }
 h3 { font-size: 12.5px; font-weight: 600; color: var(--muted); letter-spacing: .04em; margin: 20px 0 8px; }
 .range { color: var(--muted); font-size: 13px; margin-bottom: 10px; }
 .bars { display: grid; grid-template-columns: repeat(7, 1fr); gap: 8px; align-items: end; height: 110px; }
@@ -61,6 +68,17 @@ h3 { font-size: 12.5px; font-weight: 600; color: var(--muted); letter-spacing: .
 .projects .nums { font: 12px var(--mono); color: var(--muted); }
 .projects .recent { margin-top: 6px; color: var(--muted); font-size: 13.5px; }
 .projects .recent div { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+/* 一个项目被好几台电脑做过：点开看每台机各自的数据（父项是合计） */
+.projects .more { margin-top: 8px; border: 1px solid var(--line); background: none; border-radius: 999px;
+                  padding: 3px 10px; font-size: 12px; color: var(--muted); }
+.projects .more.on { background: var(--accent-soft); color: var(--fg); border-color: transparent; }
+.projects .subs { list-style: none; margin-top: 8px; border-top: 1px solid var(--line); }
+.projects .subs li { display: block; border: 0; border-radius: 0; padding: 8px 0; background: none;
+                     border-bottom: 1px dashed var(--line); }
+.projects .subs li:last-child { border-bottom: 0; padding-bottom: 0; }
+.projects .subs .dline { display: flex; justify-content: space-between; align-items: baseline; gap: 4px 10px; }
+.projects .subs .dname { font-size: 13px; font-weight: 600; word-break: break-all; }
+.projects .subs .dnums { font: 12px var(--mono); color: var(--muted); }
 .reader { flex: 1; padding: 0 16px 32px; }
 .reader-bar { display: flex; align-items: center; gap: 10px; padding: 4px 0 12px; position: sticky; top: 0;
               background: var(--bg); border-bottom: 1px solid var(--line); margin-bottom: 12px; }

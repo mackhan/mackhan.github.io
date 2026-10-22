@@ -15,7 +15,7 @@
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
 <link rel="icon" href="icons/icon-192.png">
-<link rel="stylesheet" href="style.css?v=0.3.1">
+<link rel="stylesheet" href="style.css?v=0.4.0">
 <title>PromptLedger 提示词账本</title>
 </head>
 <body>
@@ -37,6 +37,8 @@
   <nav class="tabs" id="tabs" hidden>
     <button data-tab="today" class="on">今日</button>
     <button data-tab="week">本周</button>
+    <button data-tab="month">本月</button>
+    <button data-tab="year">本年</button>
     <button data-tab="projects">项目</button>
     <button data-tab="search">搜索</button>
     <button data-tab="docs">文档</button>
@@ -70,11 +72,47 @@
       </div>
       <h3>按客户端 <span class="hint">· 占本周 Token</span></h3>
       <ul class="list" id="w-clients"></ul>
-      <h3>按项目</h3>
-      <ul class="projects" id="w-projects"></ul>
+      <h3>按项目 <span class="hint">· 本周</span></h3>
+      <ul class="list" id="w-projects"></ul>
+    </section>
+
+    <section id="tab-month" class="tab" hidden>
+      <p class="range" id="m-range"></p>
+      <div class="kpis">
+        <div class="kpi"><b id="m-turns">–</b><small>轮提示词</small></div>
+        <div class="kpi"><b id="m-tokens">–</b><small>总处理量</small></div>
+        <div class="kpi"><b id="m-fresh">–</b><small>新输入</small></div>
+        <div class="kpi"><b id="m-out">–</b><small>输出</small></div>
+      </div>
+      <h3>按客户端 <span class="hint">· 占本月 Token</span></h3>
+      <ul class="list" id="m-clients"></ul>
+      <h3>按项目 <span class="hint">· 本月</span></h3>
+      <ul class="list" id="m-projects"></ul>
+    </section>
+
+    <section id="tab-year" class="tab" hidden>
+      <p class="range" id="y-range"></p>
+      <div class="kpis">
+        <div class="kpi"><b id="y-turns">–</b><small>轮提示词</small></div>
+        <div class="kpi"><b id="y-tokens">–</b><small>总处理量</small></div>
+        <div class="kpi"><b id="y-fresh">–</b><small>新输入</small></div>
+        <div class="kpi"><b id="y-out">–</b><small>输出</small></div>
+      </div>
+      <h3>按客户端 <span class="hint">· 占本年 Token</span></h3>
+      <ul class="list" id="y-clients"></ul>
+      <h3>按项目 <span class="hint">· 本年</span></h3>
+      <ul class="list" id="y-projects"></ul>
     </section>
 
     <section id="tab-projects" class="tab" hidden>
+      <h3>代码 <span class="hint">· 所有项目合计</span></h3>
+      <div class="kpis kpis5">
+        <div class="kpi"><b id="k-loc">–</b><small>总代码行</small></div>
+        <div class="kpi"><b id="k-loc-today">–</b><small>今日新增</small></div>
+        <div class="kpi"><b id="k-loc-week">–</b><small>本周新增</small></div>
+        <div class="kpi"><b id="k-loc-month">–</b><small>本月新增</small></div>
+        <div class="kpi"><b id="k-loc-year">–</b><small>本年新增</small></div>
+      </div>
       <div class="share" id="share"></div>
       <ul class="projects" id="projects"></ul>
     </section>
@@ -106,6 +144,6 @@
     <span><a id="unpair" hidden>解除配对</a> <span id="version">v0.1.0</span></span>
   </footer>
 </div>
-<script src="app.js?v=0.2.1"></script>
+<script src="app.js?v=0.4.0"></script>
 </body>
 </html>
