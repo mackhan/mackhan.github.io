@@ -80,3 +80,91 @@ class TestImport(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+SWIFT = r'''
+enum AppChangelog {
+    static let entries: [ChangelogEntry] = [
+        ChangelogEntry(
+            version: "1.1.0",
+            date: "2026-10-20",
+            changes: [
+                "新增主屏小组件",
+                "修复「我的」页得分条顶满",
+            ],
+            changesEn: [
+                "New Home Screen widgets",
+                "Fixed score bars appearing full",
+            ]),
+    ]
+}
+'''
+
+
+class SwiftTest(unittest.TestCase):
+    def test_parse_swift_entries(self):
+        e = I.parse_swift(SWIFT)
+        self.assertEqual(len(e), 1)
+        self.assertEqual((e[0]["version"], e[0]["date"]), ("1.1.0", "2026-10-20"))
+        self.assertEqual(e[0]["items"], ["新增主屏小组件", "修复「我的」页得分条顶满"])
+        self.assertEqual(e[0]["items_en"], ["New Home Screen widgets", "Fixed score bars appearing full"])
+
+    def test_english_follows_chinese_grouping(self):
+        body, _ = I.to_markdown("lifetree", I.parse_swift(SWIFT), "en")
+        self.assertIn("### New\n- New Home Screen widgets", body)
+        self.assertIn("### Fixed\n- Fixed score bars appearing full", body)
+
+    def test_lifetree_items_are_kept_as_is(self):
+        """生命树的 App 内条目本身就是用户语言，不做术语过滤"""
+        body, st = I.to_markdown("lifetree", I.parse_swift(SWIFT), "zh")
+        self.assertEqual(st["dropped"], 0)
+        self.assertIn("新增主屏小组件", body)
+
+
+RUST_EN = r'''
+fn get_changelog() -> Vec<ChangelogEntry> {
+    vec![
+        ChangelogEntry {
+            version: "1.0.3".to_string(),
+            date: "2026-08-01".to_string(),
+            changes: vec![
+                "新增暗色模式".to_string(),
+            ],
+            changes_en: vec![
+                "New dark mode".to_string(),
+            ],
+        },
+    ]
+}
+'''
+
+SWIFT_NO_EN = r'''
+        ChangelogEntry(
+            version: "1.0.1",
+            date: "2026-10-01",
+            changes: [
+                "新增主屏小组件",
+            ]),
+'''
+
+
+class RustEnglishTest(unittest.TestCase):
+    """Rust 源也要能出英文草稿（--lang en / both）"""
+
+    def test_parse_rust_keeps_english(self):
+        self.assertEqual(I.parse_rust(RUST_EN)[0]["items_en"], ["New dark mode"])
+
+    def test_english_draft_has_content(self):
+        body, st = I.to_markdown("kvmini", I.parse_rust(RUST_EN), "en")
+        self.assertEqual(st["kept"], 1)
+        self.assertIn("### New\n- New dark mode", body)
+
+
+class SwiftWithoutEnglishTest(unittest.TestCase):
+    """老版本还没补 changesEn 时，中文条目不能跟着一起消失"""
+
+    def test_chinese_items_survive(self):
+        e = I.parse_swift(SWIFT_NO_EN)
+        self.assertEqual(len(e), 1)
+        self.assertEqual(e[0]["items"], ["新增主屏小组件"])
+        self.assertEqual(e[0]["items_en"], [])
