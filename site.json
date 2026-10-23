@@ -253,6 +253,46 @@
       ],
       "desc_en": "A 50-question survey places you in one of 16 four-dimension health ArborTypes (sleep / diet / activity / stress); daily check-ins grow your life tree. Health data stays on your device; with sync on, only your nickname, packs, challenge progress and notes sync.",
       "note_en": "Requires iOS 17 or later. The \"tree lifespan\" is a game value for your virtual tree and predicts no one's lifespan; the health advice is not a medical diagnosis."
+    },
+    {
+      "id": "promptledger",
+      "name": "PromptLedger 提示词账本",
+      "name_en": "PromptLedger",
+      "color": "#ff9f43",
+      "desc": "macOS 菜单栏里的提示词账本：WorkBuddy、CodeBuddy、Cursor 的轮次与 Token 消耗一屏看完——本月额度、今日轮次、最近 7 天柱状图、重复问题提醒，每周自动生成周报。数据全部留在本机。",
+      "desc_en": "A prompt ledger in your macOS menu bar: turns and token usage across WorkBuddy, CodeBuddy and Cursor on one screen — monthly quota, today's turns, a 7-day bar chart, duplicate-question alerts, and a weekly report generated automatically. All data stays on your Mac.",
+      "platforms": [
+        "macOS"
+      ],
+      "platforms_en": [
+        "macOS"
+      ],
+      "downloads": [
+        {
+          "label": "打开手机端（网页版）",
+          "url": "/pa/",
+          "label_en": "Open the mobile web app"
+        }
+      ],
+      "note": "macOS 桌面端目前只在内网分发。手机端是网页版，装上就能用，数据同样加密后同步。",
+      "note_en": "The macOS desktop app is distributed internally for now. The mobile web app works right away and syncs the same encrypted data.",
+      "links": [
+        {
+          "label": "手机端",
+          "url": "/pa/",
+          "label_en": "Mobile web app"
+        },
+        {
+          "label": "隐私政策",
+          "url": "/promptledger/privacy-policy/",
+          "label_en": "Privacy Policy"
+        },
+        {
+          "label": "数据边界",
+          "url": "/data-boundary/",
+          "label_en": "Data boundary"
+        }
+      ]
     }
   ],
   "base_url": "https://mackhan.github.io/",
