@@ -112,17 +112,17 @@
         },
         {
           "label": "更新日志",
-          "url": "https://mackhan.github.io/MovieBox/changelog.html",
+          "url": "https://mackhan.github.io/changelog/#moviebox",
           "label_en": "Changelog"
         },
         {
           "label": "隐私政策",
-          "url": "https://mackhan.github.io/MovieBox/privacy.html",
+          "url": "https://mackhan.github.io/MovieBox/privacy-policy/",
           "label_en": "Privacy Policy"
         },
         {
           "label": "安全说明",
-          "url": "https://mackhan.github.io/MovieBox/security.html",
+          "url": "https://mackhan.github.io/MovieBox/security/",
           "label_en": "Security"
         },
         {
@@ -132,7 +132,7 @@
         }
       ],
       "manifest": "https://github.com/mackhan/MovieBox/releases/latest/download/manifest.json",
-      "site": "https://mackhan.github.io/MovieBox/"
+      "page": "MovieBox"
     },
     {
       "id": "tupu",
