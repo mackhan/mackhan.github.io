@@ -1,5 +1,74 @@
 {
   "_readme": "生命树「科研进展」的远程内容源。App 启动时拉取 https://mackhan.github.io/LifeTree/research.json，把这里的条目与包内内置文章合并：同 id 覆盖（内容更新），新 id 追加到列表最前（新文章更好找）。拉不到就静默用上次缓存或内置文章，用户不会看到任何报错。加文章不用发版。字段：id 唯一；dimension 填 sleep/diet/exercise/stress 或 null（综合）；reward 是读完给的营养包；readingMinutes 是预计阅读时长；updatedAt 用 ISO 8601，决定同 id 谁更新。中英文都要填，缺一个那篇就不会出现。",
-  "version": 1,
-  "articles": []
+  "version": 2,
+  "articles": [
+    {
+      "id": "sleepreg2023",
+      "dimension": "sleep",
+      "conclusionZh": "结论：不只是睡多久，「睡得多不规律」也重要。入睡时间与起床时间的日间波动越大、工作日与周末差异越大的人，生物年龄比规律者老约 9 个月。",
+      "conclusionEn": "Bottom line: it's not just how long you sleep — how regular you are matters too. Larger day-to-day swings in bedtime and wake time, and bigger weekday-weekend gaps, tracked with a biological age roughly 9 months older.",
+      "titleZh": "睡眠不规律与生物年龄提前衰老相关",
+      "titleEn": "Irregular sleep is linked to older biological age",
+      "summaryZh": "美国 NHANES 2011–2014 全国样本，用加速度计客观测量睡眠。",
+      "summaryEn": "US NHANES 2011–2014 national sample with accelerometer-measured sleep.",
+      "bodyZh": "研究用 NHANES 2011–2014 的加速度计数据（不是问卷自报）计算四个睡眠规律性指标：入睡时间的日间标准差、起床时间的日间标准差、睡眠时长的日间标准差，以及工作日与周末的「社交时差」。\n\n在调整了总睡眠时长之后，规律性越差的人，用血液生化指标算出的生物年龄越高：入睡时间波动最大组与最小组相差约 0.63–0.77 年，即接近 9 个月。补觉并不能抵消这种波动。\n\n这是横断面研究，无法证明因果——也可能是身体状态差导致作息乱。但它的可操作点很清楚。\n\n实操建议：把「每天差不多时间上床、差不多时间起床」当成和「睡够 7 小时」同等重要的目标，周末也尽量别差超过一小时。",
+      "bodyEn": "Using accelerometer data (not self-report) from NHANES 2011–2014, the study computed four regularity metrics: day-to-day standard deviation of sleep onset, of wake time and of sleep duration, plus weekday-weekend \"social jetlag\".\n\nAfter adjusting for total sleep duration, less regular sleepers had higher biological age derived from blood chemistry: the most versus least variable sleep-onset groups differed by about 0.63–0.77 years, close to nine months. Catch-up sleep did not offset the swings.\n\nThis is cross-sectional, so causation can't be established — poor health could also disrupt schedules. But the actionable point is clear.\n\nPractical tip: treat \"roughly the same bedtime and wake time every day\" as equally important as hitting seven hours, and keep weekend drift under an hour.",
+      "source": "Sleep Health, 2023",
+      "citation": "Wang X, Xu Y, Li X, et al. Day-to-day deviations in sleep parameters and biological aging: Findings from the NHANES 2011-2014. Sleep Health. 2023 Dec;9(6):940-946.",
+      "reward": 200,
+      "readingMinutes": 2,
+      "updatedAt": "2026-10-23T00:00:00Z"
+    },
+    {
+      "id": "upf2024",
+      "dimension": "diet",
+      "conclusionZh": "结论：超加工食品摄入越高，多种健康风险越高：心血管病死亡风险高约 50%、全因死亡高约 21%、2 型糖尿病高约 12%，焦虑等常见精神障碍高约 48%。",
+      "conclusionEn": "Bottom line: higher ultra-processed food intake tracked with higher risk across the board — about 50% higher cardiovascular death, 21% higher all-cause death, 12% higher type 2 diabetes and 48% higher odds of anxiety and common mental disorders.",
+      "titleZh": "超加工食品与多种疾病风险升高相关",
+      "titleEn": "Ultra-processed food is linked to higher risk across multiple diseases",
+      "summaryZh": "BMJ 伞状综述：汇总 45 项荟萃分析、约 988 万人。",
+      "summaryEn": "BMJ umbrella review pooling 45 meta-analyses, ~9.88 million people.",
+      "bodyZh": "这是一篇伞状综述（对荟萃分析再汇总），纳入 45 项荟萃分析、覆盖约 988 万名受试者，评估超加工食品（UPF）摄入与各类健康结局的关联强度与证据等级。\n\n证据最强（高确定性）的是剂量反应关系：UPF 摄入每增加一份，心血管病死亡风险 RR 1.50，全因死亡 RR 1.21，2 型糖尿病 RR 1.12；焦虑及常见精神障碍的比值比 OR 1.48。\n\n需要注意：绝大多数证据来自观察性研究，作者在结论里明确呼吁「需要更多干预性研究来确立因果机制」。UPF 定义（NOVA 分类）本身也有争议。\n\n实操建议：不用数 NOVA 分类，看配料表长度和是否含大量添加剂、精制糖与氢化油，就是最实用的判断标准。",
+      "bodyEn": "This umbrella review synthesised 45 meta-analyses covering about 9.88 million participants, grading the strength and certainty of associations between ultra-processed food (UPF) intake and health outcomes.\n\nThe strongest, highest-certainty findings were dose-response: each additional UPF serving tracked with RR 1.50 for cardiovascular death, RR 1.21 for all-cause death, RR 1.12 for type 2 diabetes, and OR 1.48 for anxiety and common mental disorders.\n\nCaveats: almost all evidence is observational, and the authors explicitly call for more intervention research to establish causal mechanisms. The NOVA definition of UPF is itself debated.\n\nPractical tip: forget NOVA counting — read the ingredient list. Long lists with additives, refined sugar and hydrogenated oils are the practical tell.",
+      "source": "BMJ, 2024",
+      "citation": "Lane MM, Gamage E, Du S, et al. Ultra-processed food exposure and adverse health outcomes: umbrella review of epidemiological meta-analyses. BMJ. 2024;384:e077310.",
+      "reward": 200,
+      "readingMinutes": 2,
+      "updatedAt": "2026-10-23T00:00:00Z"
+    },
+    {
+      "id": "quitsmoke2013",
+      "dimension": null,
+      "conclusionZh": "结论：戒烟永远不晚，但越早收益越大：25–34 岁戒烟约多 10 年预期寿命，35–44 岁约 9 年，45–54 岁约 6 年，55–64 岁约 4 年。40 岁前戒烟可避免约 90% 的吸烟相关超额死亡风险。",
+      "conclusionEn": "Bottom line: quitting helps at any age, but earlier is better — roughly 10 extra years of life expectancy when quitting at 25–34, 9 years at 35–44, 6 years at 45–54 and 4 years at 55–64. Quitting before 40 avoids about 90% of the excess mortality risk.",
+      "titleZh": "戒烟的收益：越早戒，多出来的年数越多",
+      "titleEn": "Quitting smoking: the earlier, the more years gained",
+      "summaryZh": "美国全国队列研究，比较持续吸烟者与戒烟者的死亡风险与预期寿命。",
+      "summaryEn": "US national cohorts comparing mortality and life expectancy in continuing smokers versus quitters.",
+      "bodyZh": "研究合并了多个美国全国性队列的数据，比较当前吸烟者、戒烟者与从不吸烟者的死亡率，并折算成预期寿命差异。\n\n与继续吸烟相比，戒烟者的预期寿命增益随戒烟年龄递减：25–34 岁戒约多 10 年，35–44 岁约 9 年，45–54 岁约 6 年，55–64 岁约 4 年。\n\n更关键的发现是超额风险的消除：40 岁之前戒烟的人，其吸烟相关的超额死亡风险比持续吸烟者低约 90%；45–54 岁戒烟仍可避免约三分之二。\n\n实操建议：如果只记一句话——今天戒，永远比明天戒多赚一点。这是所有习惯里收益最确定的一项。",
+      "bodyEn": "The study pooled several US national cohorts, comparing death rates among current smokers, former smokers and never smokers, and converting the differences into life expectancy.\n\nGains versus continuing to smoke declined with the age at quitting: about 10 extra years at 25–34, 9 at 35–44, 6 at 45–54 and 4 at 55–64.\n\nThe more striking result was elimination of excess risk: quitting before 40 was associated with about 90% lower smoking-related excess mortality; quitting at 45–54 still avoided roughly two-thirds.\n\nPractical tip: if you remember one line — quitting today always beats quitting tomorrow. Of all habits, this one has the most certain payoff.",
+      "source": "NEJM, 2013",
+      "citation": "Jha P, Ramasundarahettige C, Landsman V, et al. 21st-century hazards of smoking and benefits of cessation in the United States. N Engl J Med. 2013;368:341-350.",
+      "reward": 300,
+      "readingMinutes": 2,
+      "updatedAt": "2026-10-23T00:00:00Z"
+    },
+    {
+      "id": "strength2022",
+      "dimension": "exercise",
+      "conclusionZh": "结论：力量训练不是有氧的配菜。每周 2–6 次力量训练与更低的全因死亡风险相关（每周超过 7 次没有额外收益）；同时满足每周 150 分钟有氧的人风险最低，约低 30%。",
+      "conclusionEn": "Bottom line: strength training isn't a side dish to cardio. Two to six sessions per week tracked with lower all-cause mortality (no extra benefit beyond seven); those who also met 150 aerobic minutes had the lowest risk, about 30% lower.",
+      "titleZh": "每周 2–6 次力量训练与更低死亡风险相关",
+      "titleEn": "Two to six strength sessions a week linked to lower mortality",
+      "summaryZh": "美国 65 岁及以上成年人前瞻性队列，约 11.5 万人、随访约 8 年。",
+      "summaryEn": "Prospective US cohort aged 65+, ~115,000 adults followed ~8 years.",
+      "bodyZh": "研究纳入约 11.5 万名 65 岁及以上的美国成年人，按每周力量训练频次（0–6 次，及 7 次以上）分组，平均随访约 8 年，统计全因死亡风险。\n\n结果呈非线性：与不做力量训练相比，每周 2–3 次和 4–6 次的死亡风险更低；每周 7 次以上没有继续下降，说明收益存在上限。\n\n叠加有氧运动后效果最强：同时达到每周 ≥150 分钟中等强度有氧的人，死亡风险比两项都不足的人低约 30%（力量训练与有氧分别贡献约 10% 和 22%）。\n\n实操建议：每周两次、每次覆盖主要肌群的自重或器械训练，就足以拿到大部分收益。",
+      "bodyEn": "About 115,000 US adults aged 65+ were grouped by weekly muscle-strengthening frequency (0–6 sessions, and 7+) and followed for roughly eight years for all-cause mortality.\n\nThe relationship was non-linear: versus none, 2–3 and 4–6 sessions per week showed lower mortality, while 7+ showed no further decline — gains plateau.\n\nCombining with aerobic activity was strongest: those also meeting ≥150 moderate minutes per week had about 30% lower mortality than people short on both (roughly 10% attributable to strength work and 22% to aerobic).\n\nPractical tip: two sessions a week covering the major muscle groups — bodyweight or weights — captures most of the benefit.",
+      "source": "JAMA Network Open, 2022",
+      "citation": "Webber BJ, Piercy KL, Hyde ET, et al. Association of Muscle-Strengthening and Aerobic Physical Activity With Mortality in US Adults Aged 65 Years or Older. JAMA Netw Open. 2022;5(10):e2236778.",
+      "reward": 200,
+      "readingMinutes": 2,
+      "updatedAt": "2026-10-23T00:00:00Z"
+    }
+  ]
 }
