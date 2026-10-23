@@ -3,6 +3,20 @@ English version of content/changelog/kvmini.md. Every version in the Chinese fil
 (the build fails otherwise). Keep the same versions and dates; newest first.
 -->
 
+## v0.4.8 · 2026-10-23
+
+### Improved
+
+- "Dual-keyboard control" is now really on by default: existing configs that still hold the old default (off) and were never changed by you are migrated to on; settings you turned off yourself are left alone
+- Minimizing the main window now also hides it to the tray and shows the desktop bubble, same as closing it (bring it back from the tray icon, the tray menu, or a single click on the bubble)
+- Desktop bubble is smaller and stands out more: the ball shrinks from 64 to 52, with a deeper shadow and a white outline
+- A single click on the bubble opens the main window (double click no longer needed; dragging is unchanged)
+
+### Fixed
+
+- Fix: hovering the bubble flickered — it kept expanding and collapsing while the cursor sat on it
+- Fix: opening the main window from the bubble marked the bubble as "hidden by you", so it never came back on later
+
 ## v0.4.7 · 2026-10-22
 
 ### New
