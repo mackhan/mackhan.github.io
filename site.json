@@ -131,7 +131,7 @@
           "label_en": "All releases"
         }
       ],
-      "manifest": "https://mackhan.github.io/MovieBox/manifest.json",
+      "manifest": "https://github.com/mackhan/MovieBox/releases/latest/download/manifest.json",
       "site": "https://mackhan.github.io/MovieBox/"
     },
     {
