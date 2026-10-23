@@ -1,0 +1,5 @@
+{
+  "_readme": "生命树「科研进展」的远程内容源。App 启动时拉取 https://mackhan.github.io/LifeTree/research.json，把这里的条目与包内内置文章合并：同 id 覆盖（内容更新），新 id 追加到列表最前（新文章更好找）。拉不到就静默用上次缓存或内置文章，用户不会看到任何报错。加文章不用发版。字段：id 唯一；dimension 填 sleep/diet/exercise/stress 或 null（综合）；reward 是读完给的营养包；readingMinutes 是预计阅读时长；updatedAt 用 ISO 8601，决定同 id 谁更新。中英文都要填，缺一个那篇就不会出现。",
+  "version": 1,
+  "articles": []
+}
