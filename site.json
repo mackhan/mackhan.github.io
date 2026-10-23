@@ -259,23 +259,30 @@
       "name": "PromptLedger 提示词账本",
       "name_en": "PromptLedger",
       "color": "#ff9f43",
-      "desc": "macOS 菜单栏里的提示词账本：WorkBuddy、CodeBuddy、Cursor 的轮次与 Token 消耗一屏看完——本月额度、今日轮次、最近 7 天柱状图、重复问题提醒，每周自动生成周报。数据全部留在本机。",
-      "desc_en": "A prompt ledger in your macOS menu bar: turns and token usage across WorkBuddy, CodeBuddy and Cursor on one screen — monthly quota, today's turns, a 7-day bar chart, duplicate-question alerts, and a weekly report generated automatically. All data stays on your Mac.",
+      "desc": "macOS 菜单栏 / Windows 托盘里的提示词账本：WorkBuddy、CodeBuddy、Cursor 的轮次与 Token 消耗一屏看完——本月额度、今日轮次、最近 7 天柱状图、重复问题提醒，每周自动生成周报。数据全部留在本机。",
+      "desc_en": "A prompt ledger in your macOS menu bar or Windows tray: turns and token usage across WorkBuddy, CodeBuddy and Cursor on one screen — monthly quota, today's turns, a 7-day bar chart, duplicate-question alerts, and a weekly report generated automatically. All data stays on your machine.",
       "platforms": [
-        "macOS"
+        "macOS",
+        "Windows"
       ],
       "platforms_en": [
-        "macOS"
+        "macOS",
+        "Windows"
       ],
       "downloads": [
         {
-          "label": "打开手机端（网页版）",
-          "url": "/pa/",
-          "label_en": "Open the mobile web app"
+          "label": "macOS · Apple 芯片 / Intel",
+          "url": "https://github.com/mackhan/promptledger-releases/releases/latest",
+          "label_en": "macOS · Apple silicon / Intel"
+        },
+        {
+          "label": "Windows · 安装包",
+          "url": "https://github.com/mackhan/promptledger-releases/releases/latest",
+          "label_en": "Windows · installer"
         }
       ],
-      "note": "macOS 桌面端目前只在内网分发。手机端是网页版，装上就能用，数据同样加密后同步。",
-      "note_en": "The macOS desktop app is distributed internally for now. The mobile web app works right away and syncs the same encrypted data.",
+      "note": "源码在工蜂，发布包与自动更新清单在 GitHub；装好后会自己检查更新。手机端是网页版，配对后看同一份数据。",
+      "note_en": "Source lives on an internal Git host; release builds and the update manifest are on GitHub, and the app checks for updates by itself. The mobile web app shows the same data once paired.",
       "links": [
         {
           "label": "项目主页",
@@ -301,6 +308,11 @@
           "label": "手机端",
           "url": "/pa/",
           "label_en": "Mobile web app"
+        },
+        {
+          "label": "全部版本",
+          "url": "https://github.com/mackhan/promptledger-releases/releases",
+          "label_en": "All releases"
         }
       ]
     }
