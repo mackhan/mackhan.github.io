@@ -36,7 +36,7 @@
     </div>
     <div id="zh" class="container">
         <h1>生命树 隐私政策</h1>
-        <p class="last-updated">最后更新日期：2026-10-23（适用版本 1.6.0）</p>
+        <p class="last-updated">最后更新日期：2026-10-23（适用版本 1.7.0）</p>
         <p>生命树（LifeTree）是一款健康习惯 App：用 50 道题测出你的四维健康树格（睡眠 / 饮食 / 运动 / 压力），每天打卡让生命树生长。健康数据比照片更私密，所以我们的做法很直接：<strong>健康数据只留在你的手机上，不上传，也不进入 iCloud 同步</strong>。</p>
 
         <h2>1. 我们收集哪些信息</h2>
@@ -45,8 +45,8 @@
             <li>50 题问卷的答案，以及由此算出的四维健康度与树型</li>
             <li>每天的打卡记录、饮食照片、营养包流水、挑战进度</li>
             <li>你自己写的文字记录</li>
-            <li>可选的健康档案：性别、地区、生日、烟酒情况、基因信息（APOE / FOXO3 / ALDH2 等，<strong>可全部跳过</strong>）</li>
-            <li>生日只用于在设备上计算「剩余营养包」的倒计时（每天减少一天的量），<strong>不参与任何健康或寿命推算，也不上传</strong>；随时可以在「我的 → 编辑档案」里关掉并清除</li>
+            <li>建档时填写的生日，以及可选的健康档案：性别、地区、烟酒情况、基因信息（APOE / FOXO3 / ALDH2 等，<strong>可全部跳过</strong>）</li>
+            <li>生日只用于在设备上计算「已过去的时间」和「剩余营养包」的倒计时（每天减少一天的量），<strong>不参与任何健康或寿命推算，也不上传、不进 iCloud 同步</strong>；随时可以在「我的 → 编辑档案」里修改。老用户建档时没填的话，App 会在每次启动时提醒补填，填上为止</li>
         </ul>
         <p>我们<strong>不设账号、不需要注册</strong>，不收集姓名、手机号、邮箱、通讯录、定位或设备标识符，也没有第三方统计或广告 SDK。</p>
 
@@ -77,8 +77,26 @@
             <li>你加入了哪些习惯小组、哪天点过「做到了」</li>
         </ul>
         <p>打卡记录、问卷答案、健康档案以及「健康」App 的数据<strong>一律不同步</strong>。同步走的是你自己的 iCloud 私有数据库，开发者无法查看。若你的 Apple ID 属于中国内地，相关数据由「云上贵州」（GCBD）运营并存储在境内。</p>
-        <p><strong>习惯小组不是社区</strong>：小组是 App 预设好的固定目录，你不能自建、不能发帖、看不到任何其他人的内容，也没有点赞、评论、关注或私信。它只记录「我加入了哪个小组、我哪天做到了」这两件事。</p>
         <p>关闭同步开关或退出 iCloud 登录后，新的同步立即停止。</p>
+
+        <h2>3.1 小组里的匿名状态（1.7.0 起，默认开启、可随时关闭）</h2>
+        <p>习惯小组是 App 预设好的固定目录，你不能自建、不能发帖、不能写字、不能发图，也没有点赞、评论、关注或私信。加入小组并打开「向小组公开我的匿名进度」后，App 会把<strong>三个你自己点出来的数字</strong>写入苹果 CloudKit 的<strong>公有数据库</strong>：</p>
+        <ul>
+            <li>今天有没有点「做到了」</li>
+            <li>连续坚持了多少天</li>
+            <li>加入这个小组多少天</li>
+        </ul>
+        <p>同组的人能看到一个随机代号（如 a3f1）加这三个数字。<strong>没有昵称、头像、地区、生日，也没有任何来自「健康」的数据</strong>——步数、睡眠、心率这些一个都不上传（见第 2 节）。因为不能写字也不能发图，这里不存在可创作的内容。</p>
+        <div class="notice">
+            <p><strong>只能说是「匿名」，不能说是「认不出是谁」</strong>：CloudKit 公有库的每条记录都会携带写入者的 iCloud 账号标识，理论上可以把同一个人的多条记录归并到一起。我们的处理是：代号每 7 天轮换一次、只读取最近 3 天的记录、不保存也不反查任何身份信息。如果你不接受这一点，<strong>请不要打开这个开关</strong>。</p>
+        </div>
+        <p>数据来源只有你自己的点击。你随时可以撤回：</p>
+        <ul>
+            <li>在小组详情页关掉「向小组公开我的匿名进度」——<strong>立即停止上传，并删除你已经上传的那条</strong></li>
+            <li>退出小组——同样会删除云上那条</li>
+            <li>「我的 → 清除所有数据」——本机数据与云上那条一并清除</li>
+        </ul>
+        <p>看到不对的代号，点它右边的 ⋯ 可以<strong>举报</strong>（只从几个预设理由里选，不能自由输入）或选择<strong>「不看 TA」</strong>（只记在你本机）。举报会写入一张只有开发者能读的表，我们会据此处理。</p>
 
         <h2>4. 小组件、控制中心、灵动岛与锁屏实时活动</h2>
         <p>主屏 / 锁屏小组件与控制中心的「快速打卡」按钮只显示「今天打了几张卡」这类<strong>计数</strong>，不含任何健康数值。</p>
@@ -96,12 +114,13 @@
 
         <h2>6. 联网说明</h2>
         <ul>
-            <li><strong>iCloud 同步</strong>：仅在你开启后，与苹果服务器同步上面第 3 节列出的四类数据。</li>
+            <li><strong>iCloud 同步</strong>：仅在你开启后，与苹果服务器同步上面第 3 节列出的数据。</li>
+            <li><strong>小组匿名状态</strong>：仅在你打开「向小组公开我的匿名进度」后，向苹果 CloudKit 公有数据库写入上面第 3.1 节列出的三个数字。<strong>这是全 App 唯一一处会把数据交给同组其他人看到的地方</strong>，除此之外没有任何上传。</li>
             <li><strong>检查更新</strong>：只在你点击时，向 Apple 的公开接口发送一次本 App 的标识，用于查询是否有新版本。</li>
             <li><strong>购买</strong>：若你购买高级版，交易完全由 Apple 处理，我们收不到你的支付信息。</li>
-            <li><strong>科研进展的内容更新</strong>：打开「科研进展」时，App 会向开发者的静态站点与苹果 CloudKit 公有数据库请求一次文章列表，用于在不发版的情况下补充新研究。这个请求<strong>只下载内容，不上传任何数据</strong>：不含你的账号、设备标识或任何健康信息，服务端也只记录普通的静态资源访问。请求失败时静默使用上次内容或 App 内置文章，不会弹错、不会变空白。</li>
+            <li><strong>科研进展的内容更新</strong>：打开「科研进展」时，App 会向苹果 CloudKit 公有数据库请求一次文章列表，用于在不发版的情况下补充新研究。这个请求<strong>只下载内容，不上传任何数据</strong>：不含你的账号、设备标识或任何健康信息。请求失败时静默使用上次内容或 App 内置文章，不会弹错、不会变空白。</li>
         </ul>
-        <p>除此之外，App 不主动联网。</p>
+        <p>除此之外，App 不主动联网。除上面第 3.1 节的三个数字外，App 不向任何服务器上传数据。</p>
 
         <h2>7. 数据共享</h2>
         <p>生命树不会向任何第三方出售、出租或共享你的数据。App 内没有第三方统计、广告或社交 SDK。</p>
@@ -116,6 +135,7 @@
             <li><strong>查看</strong>：随时在 App 内查看自己的档案与全部记录</li>
             <li><strong>删除</strong>：在「我的 → 清除所有数据」中清空本机数据；卸载 App 会连同所有本机数据一起移除</li>
             <li><strong>删除已同步内容</strong>：关闭同步并清除数据后，已同步到 iCloud 私有库的内容也会在同步时移除</li>
+            <li><strong>撤回小组公开</strong>：随时关掉「向小组公开我的匿名进度」，已上传的那条会被删除</li>
             <li><strong>选择权</strong>：基因等敏感项可以跳过；「健康」App 授权可以拒绝，App 仍可手动打卡</li>
         </ul>
 
@@ -139,7 +159,7 @@
     </div>
     <div id="en" class="container">
         <h1>LifeTree Privacy Policy</h1>
-        <p class="last-updated">Last updated: 2026-10-23 (applies to version 1.6.0)</p>
+        <p class="last-updated">Last updated: 2026-10-23 (applies to version 1.7.0)</p>
         <p>LifeTree is a health habit app: a 50-question survey places you in a four-dimension Health ArborType (sleep / diet / activity / stress), and daily check-ins grow your life tree. Health data is more private than photos, so our approach is simple: <strong>it stays on your phone, is never uploaded, and never syncs through iCloud</strong>.</p>
 
         <h2>1. What we collect</h2>
@@ -148,8 +168,8 @@
             <li>Your answers to the 50-question survey, plus the four-dimension health scores and tree type derived from them</li>
             <li>Daily check-ins, meal photos, nutrition-pack history and challenge progress</li>
             <li>Notes you write yourself</li>
-            <li>Optional profile items: sex, region, birthday, smoking and drinking habits, genetic information (APOE / FOXO3 / ALDH2 and similar — <strong>all skippable</strong>)</li>
-            <li>Your birthday is used <strong>on device only</strong> for the remaining-pack countdown (one day's worth less each day). It <strong>feeds no health or lifespan calculation and is never uploaded</strong>; turn it off and clear it any time in Me → Edit profile</li>
+            <li>Your birthday, set when you create your profile, plus optional profile items: sex, region, smoking and drinking habits, genetic information (APOE / FOXO3 / ALDH2 and similar — <strong>all skippable</strong>)</li>
+            <li>Your birthday is used <strong>on device only</strong> for the "time elapsed" and remaining-pack countdown (one day's worth less each day). It <strong>feeds no health or lifespan calculation, is never uploaded and never syncs through iCloud</strong>; you can change it any time in Me → Edit profile. If your profile was created before a birthday was required, the app reminds you to add one on every launch until you do</li>
         </ul>
         <p>There is <strong>no account and no sign-up</strong>. We do not collect names, phone numbers, email addresses, contacts, location or device identifiers, and there is no third-party analytics or advertising SDK.</p>
 
@@ -180,8 +200,26 @@
             <li>Which habit groups you joined and which days you tapped "done"</li>
         </ul>
         <p>Check-ins, survey answers, your profile and all Health data <strong>never sync</strong>. Syncing uses your own private iCloud database that the developer cannot see. If your Apple ID is registered in mainland China, that data is operated by Guizhou-Cloud Big Data (GCBD) and stored in mainland China.</p>
-        <p><strong>Habit groups are not a social network</strong>: groups are a fixed catalogue built into the app. You cannot create your own, cannot post, cannot see anyone else, and there are no likes, comments, follows or direct messages. The feature records only two things — which groups you joined and which days you kept the habit.</p>
         <p>Turning the switch off or signing out of iCloud stops further syncing immediately.</p>
+
+        <h2>3.1 Anonymous group progress (since 1.7.0, on by default, off whenever you like)</h2>
+        <p>Habit groups are a fixed catalogue built into the app. You cannot create your own, cannot post text, cannot upload images, and there are no likes, comments, follows or direct messages. Once you join a group and turn on "Share my anonymous progress with groups", the app writes <strong>three numbers, all produced by your own taps</strong>, to Apple's <strong>public CloudKit database</strong>:</p>
+        <ul>
+            <li>Whether you tapped "I did it" today</li>
+            <li>How many days your streak has run</li>
+            <li>How many days you've been in the group</li>
+        </ul>
+        <p>Others in the same group see a random code (like a3f1) plus those three numbers. There is <strong>no nickname, photo, region or birthday, and nothing at all from Apple Health</strong> — steps, sleep and heart rate are never uploaded (see section 2). Because no text and no images can be posted, there is no user-created content here.</p>
+        <div class="notice">
+            <p><strong>This is anonymous, not untraceable.</strong> Every record in a public CloudKit database carries the iCloud account identifier of whoever wrote it, so in principle several records can be linked back to one person. What we do about it: the code rotates every 7 days, the app only reads the last 3 days of records, and we neither store nor look up any identity information. If that isn't acceptable to you, <strong>please leave the switch off</strong>.</p>
+        </div>
+        <p>The only input is your own tap, and you can withdraw at any time:</p>
+        <ul>
+            <li>Turn off "Share my anonymous progress with groups" on the group page — <strong>uploading stops immediately and your existing entry is deleted</strong></li>
+            <li>Leave the group — your entry is deleted as well</li>
+            <li>Use Me → Erase all data — on-device data and your cloud entry are both removed</li>
+        </ul>
+        <p>If a code looks wrong, tap the ⋯ beside it to <strong>report</strong> it (you pick from a few preset reasons; there is no free-text field) or to <strong>hide</strong> it (stored on your device only). Reports go into a table only the developer can read, and we act on them.</p>
 
         <h2>4. Widgets, Control Center, Dynamic Island and Live Activity</h2>
         <p>Home Screen and Lock Screen widgets and the Control Center "Quick check-in" button show only <strong>counts</strong> such as "check-ins today" and no health values.</p>
@@ -199,12 +237,13 @@
 
         <h2>6. Network activity</h2>
         <ul>
-            <li><strong>iCloud sync</strong>: only if you enable it, syncing the four kinds listed in section 3 with Apple's servers.</li>
+            <li><strong>iCloud sync</strong>: only if you enable it, syncing the data listed in section 3 with Apple's servers.</li>
+            <li><strong>Anonymous group progress</strong>: only if you turn on "Share my anonymous progress with groups", writing the three numbers listed in section 3.1 to Apple's public CloudKit database. <strong>This is the only place in the app where anything you enter becomes visible to other people</strong>; apart from it there is no upload at all.</li>
             <li><strong>Check for updates</strong>: only when you tap it, sending the app identifier once to Apple's public API to look for a new version.</li>
             <li><strong>Purchases</strong>: if you buy the Pro version, the transaction is handled entirely by Apple; we receive no payment details.</li>
-            <li><strong>Research article updates</strong>: when you open Research, the app requests the article list once from the developer's static site and from Apple's public CloudKit database, so new studies can appear without an app update. This request <strong>only downloads content and uploads nothing</strong> — no account, device identifier or health information is sent, and the server sees nothing more than ordinary static-asset traffic. If the request fails, the app silently keeps the previous copy or the bundled articles: no error dialog, no blank screen.</li>
+            <li><strong>Research article updates</strong>: when you open Research, the app requests the article list once from Apple's public CloudKit database, so new studies can appear without an app update. This request <strong>only downloads content and uploads nothing</strong> — no account, device identifier or health information is sent. If the request fails, the app silently keeps the previous copy or the bundled articles: no error dialog, no blank screen.</li>
         </ul>
-        <p>Apart from these, the app does not connect to the network on its own.</p>
+        <p>Apart from these, the app does not connect to the network on its own. Except for the three numbers in section 3.1, the app uploads nothing to any server.</p>
 
         <h2>7. Sharing</h2>
         <p>LifeTree never sells, rents or shares your data with any third party. There are no third-party analytics, advertising or social SDKs in the app.</p>
@@ -219,6 +258,7 @@
             <li><strong>Access</strong>: view your profile and all records in the app at any time</li>
             <li><strong>Deletion</strong>: erase all data under Profile → Erase all data; uninstalling the app removes all on-device data with it</li>
             <li><strong>Deleting synced content</strong>: after turning sync off and erasing data, content already in your private iCloud database is removed on sync</li>
+            <li><strong>Withdrawing group sharing</strong>: turn off "Share my anonymous progress with groups" at any time and the entry you uploaded is deleted</li>
             <li><strong>Choice</strong>: sensitive items such as genetics can be skipped; you can deny Health access and still log everything manually</li>
         </ul>
 
