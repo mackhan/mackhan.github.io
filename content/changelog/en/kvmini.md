@@ -3,6 +3,27 @@ English version of content/changelog/kvmini.md. Every version in the Chinese fil
 (the build fails otherwise). Keep the same versions and dates; newest first.
 -->
 
+## v0.4.9 · 2026-10-23
+
+### New
+
+- New "Ctrl+Space switches input source" setting (on by default): pressing Ctrl+Space on a Windows keyboard now reaches the Mac as Control+Space (switches input source) instead of being remapped to Cmd+Space (Spotlight). Other combos such as Ctrl+C still arrive as Cmd+C
+
+### Improved
+
+- On macOS, minimizing now collapses to the tray and shows the desktop bubble, and clicking the Dock icon brings the main window back
+
+### Fixed
+
+- Fixed the controlled PC's keyboard going completely dead with dual-keyboard control: it was forwarded to the peer and swallowed locally, but the controlled side never sends frames and the controlling side never injects them, so neither computer received anything. The keyboard now really follows the cursor — both keyboards type on whichever computer the cursor is on
+- Fixed the screen-crossing direction not following a layout change: the edge detector is rebuilt immediately after saving, and layouts synced from the peer are mirrored before being stored
+- Fixed the layout preview never showing the other computer's monitors: the monitor list is now synced on connect and when monitors are plugged in or removed
+- Fixed a single click on the desktop bubble not opening the main window: macOS system dragging is modal and swallows the mouse-up, so dragging now only starts after the pointer really moves
+- Fixed the hover panel flickering while dragging the desktop bubble
+- Fixed occasional huge latency readings and the "stall, then reconnect" pattern: ping, pong and heartbeat no longer queue behind mouse and keyboard frames, so the latency number no longer includes queueing time
+- Fixed modifier mapping changes in Settings only taking effect after restarting the app
+- Fixed Caps Lock getting stuck when using a Mac keyboard on Windows (everything typed in caps, and pressing it again did not turn it off): macOS treats Caps Lock as a held key while Windows toggles on a full press-and-release, so each state change is now turned into a complete press-and-release on the Windows side
+
 ## v0.4.8 · 2026-10-23
 
 ### Improved
