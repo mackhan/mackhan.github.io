@@ -278,9 +278,14 @@
       "note_en": "The macOS desktop app is distributed internally for now. The mobile web app works right away and syncs the same encrypted data.",
       "links": [
         {
-          "label": "手机端",
-          "url": "/pa/",
-          "label_en": "Mobile web app"
+          "label": "项目主页",
+          "url": "/promptledger/",
+          "label_en": "Homepage"
+        },
+        {
+          "label": "更新日志",
+          "url": "/changelog/?p=promptledger",
+          "label_en": "Changelog"
         },
         {
           "label": "隐私政策",
@@ -291,6 +296,11 @@
           "label": "数据边界",
           "url": "/data-boundary/",
           "label_en": "Data boundary"
+        },
+        {
+          "label": "手机端",
+          "url": "/pa/",
+          "label_en": "Mobile web app"
         }
       ]
     }

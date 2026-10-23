@@ -243,7 +243,8 @@ class RealContentTest(unittest.TestCase):
     def test_every_product_links_to_home_privacy_and_changelog(self):
         """每个产品都要有「项目主页 / 隐私政策 / 更新日志」三件套，链到的页面必须真的存在"""
         site = json.load(open(os.path.join(self.root, "site.json"), encoding="utf-8"))
-        self.assertEqual(len(site["products"]), 6)
+        # 写死数量是为了防「误删 / 误加一个产品」：加产品时把这里一起改掉
+        self.assertEqual(len(site["products"]), 7)
         for p in site["products"]:
             links = {l["label"]: l["url"] for l in p.get("links", [])}
             self.assertEqual({"项目主页", "隐私政策", "更新日志"} - set(links), set(),
