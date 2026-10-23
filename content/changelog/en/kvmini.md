@@ -3,6 +3,20 @@ English version of content/changelog/kvmini.md. Every version in the Chinese fil
 (the build fails otherwise). Keep the same versions and dates; newest first.
 -->
 
+## v0.4.10 · 2026-10-23
+
+### Improved
+
+- An incomplete certificate or private key now fails immediately instead of being loaded as a corrupt one — it used to surface as a handshake failure or a fingerprint mismatch, pointing at the wrong cause
+
+### Fixed
+
+- Fixed minimizing on macOS still not collapsing to the tray (the 0.4.9 fix never actually worked: the check ran outside the main-thread task and always read the initial value; both the check and the hide now run on the main thread)
+- Fixed two edge cases when pressing Ctrl+Space on a Windows keyboard to switch input source: holding Space no longer switches repeatedly, and releasing Ctrl before Space no longer leaves a stuck Command on the Mac
+- Fixed "synced" being reported and the edge detector being rebuilt when saving the peer's layout actually failed: the direction that really made it to disk is now used
+- Fixed "Restart" (on the permission guide) leaving the other computer under remote control when clicked while sharing: control is now handed back and local input restored before restarting
+- Fixed files dropped across screens often not being transferred: the "what is being dragged" lookup happened after the cursor had been pinned back inside the screen, and once the cursor leaves the screen edge the system stops telling us what is being dragged — we now ask proactively at the moment of crossing
+
 ## v0.4.9 · 2026-10-23
 
 ### New
