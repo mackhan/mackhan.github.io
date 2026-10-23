@@ -46,7 +46,7 @@
             <li>每天的打卡记录、饮食照片、营养包流水、挑战进度</li>
             <li>你自己写的文字记录</li>
             <li>建档时填写的生日，以及可选的健康档案：性别、地区、烟酒情况、基因信息（APOE / FOXO3 / ALDH2 等，<strong>可全部跳过</strong>）</li>
-            <li>生日只用于在设备上计算「已过去的时间」和「剩余营养包」的倒计时（每天减少一天的量），<strong>不参与任何健康或寿命推算，也不上传、不进 iCloud 同步</strong>；随时可以在「我的 → 编辑档案」里修改。老用户建档时没填的话，App 会在每次启动时提醒补填，填上为止</li>
+            <li>生日只用于在设备上计算「已过去的时间」和「剩余营养包」的倒计时（都按秒算，每天减少一天的量，86,400），<strong>不改变树的总营养包，也不上传、不进 iCloud 同步</strong>。建档时必填，之后不可修改（需要改动请删除档案重建）</li>
         </ul>
         <p>我们<strong>不设账号、不需要注册</strong>，不收集姓名、手机号、邮箱、通讯录、定位或设备标识符，也没有第三方统计或广告 SDK。</p>
 
@@ -127,7 +127,7 @@
 
         <h2>8. 重要声明</h2>
         <div class="notice">
-            <p>App 中的<strong>「树的寿命」是一棵虚拟树的游戏化数值</strong>，只由树种基准、四维健康度和营养包决定，<strong>不预测、也不涉及任何人的寿命</strong>。四维健康建议参考公开的群体研究，存在不确定性，<strong>不是医疗诊断或治疗建议</strong>，不能替代专业医疗意见。如有健康问题，请咨询医生。App 内提供心理支持信息，供你需要时使用。</p>
+            <p>App 中的<strong>「树的营养包」是一棵虚拟树的游戏化数值，单位是秒（1 营养包 = 1 秒）</strong>，只由树种基准、四维健康度和已获得的营养包决定，<strong>不预测、也不涉及任何人的寿命</strong>。四维健康建议参考公开的群体研究，存在不确定性，<strong>不是医疗诊断或治疗建议</strong>，不能替代专业医疗意见。如有健康问题，请咨询医生。App 内提供心理支持信息，供你需要时使用。</p>
         </div>
 
         <h2>9. 你的权利</h2>
@@ -169,7 +169,7 @@
             <li>Daily check-ins, meal photos, nutrition-pack history and challenge progress</li>
             <li>Notes you write yourself</li>
             <li>Your birthday, set when you create your profile, plus optional profile items: sex, region, smoking and drinking habits, genetic information (APOE / FOXO3 / ALDH2 and similar — <strong>all skippable</strong>)</li>
-            <li>Your birthday is used <strong>on device only</strong> for the "time elapsed" and remaining-pack countdown (one day's worth less each day). It <strong>feeds no health or lifespan calculation, is never uploaded and never syncs through iCloud</strong>; you can change it any time in Me → Edit profile. If your profile was created before a birthday was required, the app reminds you to add one on every launch until you do</li>
+            <li>Your birthday is used <strong>on device only</strong> for the "time elapsed" and remaining-pack countdown (both in seconds, one day's worth — 86,400 — less each day). It <strong>never changes the tree's total packs, is never uploaded and never syncs through iCloud</strong>. It is required when you create your profile and cannot be edited afterwards (delete the profile and start over if you need to change it)</li>
         </ul>
         <p>There is <strong>no account and no sign-up</strong>. We do not collect names, phone numbers, email addresses, contacts, location or device identifiers, and there is no third-party analytics or advertising SDK.</p>
 
@@ -250,7 +250,7 @@
 
         <h2>8. Important notice</h2>
         <div class="notice">
-            <p>The <strong>"tree lifespan" is a game value for a virtual tree</strong>, set only by its species baseline, your four-dimension health and the packs you earn. It <strong>does not predict or involve any person's lifespan</strong>. The four-dimension advice draws on published population research, is uncertain, and is <strong>not a medical diagnosis or treatment advice</strong>; it does not replace professional medical advice. Please consult a doctor for any health concern. The app also provides mental health support information if you need it.</p>
+            <p>The <strong>"nutrition packs" are a game value for a virtual tree, measured in seconds (1 pack = 1 second)</strong>, set only by its species baseline, your four-dimension health and the packs you earn. They <strong>do not predict or involve any person's lifespan</strong>. The four-dimension advice draws on published population research, is uncertain, and is <strong>not a medical diagnosis or treatment advice</strong>; it does not replace professional medical advice. Please consult a doctor for any health concern. The app also provides mental health support information if you need it.</p>
         </div>
 
         <h2>9. Your rights</h2>
