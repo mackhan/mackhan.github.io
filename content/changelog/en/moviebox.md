@@ -2,6 +2,22 @@
 English version of content/changelog/moviebox.md. Every version in the Chinese file must also appear here.
 -->
 
+## v0.2.0 · 2026-10-24
+### New
+- **Licensing**: a new "License" card in Settings shows trial days left / activated / expired / invalid, and lets you activate or remove a license key
+- **Open at login** toggle: writes the system login item and tells you if macOS, MDM or a sandbox refuses the change
+- The licensing module runs in its own helper process (~1 MB). If it crashes, times out or is missing, playback and scanning are unaffected — you only see "licensing module unavailable"
+### Fixed
+- "Remember password" never actually saved: the 4th argument of the SMB connect call was dropped in the bridge layer
+- Saved SMB credentials could not be read back, so a previously used address never auto-filled the username
+- All 11 outstanding TypeScript type errors resolved
+
+## v0.1.69 · 2026-10-23
+### New
+- Product homepage, privacy policy, security notes and changelog now live on the Atelier raIn site (mackhan.github.io/MovieBox), consistent with the other products
+### Improved
+- About page links point to the new addresses; the old ones no longer work, so please update to this version
+
 ## v0.1.68 · 2026-10-20
 ### New
 - **Auto-update**: MovieBox now checks GitHub Releases on launch and installs new versions when you confirm it
