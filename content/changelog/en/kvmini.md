@@ -3,6 +3,18 @@ English version of content/changelog/kvmini.md. Every version in the Chinese fil
 (the build fails otherwise). Keep the same versions and dates; newest first.
 -->
 
+## v0.4.11 · 2026-10-24
+
+### Improved
+
+- Feedback now opens a dialog in the app first: recipient, subject and body are shown on screen, the body is editable and copyable, and "Send via email client" is just one of the buttons. It used to launch the mail client immediately with a placeholder-only body you then had to edit inside the mail
+- The feedback subject and the "version / OS" footer are now assembled by the SDK, so feedback mails look the same across every app built on it
+- Dragging the bubble is more responsive (starts at 2px instead of 4px), the detail card no longer pops out mid-drag, and hover still expands after a drag on Windows (the system drag swallows mouse-up, which used to leave the bubble stuck in "dragging")
+
+### Fixed
+
+- Fixed the desktop bubble not actually shrinking on Windows: a window narrower than the system minimum was widened back to 135px, leaving an invisible strip that swallowed clicks. The collapsed bubble is now a steady 60px, the ball 44px, with a tighter shadow
+
 ## v0.4.10 · 2026-10-23
 
 ### Improved
