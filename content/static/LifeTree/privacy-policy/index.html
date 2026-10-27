@@ -36,7 +36,7 @@
     </div>
     <div id="zh" class="container">
         <h1>生命树 隐私政策</h1>
-        <p class="last-updated">最后更新日期：2026-10-23（适用版本 1.7.0）</p>
+        <p class="last-updated">最后更新日期：2026-10-28（适用版本 1.15.0）</p>
         <p>生命树（LifeTree）是一款健康习惯 App：用 50 道题测出你的四维健康树格（睡眠 / 饮食 / 运动 / 压力），每天打卡让生命树生长。健康数据比照片更私密，所以我们的做法很直接：<strong>健康数据只留在你的手机上，不上传，也不进入 iCloud 同步</strong>。</p>
 
         <h2>1. 我们收集哪些信息</h2>
@@ -48,7 +48,7 @@
             <li>建档时填写的生日，以及可选的健康档案：性别、地区、烟酒情况、基因信息（APOE / FOXO3 / ALDH2 等，<strong>可全部跳过</strong>）</li>
             <li>生日只用于在设备上计算「已过去的时间」和「剩余营养包」的倒计时（都按秒算，每天减少一天的量，86,400），<strong>不改变树的总营养包，也不上传、不进 iCloud 同步</strong>。建档时必填，之后不可修改（需要改动请删除档案重建）</li>
         </ul>
-        <p>我们<strong>不设账号、不需要注册</strong>，不收集姓名、手机号、邮箱、通讯录、定位或设备标识符，也没有第三方统计或广告 SDK。</p>
+        <p>我们<strong>不设账号、不需要注册</strong>，不收集姓名、手机号、邮箱、通讯录、定位或设备标识符，也没有第三方统计或广告 SDK（我们自己写的那份匿名统计见第 5.2 节）。</p>
 
         <h2>2. 「健康」App（HealthKit）数据</h2>
         <p>只有你主动授权后，App 才会读取「健康」App 中的数据用于自动填写打卡，包括：睡眠时长、睡眠分段、步数、运动时间、爬楼、静息心率、心率变异性、正念时长、饮食能量与蛋白质。你也可以在打卡时把运动与正念记录写回「健康」App。</p>
@@ -112,6 +112,22 @@
             <li><strong>专注模式</strong>：你可以为某个专注模式添加「生命树」过滤条件来暂停久坐 / 喝水提醒。App 只知道「是否被暂停」，<strong>读不到你开的是哪个专注模式</strong>，这个状态也只存在本机。</li>
         </ul>
 
+        <h2>5.2 匿名使用统计（第一方，只在本机）</h2>
+        <p>为了知道「新用户第一次打开走到哪一步就流失了」，我们自己写了一段极简的统计代码，<strong>不接入任何第三方 SDK</strong>。它只记这几种事件：首次安装、每次启动、是否高级版、付费墙从哪儿弹出、购买结果、报告页打开、<strong>打了哪个维度的卡</strong>（只记维度名，<strong>不记分数、不记任何健康数值</strong>）。</p>
+        <ul>
+            <li>事件里有一个本机随机生成的匿名安装 id，<strong>不含姓名、邮箱、手机号、设备序列号或广告标识符（IDFA）</strong>；重装 App 会换一个新 id，所以无法把两次安装连成同一个人。</li>
+            <li><strong>当前版本没有配置任何上传通道：这些事件只写进本机的一个文件里，一个字节都不会发出去。</strong>将来若要开启上传，只会上传同样这几个字段，并且会先在本机征得你的同意。</li>
+            <li>你可以随时在「我的 → 支持 → 诊断」里<strong>关掉</strong>它；关掉后连本机文件都不再写入。</li>
+            <li>本 App 不读 IDFA，也不弹「允许追踪」提示——因为这里确实没有可追踪的东西。</li>
+        </ul>
+
+        <h2>5.3 本机诊断日志（1.15.0 起）</h2>
+        <p>为了在崩溃或保存失败时能定位原因，App 会在本机保留一份<strong>滚动日志（最近 1000 条、7 天自动清理）</strong>，记录级别、分类与错误码（只写 <code>domain#code</code> 这样的错误码，<strong>不记录文件路径、不记录账号</strong>）。</p>
+        <ul>
+            <li>日志<strong>不含任何健康数据</strong>，不上传，<strong>也不进入 iCloud 备份</strong>。</li>
+            <li>你可以在「我的 → 支持 → 诊断」里<strong>查看、搜索、复制、导出为文件或一键清空</strong>；导出时你先看到的就是全部内容，没有隐藏字段。</li>
+        </ul>
+
         <h2>6. 联网说明</h2>
         <ul>
             <li><strong>iCloud 同步</strong>：仅在你开启后，与苹果服务器同步上面第 3 节列出的数据。</li>
@@ -120,14 +136,14 @@
             <li><strong>购买</strong>：若你购买高级版，交易完全由 Apple 处理，我们收不到你的支付信息。</li>
             <li><strong>科研进展的内容更新</strong>：打开「科研进展」时，App 会向苹果 CloudKit 公有数据库请求一次文章列表，用于在不发版的情况下补充新研究。这个请求<strong>只下载内容，不上传任何数据</strong>：不含你的账号、设备标识或任何健康信息。请求失败时静默使用上次内容或 App 内置文章，不会弹错、不会变空白。</li>
         </ul>
-        <p>除此之外，App 不主动联网。除上面第 3.1 节的三个数字外，App 不向任何服务器上传数据。</p>
+        <p>除此之外，App 不主动联网。除上面第 3.1 节的三个数字外，App 不向任何服务器上传数据（第 5.2 节的匿名统计当前也只写本机）。</p>
 
         <h2>7. 数据共享</h2>
-        <p>生命树不会向任何第三方出售、出租或共享你的数据。App 内没有第三方统计、广告或社交 SDK。</p>
+        <p>生命树不会向任何第三方出售、出租或共享你的数据。App 内<strong>没有第三方统计、广告或社交 SDK</strong>；第 5.2 节那份统计是我们自己写的，只落本机，当前不上传，也就不存在交给任何第三方。</p>
 
         <h2>8. 重要声明</h2>
         <div class="notice">
-            <p>App 中的<strong>「树的营养包」是一棵虚拟树的游戏化数值，单位是秒（1 营养包 = 1 秒）</strong>，只由树种基准、四维健康度和已获得的营养包决定，<strong>不预测、也不涉及任何人的寿命</strong>。四维健康建议参考公开的群体研究，存在不确定性，<strong>不是医疗诊断或治疗建议</strong>，不能替代专业医疗意见。如有健康问题，请咨询医生。App 内提供心理支持信息，供你需要时使用。</p>
+            <p>App 中的<strong>「树的营养包」是一棵虚拟树的游戏化数值，单位是秒（1 营养包 = 1 秒）</strong>，只由公开人群生命表基准（男 76.3 / 女 81.8 岁，随年龄衰减）、四维健康度加成和你打卡获得的附加营养包决定；<strong>树种只用于外观画像，不参与计算</strong>，地区 / 基因 / 烟酒同样不参与。它<strong>不预测、也不涉及任何人的寿命</strong>，App 界面里也不出现「寿命」二字。四维健康建议参考公开的群体研究，存在不确定性，<strong>不是医疗诊断或治疗建议</strong>，不能替代专业医疗意见。如有健康问题，请咨询医生。App 内提供心理支持信息，供你需要时使用。</p>
         </div>
 
         <h2>9. 你的权利</h2>
@@ -159,7 +175,7 @@
     </div>
     <div id="en" class="container">
         <h1>LifeTree Privacy Policy</h1>
-        <p class="last-updated">Last updated: 2026-10-23 (applies to version 1.7.0)</p>
+        <p class="last-updated">Last updated: 2026-10-28 (applies to version 1.15.0)</p>
         <p>LifeTree is a health habit app: a 50-question survey places you in a four-dimension Health ArborType (sleep / diet / activity / stress), and daily check-ins grow your life tree. Health data is more private than photos, so our approach is simple: <strong>it stays on your phone, is never uploaded, and never syncs through iCloud</strong>.</p>
 
         <h2>1. What we collect</h2>
@@ -171,7 +187,7 @@
             <li>Your birthday, set when you create your profile, plus optional profile items: sex, region, smoking and drinking habits, genetic information (APOE / FOXO3 / ALDH2 and similar — <strong>all skippable</strong>)</li>
             <li>Your birthday is used <strong>on device only</strong> for the "time elapsed" and remaining-pack countdown (both in seconds, one day's worth — 86,400 — less each day). It <strong>never changes the tree's total packs, is never uploaded and never syncs through iCloud</strong>. It is required when you create your profile and cannot be edited afterwards (delete the profile and start over if you need to change it)</li>
         </ul>
-        <p>There is <strong>no account and no sign-up</strong>. We do not collect names, phone numbers, email addresses, contacts, location or device identifiers, and there is no third-party analytics or advertising SDK.</p>
+        <p>There is <strong>no account and no sign-up</strong>. We do not collect names, phone numbers, email addresses, contacts, location or device identifiers, and there is no third-party analytics or advertising SDK (for the anonymous statistics we wrote ourselves, see section 5.2).</p>
 
         <h2>2. Apple Health (HealthKit) data</h2>
         <p>Only after you grant permission does the app read Health data to pre-fill check-ins: sleep duration and stages, steps, exercise time, flights climbed, resting heart rate, heart rate variability, mindful minutes, and dietary energy and protein. You may also write your exercise and mindfulness entries back to Health.</p>
@@ -235,6 +251,22 @@
             <li><strong>Focus</strong>: you can add a LifeTree filter to a Focus to pause move / water reminders. The app only knows <strong>whether</strong> they're paused — it cannot see which Focus you turned on, and that flag is stored on-device only.</li>
         </ul>
 
+        <h2>5.2 Anonymous usage statistics (first-party, on-device)</h2>
+        <p>To understand where new users drop off during their first run, we wrote a minimal statistics module ourselves — <strong>no third-party SDK is involved</strong>. It records only these events: first install, every app start, whether you're on Pro, where the paywall was opened from, purchase result, report opened, and <strong>which habit dimension</strong> you checked in (the dimension name only — <strong>never the score and never any health value</strong>).</p>
+        <ul>
+            <li>Each event carries a randomly generated anonymous install id. It contains <strong>no name, email, phone number, device serial or advertising identifier (IDFA)</strong>. Reinstalling the app generates a new id, so two installs can never be linked to the same person.</li>
+            <li><strong>In this version no upload channel is configured: the events are written to a file on your device and not a single byte is sent anywhere.</strong> If uploading is ever enabled, it would carry exactly these same fields, and only after asking you on-device first.</li>
+            <li>You can <strong>turn it off</strong> at any time under Profile → Support → Diagnostics; once off, nothing is even written to the local file.</li>
+            <li>The app does not read IDFA and shows no tracking prompt, because there is genuinely nothing to track.</li>
+        </ul>
+
+        <h2>5.3 On-device diagnostics log (since 1.15.0)</h2>
+        <p>So a crash or a failed save can actually be diagnosed, the app keeps a <strong>rolling log on your device (last 1000 entries, cleared after 7 days)</strong> recording level, category and an error code (only in the form <code>domain#code</code> — <strong>no file paths, no account names</strong>).</p>
+        <ul>
+            <li>The log contains <strong>no health data</strong>, is never uploaded, and is <strong>excluded from iCloud backup</strong>.</li>
+            <li>You can <strong>browse it, search it, copy it, export it to a file, or clear it</strong> under Profile → Support → Diagnostics. What you see when you export is the whole thing — there are no hidden fields.</li>
+        </ul>
+
         <h2>6. Network activity</h2>
         <ul>
             <li><strong>iCloud sync</strong>: only if you enable it, syncing the data listed in section 3 with Apple's servers.</li>
@@ -243,14 +275,14 @@
             <li><strong>Purchases</strong>: if you buy the Pro version, the transaction is handled entirely by Apple; we receive no payment details.</li>
             <li><strong>Research article updates</strong>: when you open Research, the app requests the article list once from Apple's public CloudKit database, so new studies can appear without an app update. This request <strong>only downloads content and uploads nothing</strong> — no account, device identifier or health information is sent. If the request fails, the app silently keeps the previous copy or the bundled articles: no error dialog, no blank screen.</li>
         </ul>
-        <p>Apart from these, the app does not connect to the network on its own. Except for the three numbers in section 3.1, the app uploads nothing to any server.</p>
+        <p>Apart from these, the app does not connect to the network on its own. Except for the three numbers in section 3.1, the app uploads nothing to any server (the anonymous statistics in section 5.2 are written on-device only for now).</p>
 
         <h2>7. Sharing</h2>
-        <p>LifeTree never sells, rents or shares your data with any third party. There are no third-party analytics, advertising or social SDKs in the app.</p>
+        <p>LifeTree never sells, rents or shares your data with any third party. There are <strong>no third-party analytics, advertising or social SDKs</strong> in the app. The statistics in section 5.2 are our own code, stored on-device and not uploaded in this version, so nothing reaches any third party.</p>
 
         <h2>8. Important notice</h2>
         <div class="notice">
-            <p>The <strong>"nutrition packs" are a game value for a virtual tree, measured in seconds (1 pack = 1 second)</strong>, set only by its species baseline, your four-dimension health and the packs you earn. They <strong>do not predict or involve any person's lifespan</strong>. The four-dimension advice draws on published population research, is uncertain, and is <strong>not a medical diagnosis or treatment advice</strong>; it does not replace professional medical advice. Please consult a doctor for any health concern. The app also provides mental health support information if you need it.</p>
+            <p>The <strong>"nutrition packs" are a game value for a virtual tree, measured in seconds (1 pack = 1 second)</strong>. They are set by a population-level baseline taken from published life-table statistics (76.3 years for male / 81.8 for female, decaying with age), plus a bonus from your four-dimension health and the extra packs you earn. The <strong>tree species is visual only and is not an input</strong>; region, genetics and smoking / drinking are not inputs either. They <strong>do not predict or involve any person's lifespan</strong>, and the word "lifespan" does not appear in the app's interface. The four-dimension advice draws on published population research, is uncertain, and is <strong>not a medical diagnosis or treatment advice</strong>; it does not replace professional medical advice. Please consult a doctor for any health concern. The app also provides mental health support information if you need it.</p>
         </div>
 
         <h2>9. Your rights</h2>
