@@ -3,6 +3,52 @@ English version of content/changelog/kvmini.md. Every version in the Chinese fil
 (the build fails otherwise). Keep the same versions and dates; newest first.
 -->
 
+## v0.4.15 · 2026-10-28
+
+### Improved
+
+- Copying a file across screens is now a real copy-paste: once the other computer receives the files it puts them on **its own clipboard**, so you just press Ctrl+V / Cmd+V to paste them wherever you want — no more digging through the receive folder. A copy is still saved there as before
+- You can now drop files straight onto the desktop bubble to send them to the other computer. Only the main window used to accept drops, so sending a file meant opening it first. The bubble shows send progress and the result
+- Transfers now show **speed and time remaining**, not just a percentage, so you can tell how long a big file will take — much closer to the feel of dragging a file around on one machine. The bubble shows the same progress
+- When files arrive from the other computer, the bubble also says "file received, ready to paste", so you do not have to keep the main window open
+- The "Receive folder" setting now shows the folder that will actually be used (your Downloads) instead of leaving the box blank
+
+## v0.4.14 · 2026-10-28
+
+### New
+
+- First-time pairing now uses a 4-digit code: both computers show the same four digits and you simply confirm they match, instead of comparing a long certificate fingerprint digit by digit. It can be turned off in Settings, which falls back to showing the full fingerprint only
+- New "Prevent auto-lock while sharing" option, on by default: while connected it holds off idle-triggered screen locking, the screen saver and display sleep, so a session does not die halfway through. It only blocks automatic locking — pressing Win+L / Ctrl+Cmd+Q still locks immediately — and your normal power settings are restored the moment the connection ends. Turn it off in Settings if you prefer
+
+### Improved
+
+- Scanning actually finds devices now: the LAN broadcast discovery responder was written but never started, so every scan silently fell back to probing the whole subnet one address at a time (slow, and it often missed devices). Devices on the same network now show up in about a second
+- Tapping Connect in the scan results no longer fails with "device ip missing": list entries had no id, so the click could never resolve an address
+- The trusted devices list gets a Connect button: it reconnects straight to the last known address, so you no longer have to rescan the network every time you launch the app. Remove is still there if you no longer trust a device
+- A locked screen is no longer treated as "still connected": Windows and macOS now both know when the machine is locked. Cross-screen control is paused with a clear explanation (the system does not allow input to be captured or injected while locked) and resumes automatically on unlock. Windows used to reinstall its hooks every 5 seconds while locked, flooding the log and sometimes interrupting input
+- Input arriving from the other computer is dropped while this machine is locked, so unlocking no longer replays a burst of clicks and keystrokes
+
+## v0.4.13 · 2026-10-27
+
+### Improved
+
+- Dragging the desktop bubble no longer carries the expanded detail card along: the card and context menu are closed first, and the drag only starts once the window has really collapsed
+- The bubble can now sit flush against the screen edge. It used to be nudged back toward the middle, because the offset applied while expanded was mistaken for the bubble position
+- No more half a bubble card left on the desktop after opening the main window: the window is collapsed and the UI state is reset before hiding
+- The bubble is split in two layers: a reusable floating-ball shell (drag, edge snapping, expand/collapse, context menu) plus KVMini's own content
+- Dual-machine keyboard control is now its own module with a single routing rule: both keyboards type into whichever machine the cursor is on, and typing on the controlled machine is no longer interrupted by background hook reinstalls
+- Edge detection is rebuilt immediately with the new screen geometry when the monitor layout changes or the peer switches resolution, instead of waiting for a reconnect
+- Both ends of cross-screen file dragging now share one state machine instead of two copies (fixing one side and missing the other is what kept breaking drag and drop)
+- Cross-screen drag no longer fails silently: an incomplete batch, releasing too early, a cancelled or stuck session, capture failing to start, files that never got sent — each one now tells you what happened, where the files ended up and what to try next. They used to be log lines only, which looks like "you dragged it and nothing happened"
+- When a drag cannot read the files and falls back to the clipboard, the app now says so plainly: "this came from the clipboard, not the file you dragged". It also explains when nothing was sent because the clipboard had not changed
+- Dragging a file to the screen edge and back no longer causes the **previous** drag's files to be sent to the other computer a few seconds later (Windows)
+- Dragging files across screens is steadier on macOS: leftover content in the drag pasteboard is no longer mistaken for this drag, and rubbing the cursor back and forth over the edge no longer sends the same batch twice
+- If the connection drops or the drag is cancelled midway, this computer no longer keeps "holding the left button": a stuck session releases it automatically, and on Windows a cancellation now takes effect within one second
+- Dragging with the right mouse button now says plainly that cross-screen drag needs the left button, instead of showing an unrelated "copy the file first" hint
+- If drag capture never starts or its thread exits, you are told right away and the next time sharing is enabled it starts again, instead of failing silently until the app is restarted
+- On macOS the **previous** drag's files are no longer sent: the drag pasteboard keeps its content after a drag ends, so only entries that changed after this button press count — the old content used to be read back the moment you pressed
+- After a drag is cancelled or the connection drops midway, this computer no longer keeps holding the left button, and it no longer quietly refuses new drags for the next minute
+
 ## v0.4.11 · 2026-10-24
 
 ### Improved
