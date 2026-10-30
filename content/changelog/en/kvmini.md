@@ -3,6 +3,16 @@ English version of content/changelog/kvmini.md. Every version in the Chinese fil
 (the build fails otherwise). Keep the same versions and dates; newest first.
 -->
 
+## v0.4.18 · 2026-10-30
+
+### Fixed
+
+- Fixed **remote action hotkeys never registering**: if you recorded "lock the other computer" or "toggle its mute" but left "lock to this computer" empty, none of them worked - the registration sat behind an early return for the empty lock hotkey
+- Fixed **"Turn off TLS and reconnect" wiping your settings**: that button used to rebuild the whole config and save it, so anything it left out snapped back to defaults (per-app rules replaced by the built-in set, "never cross when full screen" turned off, custom port reset). It now changes the TLS flag and nothing else
+- Fixed **no feedback when full screen blocks you**: with "never cross when full screen" on, bumping the screen edge was silent - only "lock to this computer" answered. Silent blocking is exactly what makes people think the app is broken, so both now answer once
+- Fixed **two bugs in shortcut remapping**: holding a remapped combination replayed the whole action on every key repeat (the other computer got locked or muted dozens of times), and pressing another key while still holding Cmd sent it bare - Cmd+C arrived as a plain c
+- Fixed **Windows builds that did not compile**: the 0.4.16 / 0.4.17 per-app rules and remote mute code failed to build on Windows (wrong import, type mismatch, borrow conflict). Releases now cross-check the Windows target first - if it does not build, it does not ship
+
 ## v0.4.17 · 2026-10-30
 
 ### New
