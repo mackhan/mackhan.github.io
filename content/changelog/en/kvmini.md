@@ -3,6 +3,36 @@ English version of content/changelog/kvmini.md. Every version in the Chinese fil
 (the build fails otherwise). Keep the same versions and dates; newest first.
 -->
 
+## v0.4.17 · 2026-10-30
+
+### New
+
+- New **Lock to this computer**: one press pins the cursor to this machine - the mouse cannot cross even at the screen edge, while the connection, clipboard and file transfer keep working. This is not the same as disconnecting. **No hotkey is bound by default** (once locked the mouse cannot cross, and only someone who recorded a key themselves knows the feature exists). While locked, the bubble, the tray icon and the settings page all show it, and bumping the screen edge gives you a hint
+- New **remote actions**: while you are controlling the other computer, one click can lock its screen or toggle its mute. This is not the same as "typing a key" - the other computer performs it natively, so you never need Win+L, a key that simply does not exist on a Mac keyboard. Also unbound by default
+- New **shortcut remapping**: empty by default. Add a rule (say "Cmd+L -> Win+L") and that combination skips the global modifier mapping entirely and is sent exactly as you specify - so Cmd+C still copies while Cmd+L locks the screen
+
+### Improved
+
+- A new modifier mapping mode, **"Mac Control acts as the Windows key"**: under the default mode no key can act as the Windows key once you cross over, so Win+L and Win+E are unreachable. With this mode Ctrl+L becomes Win+L while Cmd still acts as Ctrl
+
+### Fixed
+
+- Fixed **"Never cross when full screen"** (off by default): previously the mouse still crossed over, only to have mouse and keyboard stop reaching the other side - you switched and nothing responded. Now it simply does not cross. It only blocks going **out**, not coming **in**: the other computer can still take control
+
+## v0.4.16 · 2026-10-29
+
+### New
+
+- New **per-app rules**: when a virtual machine (Parallels / VMware / VirtualBox / UTM), a remote desktop app (RDP / ToDesk / Sunlogin / TeamViewer / AnyDesk) or Steam is in the foreground, rules decide whether this input still crosses to the other computer. 20 recommended rules ship built in, and you can add your own
+- New "Never cross when full screen" toggle (off by default): when on, any window covering a whole display blocks both mouse and keyboard crossing
+- New **clipboard history**: keeps the last 10 things you copied. Click Copy to put one back on the clipboard, then press Cmd / Ctrl + V yourself. Memory only, cleared on quit. Passwords, card numbers and private keys are never recorded, and you can pause recording at any time
+
+### Improved
+
+- **No more double translation between identical platforms**: Mac-to-Mac and Windows-to-Windows now send native key codes directly. They used to go through X11 key symbols and back, which silently dropped keys like F13-F20 and PrintScreen
+- The monitor layout preview now renders at **true resolution ratio** (small screens used to be stretched to the same size as a 4K one), and a **Test** button walks the cursor through the preview once so you can see which local edge it leaves from and which remote screen it lands on
+- **Smoother mouse while transferring files**: chunks shrank from 48KB to 16KB (aligned to a single TLS record) and latency sampling went from once every 3 seconds to once per second — the network used to be congested for 3 seconds before anything noticed, leaving the yield mechanism effectively deaf
+
 ## v0.4.15 · 2026-10-28
 
 ### Improved
