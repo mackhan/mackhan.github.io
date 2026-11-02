@@ -3,6 +3,19 @@ English version of content/changelog/kvmini.md. Every version in the Chinese fil
 (the build fails otherwise). Keep the same versions and dates; newest first.
 -->
 
+## v0.4.19 · 2026-11-02
+
+### New
+
+- New **shared keyboard**: when neither computer is driving the other, clicking the mouse on one of them now makes **the other computer's keyboard type here too**. Until now "keyboard follows cursor" only applied while actually crossing screens - once you pulled the mouse back, the other keyboard still typed on its own machine, so you could never use both keyboards on the same text box
+
+### Improved
+
+- **The mouse always takes the keyboard back**: click on this computer, or move the mouse deliberately (about 40px, so a light trackpad wobble will not do it), and the keyboard comes back immediately. There is no hotkey to remember - noticing that your keyboard went quiet and reaching for the mouse *is* the recovery
+- **You can see where the keyboard is**: the main window now has a "Keyboard goes to: this / other computer" row, and the bubble shows a ⌨→ badge in its lower-left corner whenever your keystrokes are being sent across. Without that, the feature would just be a good way to type into the wrong machine
+- **Turning "keyboard follows cursor" off restores the old behaviour exactly**: each keyboard types on its own machine, like every comparable tool. Flipping the switch off pulls the keyboard home instantly, and so do disconnecting and quitting - you will never end up with both computers unable to type
+- Wire protocol is now v4. **Both computers must be updated together** for this release, otherwise connecting reports a version mismatch (with mixed versions one side claims the keyboard and the other does not, leaving keystrokes with nowhere to land)
+
 ## v0.4.18 · 2026-10-30
 
 ### Fixed
