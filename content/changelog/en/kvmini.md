@@ -3,6 +3,16 @@ English version of content/changelog/kvmini.md. Every version in the Chinese fil
 (the build fails otherwise). Keep the same versions and dates; newest first.
 -->
 
+## v0.4.20 · 2026-11-02
+
+### Improved
+
+- Fixed **the scan listing your own computer**: the device list used to include this machine, and clicking it just connected you to yourself. The broadcast this computer sends out comes back to it, and it answered itself - scan results now drop every address that belongs to this machine first (multiple network cards, VM bridges and VPN tunnel addresses included)
+
+### Fixed
+
+- Fixed **what happens when the other computer is not running**: finding only itself used to count as "found something" and stop there. The scan now keeps looking through the remaining methods, and only reports "no devices found" when there really is nothing else
+
 ## v0.4.19 · 2026-11-02
 
 ### New
