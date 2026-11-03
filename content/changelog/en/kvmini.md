@@ -3,6 +3,15 @@ English version of content/changelog/kvmini.md. Every version in the Chinese fil
 (the build fails otherwise). Keep the same versions and dates; newest first.
 -->
 
+## v0.4.21 · 2026-11-03
+
+### Fixed
+
+- Fixed **the Windows keyboard occasionally not typing into the Mac under "shared keyboard"**: with keyboard merging on, typing on a Mac with a Mac mouse and the Windows keyboard, the Windows keyboard sometimes stopped reaching the Mac until you moved the cursor to Windows and back. Deciding "which machine is in use" summed squared movement, so tiny mouse jitter could quietly move the keyboard to Windows; once moved, it would never re-announce while the state looked unchanged, so a single lost frame never healed. It now uses **net displacement** over a short window (jitter cancels out) and re-announces once a second, so a lost heals itself
+- Fixed **the cursor being dragged around when you take control back**: on the controlled machine, moving your own mouse or trackpad to take back control made the cursor slide around before it actually switched. The same "is the user moving this mouse" rule (it took several hundred pixels to decide) let the local and remote cursors fight each other over that distance. Both places now share one rule, and 40 pixels of net movement switches immediately
+- Fixed **the mouse wheel not scrolling when Windows controls a Mac**: the wheel turned on Windows, the data reached the Mac and the Mac "sent" the scroll, but the system quietly discarded the scroll events we sent, so nothing moved on screen while the logs looked perfectly normal. The app put a marker on its own events (to tell "this one is mine") and the system drops scroll events that carry it. Scroll events no longer carry the marker; the app now tells them apart by which process sent them
+- Fixed **an occasional crash**: right after you copied something, the app could quit unexpectedly (the system's "KVMini quit unexpectedly" dialog). Several parts of the app read the system clipboard at the same time, and the system clipboard does not allow that - when you copied, they all went to read at once and collided. All clipboard access now takes turns, one at a time
+
 ## v0.4.20 · 2026-11-02
 
 ### Improved
