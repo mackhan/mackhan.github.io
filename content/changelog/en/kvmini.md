@@ -3,6 +3,47 @@ English version of content/changelog/kvmini.md. Every version in the Chinese fil
 (the build fails otherwise). Keep the same versions and dates; newest first.
 -->
 
+## v0.4.25 · 2026-11-04
+
+### Improved
+
+- Buttons in Settings such as "Add rule", "Lock peer" and "Clear" are now **soft blue rounded buttons** instead of padding-less red ones, with dark theme support
+
+## v0.4.24 · 2026-11-04
+
+### Improved
+
+- The Overview shows the **hotkey for switching control** again (the one you set in Settings; shown in the main card once connected, and now on Mac too)
+- "Right now" on the Overview is now **two columns** and more compact; the sidebar is narrower to give the content more room
+
+## v0.4.23 · 2026-11-04
+
+### New
+
+- **New look**: a sidebar on the left and content on the right. The Overview shows at a glance whether the two computers are connected and the latency, with a three-step guide for first use. Settings are grouped into Devices / Keyboard & Mouse / Display Layout / Clipboard / Security / General / About, and Check for Updates moved to General
+- New **system shortcut translation**: Windows and Mac use different keys for the same action, so they are now translated automatically, each one with its own switch. For example, with a Windows keyboard controlling a Mac, Alt+Tab becomes Cmd+Tab to switch apps, Home / End become line start / end and PrintScreen becomes a screenshot; the other way round, Cmd+Q on a Mac keyboard becomes Alt+F4 on Windows. Key combos you record yourself take priority
+- New **media key target** (Windows keyboard): volume, play/pause and previous/next track can follow the cursor, always stay on this computer, or always go to the peer, which runs them with its own system. Media keys on a Mac keyboard are not supported yet
+
+### Improved
+
+- New **drag files across screens** switch (Clipboard page, on by default): when off, crossing the screen edge no longer probes for dragged files; copy-and-paste of files is unaffected
+- Each of the 5 modifier-key modes now shows a one-line **example** of its real effect, matching the mode you pick
+
+### Fixed
+
+- Fixed **key combo replacement possibly not working at all on Windows**: the check for "key held down and auto-repeating" read the wrong place, so on some computers every press was treated as a repeat and swallowed
+
+## v0.4.22 · 2026-11-03
+
+### Improved
+
+- **Two mice can now take turns on one cursor with dual keyboard control**: there is one active cursor. If you are using the Mac trackpad and then move the Windows mouse, it keeps pushing the Mac's cursor from where it is - no jump. Touch the trackpad again and it takes over again. Both keyboards follow the cursor. With dual keyboard control off it works like other tools: moving a machine's mouse brings you back to that machine's own screen
+
+### Fixed
+
+- Fixed **clicking the desktop bubble not opening the main window**: when the bubble sat at the right screen edge the system nudged it slightly, so the click landed just outside it
+- Fixed **dragging files across screens never working**: the cursor bounced back when crossing with a file, releasing on Windows did nothing, and File Explorer refused the dropped files - all three are fixed
+
 ## v0.4.21 · 2026-11-03
 
 ### Fixed
