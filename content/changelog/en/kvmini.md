@@ -3,6 +3,30 @@ English version of content/changelog/kvmini.md. Every version in the Chinese fil
 (the build fails otherwise). Keep the same versions and dates; newest first.
 -->
 
+## v0.4.28 · 2026-11-05
+
+### Fixed
+
+- Fixed an empty black window frame showing briefly at startup on Windows: the window is now shown cloaked and revealed once its content is painted; the system pop-up animation is disabled
+
+## v0.4.27 · 2026-11-04
+
+### Fixed
+
+- Fixed a notice box flashing at the top on startup: reading the "keep on this computer" state no longer pops "Unlocked"
+
+## v0.4.26 · 2026-11-04
+
+### Improved
+
+- Settings **no longer has a Save button**: the top bar now has Back, and changes are saved automatically
+- "General" and "About" are merged into one page, with tighter rows
+- New installs **launch at startup and start minimized to the tray** by default (opening it manually still shows the window)
+- Connect button: with no history it searches the network; otherwise it connects straight to the last device, named on the button and the overview
+- Overview gets **Quick switches**: dual-keyboard control, clipboard sharing, pause sharing, keep on this computer
+- Status values are dot capsules, errors and notices are top banners, and small buttons share one style
+- **Faster startup, and no more blank window flash**
+
 ## v0.4.25 · 2026-11-04
 
 ### Improved
