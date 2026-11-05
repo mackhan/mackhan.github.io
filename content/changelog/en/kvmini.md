@@ -3,6 +3,29 @@ English version of content/changelog/kvmini.md. Every version in the Chinese fil
 (the build fails otherwise). Keep the same versions and dates; newest first.
 -->
 
+## v0.4.31 · 2026-11-05
+
+### Improved
+
+- Fixed the global shortcut never firing on Windows: the shortcut set in Settings now really toggles control
+
+### Fixed
+
+- When it is the same Ctrl+Alt+S as the emergency recovery key, one key press is no longer handled twice; on Windows, holding the shortcut no longer fires repeatedly
+- Fixed Mac shortcuts for lock / mute that could fire more than once (and so cancel themselves out) after saving settings
+
+## v0.4.30 · 2026-11-05
+
+### Improved
+
+- Overview: the shortcut hint now sits right under the connection status; while the other computer is controlling this one it reads "Press Ctrl+Alt+S to take control back" (Ctrl+Option+S on Mac)
+
+## v0.4.29 · 2026-11-05
+
+### Fixed
+
+- Fixed a terminal window popping up before the main window when launching on Windows: the system language is now read from the registry instead of spawning PowerShell. Startup is also faster, with the main window appearing in about 0.7s (was about 1.7s)
+
 ## v0.4.28 · 2026-11-05
 
 ### Fixed
