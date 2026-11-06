@@ -3,6 +3,20 @@ English version of content/changelog/kvmini.md. Every version in the Chinese fil
 (the build fails otherwise). Keep the same versions and dates; newest first.
 -->
 
+## v0.4.33 · 2026-11-06
+
+### Improved
+
+- Windows → Mac file drag: the Mac now starts the drag with a real press, so files follow the cursor and drop on release
+- Mac → Windows file drag: works with apps that only provide the legacy file list, and Finder drags no longer arrive named id=…
+- Dragging several files no longer waits an extra half second per file, so you hold the button for much less time
+- Fixed a frozen cursor showing on Windows while controlled, when it sat over another app's window
+- While the Mac controls the other device its cursor parks mid-screen, leaving no ghost in the menu bar or at the screen edge
+
+### Fixed
+
+- Added end-to-end drag diagnostics: logs on both sides now line up by batch number
+
 ## v0.4.32 · 2026-11-06
 
 ### Improved
