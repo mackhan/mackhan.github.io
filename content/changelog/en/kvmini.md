@@ -3,6 +3,20 @@ English version of content/changelog/kvmini.md. Every version in the Chinese fil
 (the build fails otherwise). Keep the same versions and dates; newest first.
 -->
 
+## v0.4.32 · 2026-11-06
+
+### Improved
+
+- Sending large files (e.g. a movie) no longer slows down keyboard and mouse: network buffers are capped and the send rate adapts to latency, so latency no longer spikes past 300ms
+- Files received by copy or drag now go into a Downloads/KVMiniBox folder
+- Overview: the latency readout now sits above the link between the two devices
+- The desktop bubble stays on: it shows both when the window is minimized and maximized, and only disappears if you hide it
+- Fixed the local keyboard sometimes not typing on Windows after crossing screens until you toggled the input method (a held Shift / Ctrl release was swallowed)
+
+### Fixed
+
+- Dragging files across screens now tells you when no files could be read, and extra diagnostics were added
+
 ## v0.4.31 · 2026-11-05
 
 ### Improved
