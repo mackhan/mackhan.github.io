@@ -3,6 +3,15 @@ English version of content/changelog/kvmini.md. Every version in the Chinese fil
 (the build fails otherwise). Keep the same versions and dates; newest first.
 -->
 
+## v0.4.34 · 2026-11-06
+
+### Improved
+
+- If you release a cross-screen file drag before the transfer finishes, the files are now put into the folder you released over (an Explorer / Finder window or the desktop) once they arrive, with a notice saying where
+- If you release somewhere that is not a folder, the receive folder opens with the files selected so you can drag them on from there
+- Windows → Mac file drag: fixed a cursor-position mismatch that kept the Mac from catching the drag
+- The first time files go into a Finder window, macOS asks whether KVMini may control Finder — please allow it
+
 ## v0.4.33 · 2026-11-06
 
 ### Improved
