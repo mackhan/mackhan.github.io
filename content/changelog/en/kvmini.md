@@ -3,6 +3,13 @@ English version of content/changelog/kvmini.md. Every version in the Chinese fil
 (the build fails otherwise). Keep the same versions and dates; newest first.
 -->
 
+## v0.4.35 · 2026-11-10
+
+### Improved
+
+- Overview card relayout: latency and hotkey hints moved above the link between devices, both device cards now show a name and an IP line, and the card is more compact
+- After disconnecting or giving up reconnects, the card no longer keeps the previous device's name and IP
+
 ## v0.4.34 · 2026-11-06
 
 ### Improved
