@@ -3,6 +3,15 @@ English version of content/changelog/kvmini.md. Every version in the Chinese fil
 (the build fails otherwise). Keep the same versions and dates; newest first.
 -->
 
+## v0.4.36 · 2026-11-11
+
+### Improved
+
+- Overview relayout: displays moved up and scaled down, latency stays above the link between devices, hotkey hints now sit below the link and only mention the shortcut, and every quick switch fits on the default window without scrolling
+- Removed the green latency toast that flashed once per second: latency is now shown permanently above the link on the overview card, including on the machine that did not initiate the connection
+- Reduced duplicate notices: the hint below the link no longer repeats the screen-edge behaviour described by the status subtitle; control-state changes and disconnects no longer raise redundant toasts; remaining notices last longer and stay at least one second each
+- Reworked cross-screen drag & drop: the target now registers file promises / virtual files with the OS up front and streams content while files are still arriving, so you can start dragging before the transfer finishes; this change is still undergoing two-machine hands-on verification
+
 ## v0.4.35 · 2026-11-10
 
 ### Improved
