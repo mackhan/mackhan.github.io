@@ -3,6 +3,14 @@ English version of content/changelog/kvmini.md. Every version in the Chinese fil
 (the build fails otherwise). Keep the same versions and dates; newest first.
 -->
 
+## v0.4.37 · 2026-11-12
+
+### Improved
+
+- Latency is now always visible above the link between the two devices, even when disconnected (a dash is shown when there is no reading) instead of disappearing entirely
+- Added a persistent status line below the link: notices such as 'Edge detection activated', 'Sharing started' and 'Sharing stopped' used to be transient toasts and are now shown in place, so the overview is no longer blank when disconnected
+- Moved the shortcut hint directly under the 'Connect a device...' subtitle and restored the full wording that had been removed as 'duplicate' (including moving back across the local screen edge to return control)
+
 ## v0.4.36 · 2026-11-11
 
 ### Improved
