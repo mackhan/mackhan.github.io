@@ -3,6 +3,14 @@ English version of content/changelog/kvmini.md. Every version in the Chinese fil
 (the build fails otherwise). Keep the same versions and dates; newest first.
 -->
 
+## v0.4.39 · 2026-11-12
+
+### Improved
+
+- Removed the duplicate status line on the overview: small captions such as 'Sharing stopped' no longer appear alongside the big 'Not connected' or 'Connected' title; the title is now the single source of connection status
+- Connection errors and warnings now sit directly below the link between the two devices; the area stays clean when there is nothing to report instead of showing a permanent extra line
+- Long notices in either Chinese or English wrap onto multiple lines so the full message stays visible, with no truncation
+
 ## v0.4.38 · 2026-11-12
 
 ### Improved
