@@ -3,6 +3,14 @@ English version of content/changelog/kvmini.md. Every version in the Chinese fil
 (the build fails otherwise). Keep the same versions and dates; newest first.
 -->
 
+## v0.4.38 · 2026-11-12
+
+### Improved
+
+- Added a unified notice area below the device link: connection errors stay visible until dismissed, reconnected or replaced by a higher-priority message, instead of flashing away. Errors are red, warnings orange, success green and info neutral
+- Version mismatch and disconnect notices now appear in the same area; connection failures started from Settings also show the full reason persistently
+- Persistent notices are re-translated when the interface language changes, and leftover top toasts are cleared when returning to the overview
+
 ## v0.4.37 · 2026-11-12
 
 ### Improved
