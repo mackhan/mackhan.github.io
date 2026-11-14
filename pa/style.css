@@ -132,5 +132,12 @@ footer a { color: var(--dim); text-decoration: underline; cursor: pointer; margi
 .qplan { margin-top: 6px; padding: 6px 8px; background: var(--card); border-radius: 8px;
          font-size: 11.5px; line-height: 1.5; color: var(--dim); }
 .qplan.warn { color: var(--warn, #b26a00); }
-/* 现在谁在干活（电脑状态跃迁时立刻推过来的那一份） */
-.live { margin: 6px 0 0; font-size: 11.5px; color: var(--dim); }
+.live-banner { display: flex; gap: 10px; align-items: flex-start; margin: 0 0 14px;
+               padding: 11px 13px; border-radius: 12px;
+               background: var(--accent-soft); border: 1px solid var(--accent); }
+.live-dot { flex: 0 0 auto; width: 9px; height: 9px; margin-top: 6px; border-radius: 50%;
+            background: var(--err); box-shadow: 0 0 0 3px rgba(217, 48, 37, .16); }
+.live-body { flex: 1; min-width: 0; }
+.live-head { font-size: 13.5px; font-weight: 600; color: var(--fg); }
+.live-list { list-style: none; margin-top: 6px; }
+.live-list li { font-size: 12.5px; color: var(--muted); padding: 2px 0; word-break: break-all; }

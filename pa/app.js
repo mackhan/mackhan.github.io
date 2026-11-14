@@ -593,13 +593,27 @@
     if (hit.length === 80) box.appendChild(el("li", "empty", "只显示前 80 条，再输入几个字缩小范围"));
   }
 
+  var LIVE_LABEL = { working: "生成中", waiting: "等你回复", deciding: "等你决策" };
+  var LIVE_ATTENTION = { deciding: 1, waiting: 1 };
+  function liveAlerts(projects) {
+    var items = (projects || []).filter(function (x) { return LIVE_ATTENTION[x.state]; })
+      .map(function (x) { return { project: x.project, label: LIVE_LABEL[x.state] || x.state }; });
+    return { visible: items.length > 0, count: items.length, items: items };
+  }
+  function renderLive(projects) {
+    var box = $("live");
+    var alerts = liveAlerts(projects);
+    if (!alerts.visible) { box.hidden = true; return; }
+    box.hidden = false;
+    $("live-head").textContent = alerts.count + " 个会话在等你";
+    fill("live-list", alerts.items, function (it) {
+      return el("li", "", it.project + " · " + it.label);
+    }, "");
+  }
+
   function render(b) {
     searchIndex = (b.prompts || []).slice();
-    if (b.live && b.live.projects) {                  // 状态跃迁时电脑会立刻推一次，手机上是新鲜的
-      $("live").textContent = b.live.projects.filter(function (x) { return x.state === "working" || x.state === "waiting" || x.state === "deciding"; })
-        .map(function (x) { return x.project + " " + ({ working: "生成中", waiting: "等响应", deciding: "等决策" }[x.state] || x.state); })
-        .join(" · ");
-    }
+    renderLive(b.live && b.live.projects);
     var s = b.snapshot;
     var W = windows(s), t = W.since.today;
     kpis("t", W.today); kpis("w", W.week); kpis("m", W.month); kpis("y", W.year);
@@ -711,4 +725,6 @@
 
   window.__pa = { markdown: markdown, merge: merge, decryptOne: decryptOne,   // 给自动化测试用
                   windows: windows, sumRange: sumRange, render: render, projectCard: projectCard };
+  window.__pa.liveAlerts = liveAlerts;
+  window.__pa.renderLive = renderLive;
 })();
