@@ -1,0 +1,28 @@
+{
+  "revision": 1,
+  "product": "kvmini",
+  "policy": {
+    "schema": 1,
+    "updatedAt": "2026-11-14",
+    "force": {
+      "enabled": false,
+      "minVersion": "",
+      "graceDays": 0,
+      "notes": {
+        "zh": "",
+        "en": ""
+      }
+    },
+    "block": {
+      "belowVersion": ""
+    },
+    "pricing": {
+      "mode": "free",
+      "notice": {
+        "zh": "",
+        "en": ""
+      },
+      "effectiveFrom": ""
+    }
+  }
+}
